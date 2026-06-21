@@ -82,11 +82,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "description", content: "Marketplace regional de serviços, empresas e profissionais verificados em Minas Gerais." },
       { name: "author", content: "AgendaAqui" },
       { property: "og:site_name", content: "AgendaAqui" },
-      { property: "og:title", content: "AgendaAqui — Seu serviço certo, na hora certa." },
-      { property: "og:description", content: "Encontre empresas e profissionais verificados perto de você." },
+      { property: "og:title", content: "AgendaAqui — Serviços e empresas perto de você" },
+      { property: "og:description", content: "Marketplace regional de serviços, empresas e profissionais verificados em Minas Gerais." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "theme-color", content: "#0057FF" },
+      { name: "twitter:title", content: "AgendaAqui — Serviços e empresas perto de você" },
+      { name: "twitter:description", content: "Marketplace regional de serviços, empresas e profissionais verificados em Minas Gerais." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/e52b9926-5597-4c0f-9a6f-49f18c5e53a3/id-preview-13e2615c--cb63e6b9-0e02-4b0e-8dec-f2d8ca8793aa.lovable.app-1782067667314.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/e52b9926-5597-4c0f-9a6f-49f18c5e53a3/id-preview-13e2615c--cb63e6b9-0e02-4b0e-8dec-f2d8ca8793aa.lovable.app-1782067667314.png" },
     ],
     links: [
       {
