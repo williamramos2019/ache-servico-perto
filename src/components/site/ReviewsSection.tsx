@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Star } from "lucide-react";
@@ -17,10 +17,9 @@ export function ReviewsSection({ companyId }: { companyId: string }) {
   });
 
   const [userId, setUserId] = useState<string | null>(null);
-  useState(() => {
+  useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id ?? null));
-    return 0;
-  });
+  }, []);
 
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState("");
@@ -72,9 +71,7 @@ export function ReviewsSection({ companyId }: { companyId: string }) {
                     />
                   ))}
                 </div>
-                <span className="text-sm font-medium">
-                  {(r.profiles as { name?: string | null } | null)?.name ?? "Cliente"}
-                </span>
+                <span className="text-sm font-medium">Cliente</span>
                 <span className="text-xs text-muted-foreground">
                   · {new Date(r.created_at).toLocaleDateString("pt-BR")}
                 </span>
