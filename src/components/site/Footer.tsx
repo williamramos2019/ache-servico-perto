@@ -1,0 +1,53 @@
+import { Link } from "@tanstack/react-router";
+import { MapPin } from "lucide-react";
+
+export function Footer() {
+  return (
+    <footer className="mt-16 border-t border-border bg-surface">
+      <div className="container mx-auto grid gap-10 px-4 py-12 md:grid-cols-4">
+        <div>
+          <div className="flex items-center gap-2">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+              <MapPin className="h-5 w-5" />
+            </div>
+            <div className="font-display text-lg font-extrabold">AgendaAqui</div>
+          </div>
+          <p className="mt-3 text-sm text-muted-foreground">
+            Seu serviço certo, na hora certa. Encontre empresas e profissionais verificados perto de você.
+          </p>
+        </div>
+        <div>
+          <h4 className="text-sm font-semibold">Navegação</h4>
+          <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
+            <li><Link to="/" className="hover:text-foreground">Início</Link></li>
+            <li><Link to="/buscar" className="hover:text-foreground">Buscar serviços</Link></li>
+            <li><Link to="/sobre" className="hover:text-foreground">Sobre</Link></li>
+            <li><Link to="/contato" className="hover:text-foreground">Contato</Link></li>
+          </ul>
+        </div>
+        <div>
+          <h4 className="text-sm font-semibold">Cidades</h4>
+          <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
+            <li><Link to="/cidades/$slug" params={{ slug: "vespasiano" }} className="hover:text-foreground">Vespasiano</Link></li>
+            <li><Link to="/cidades/$slug" params={{ slug: "sao-jose-da-lapa" }} className="hover:text-foreground">São José da Lapa</Link></li>
+            <li><Link to="/cidades/$slug" params={{ slug: "lagoa-santa" }} className="hover:text-foreground">Lagoa Santa</Link></li>
+            <li><Link to="/cidades/$slug" params={{ slug: "belo-horizonte" }} className="hover:text-foreground">Belo Horizonte</Link></li>
+          </ul>
+        </div>
+        <div>
+          <h4 className="text-sm font-semibold">Para empresas</h4>
+          <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
+            <li><Link to="/auth" className="hover:text-foreground">Anunciar grátis</Link></li>
+            <li><Link to="/auth" className="hover:text-foreground">Entrar</Link></li>
+          </ul>
+        </div>
+      </div>
+      <div className="border-t border-border">
+        <div className="container mx-auto flex flex-col items-center justify-between gap-2 px-4 py-4 text-xs text-muted-foreground md:flex-row">
+          <p>© {new Date().getFullYear()} AgendaAqui. Todos os direitos reservados.</p>
+          <p>Minas Gerais, Brasil</p>
+        </div>
+      </div>
+    </footer>
+  );
+}
