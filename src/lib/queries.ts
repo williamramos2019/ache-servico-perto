@@ -88,13 +88,20 @@ export async function searchCompanies(params: {
   q?: string;
   city?: string;
   category?: string;
+  minRating?: number;
+  premiumOnly?: boolean;
+  sort?: "relevance" | "rating" | "name" | "newest";
 }): Promise<CompanyListItem[]> {
   let query = supabase
     .from("companies")
     .select(SELECT)
-    .eq("status", "active")
-    .order("featured", { ascending: false })
-    .order("name");
+    .eq("status", "active");
+
+  if (params.premiumOnly) query = query.eq("plan", "premium");
+
+  if (params.sort === "name") query = query.order("name");
+  else if (params.sort === "newest") query = query.order("created_at", { ascending: false });
+  else query = query.order("featured", { ascending: false }).order("name");
 
   if (params.q) {
     const safe = params.q.replace(/[%,]/g, " ").trim();
@@ -117,9 +124,17 @@ export async function searchCompanies(params: {
     }
   }
 
-  const { data, error } = await query.limit(60);
+  const { data, error } = await query.limit(120);
   if (error) throw error;
-  return (data as CompanyRow[] | null ?? []).map(mapCompany);
+  let results = (data as CompanyRow[] | null ?? []).map(mapCompany);
+
+  if (params.minRating && params.minRating > 0) {
+    results = results.filter((r) => r.rating >= params.minRating!);
+  }
+  if (params.sort === "rating") {
+    results = [...results].sort((a, b) => b.rating - a.rating || b.review_count - a.review_count);
+  }
+  return results;
 }
 
 export async function fetchCompanyBySlug(slug: string) {
