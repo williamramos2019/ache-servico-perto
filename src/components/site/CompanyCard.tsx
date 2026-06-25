@@ -43,6 +43,7 @@ export function CompanyCard({ company }: { company: CompanyCardData }) {
             <BadgeCheck className="mr-1 h-3 w-3" /> Premium
           </Badge>
         ) : null}
+        {company.id ? <FavoriteButton companyId={company.id} className="absolute bottom-3 right-3" /> : null}
       </div>
       <div className="flex flex-1 flex-col gap-2 p-4">
         <div className="flex items-start gap-3">
