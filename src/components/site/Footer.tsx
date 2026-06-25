@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { MapPin } from "lucide-react";
+import { NewsletterForm } from "@/components/site/NewsletterForm";
 
 export function Footer() {
   return (
@@ -21,25 +22,26 @@ export function Footer() {
           <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
             <li><Link to="/" className="hover:text-foreground">Início</Link></li>
             <li><Link to="/buscar" className="hover:text-foreground">Buscar serviços</Link></li>
+            <li><Link to="/blog" className="hover:text-foreground">Blog</Link></li>
+            <li><Link to="/favoritos" className="hover:text-foreground">Favoritos</Link></li>
             <li><Link to="/sobre" className="hover:text-foreground">Sobre</Link></li>
             <li><Link to="/contato" className="hover:text-foreground">Contato</Link></li>
           </ul>
         </div>
         <div>
-          <h4 className="text-sm font-semibold">Cidades</h4>
-          <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
-            <li><Link to="/cidades/$slug" params={{ slug: "vespasiano" }} className="hover:text-foreground">Vespasiano</Link></li>
-            <li><Link to="/cidades/$slug" params={{ slug: "sao-jose-da-lapa" }} className="hover:text-foreground">São José da Lapa</Link></li>
-            <li><Link to="/cidades/$slug" params={{ slug: "lagoa-santa" }} className="hover:text-foreground">Lagoa Santa</Link></li>
-            <li><Link to="/cidades/$slug" params={{ slug: "belo-horizonte" }} className="hover:text-foreground">Belo Horizonte</Link></li>
-          </ul>
-        </div>
-        <div>
           <h4 className="text-sm font-semibold">Para empresas</h4>
           <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
+            <li><Link to="/planos" className="hover:text-foreground">Planos e preços</Link></li>
             <li><Link to="/auth" className="hover:text-foreground">Anunciar grátis</Link></li>
             <li><Link to="/auth" className="hover:text-foreground">Entrar</Link></li>
           </ul>
+        </div>
+        <div>
+          <h4 className="text-sm font-semibold">Newsletter</h4>
+          <p className="mt-3 text-sm text-muted-foreground">
+            Receba dicas e novidades sobre serviços em MG.
+          </p>
+          <div className="mt-3"><NewsletterForm compact /></div>
         </div>
       </div>
       <div className="border-t border-border">
