@@ -1,8 +1,10 @@
 import { Link } from "@tanstack/react-router";
 import { MapPin, Star, BadgeCheck } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { FavoriteButton } from "@/components/site/FavoriteButton";
 
 export type CompanyCardData = {
+  id?: string;
   slug: string;
   name: string;
   tagline?: string | null;
