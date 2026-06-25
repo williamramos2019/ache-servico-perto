@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { ReviewsSection } from "@/components/site/ReviewsSection";
 import { QuoteDialog } from "@/components/site/QuoteDialog";
 import { fetchCompanyBySlug, fetchCompanyReviews } from "@/lib/queries";
+import { FavoriteButton } from "@/components/site/FavoriteButton";
 import { telUrl, waUrl } from "@/lib/format";
 
 export const Route = createFileRoute("/empresa/$slug")({
@@ -157,6 +158,9 @@ function CompanyPage() {
               >
                 <Share2 className="mr-2 h-4 w-4" /> Compartilhar
               </Button>
+              <div className="flex justify-center pt-1">
+                <FavoriteButton companyId={company.id} className="relative" />
+              </div>
             </div>
           </div>
         </div>

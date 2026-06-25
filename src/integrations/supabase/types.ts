@@ -14,6 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
+      blog_posts: {
+        Row: {
+          author_name: string | null
+          content: string
+          cover_url: string | null
+          created_at: string
+          excerpt: string | null
+          id: string
+          published: boolean
+          published_at: string
+          slug: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          author_name?: string | null
+          content: string
+          cover_url?: string | null
+          created_at?: string
+          excerpt?: string | null
+          id?: string
+          published?: boolean
+          published_at?: string
+          slug: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          author_name?: string | null
+          content?: string
+          cover_url?: string | null
+          created_at?: string
+          excerpt?: string | null
+          id?: string
+          published?: boolean
+          published_at?: string
+          slug?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       categories: {
         Row: {
           created_at: string
@@ -234,6 +276,32 @@ export type Database = {
           },
         ]
       }
+      favorites: {
+        Row: {
+          company_id: string
+          created_at: string
+          user_id: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          user_id: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "favorites_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       leads: {
         Row: {
           company_id: string
@@ -274,6 +342,69 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      leads_planos: {
+        Row: {
+          city: string | null
+          company_name: string
+          contact_name: string
+          created_at: string
+          email: string
+          id: string
+          message: string | null
+          phone: string | null
+          plan: string
+          status: string
+        }
+        Insert: {
+          city?: string | null
+          company_name: string
+          contact_name: string
+          created_at?: string
+          email: string
+          id?: string
+          message?: string | null
+          phone?: string | null
+          plan: string
+          status?: string
+        }
+        Update: {
+          city?: string | null
+          company_name?: string
+          contact_name?: string
+          created_at?: string
+          email?: string
+          id?: string
+          message?: string | null
+          phone?: string | null
+          plan?: string
+          status?: string
+        }
+        Relationships: []
+      }
+      newsletter_subscribers: {
+        Row: {
+          city_slug: string | null
+          created_at: string
+          email: string
+          id: string
+          name: string | null
+        }
+        Insert: {
+          city_slug?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          name?: string | null
+        }
+        Update: {
+          city_slug?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string | null
+        }
+        Relationships: []
       }
       profiles: {
         Row: {

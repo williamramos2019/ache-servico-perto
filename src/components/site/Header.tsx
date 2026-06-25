@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { MapPin, Search } from "lucide-react";
+import { Heart, MapPin, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function Header() {
@@ -21,32 +21,27 @@ export function Header() {
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex">
-          <Link to="/" className="rounded-md px-3 py-2 text-sm font-medium text-foreground/80 hover:text-foreground">
-            Início
-          </Link>
-          <Link to="/buscar" className="rounded-md px-3 py-2 text-sm font-medium text-foreground/80 hover:text-foreground">
-            Buscar
-          </Link>
-          <Link to="/sobre" className="rounded-md px-3 py-2 text-sm font-medium text-foreground/80 hover:text-foreground">
-            Sobre
-          </Link>
-          <Link to="/contato" className="rounded-md px-3 py-2 text-sm font-medium text-foreground/80 hover:text-foreground">
-            Contato
-          </Link>
+          <Link to="/" className="rounded-md px-3 py-2 text-sm font-medium text-foreground/80 hover:text-foreground">Início</Link>
+          <Link to="/buscar" className="rounded-md px-3 py-2 text-sm font-medium text-foreground/80 hover:text-foreground">Buscar</Link>
+          <Link to="/blog" className="rounded-md px-3 py-2 text-sm font-medium text-foreground/80 hover:text-foreground">Blog</Link>
+          <Link to="/planos" className="rounded-md px-3 py-2 text-sm font-medium text-foreground/80 hover:text-foreground">Planos</Link>
+          <Link to="/sobre" className="rounded-md px-3 py-2 text-sm font-medium text-foreground/80 hover:text-foreground">Sobre</Link>
+          <Link to="/contato" className="rounded-md px-3 py-2 text-sm font-medium text-foreground/80 hover:text-foreground">Contato</Link>
         </nav>
 
         <div className="flex items-center gap-2">
+          <Link to="/favoritos" aria-label="Favoritos">
+            <Button variant="ghost" size="icon"><Heart className="h-5 w-5" /></Button>
+          </Link>
           <Link to="/buscar" className="md:hidden">
-            <Button variant="ghost" size="icon" aria-label="Buscar">
-              <Search className="h-5 w-5" />
-            </Button>
+            <Button variant="ghost" size="icon" aria-label="Buscar"><Search className="h-5 w-5" /></Button>
           </Link>
           <Link to="/auth" className="hidden md:inline-flex">
             <Button variant="ghost" size="sm">Entrar</Button>
           </Link>
-          <Link to="/auth">
+          <Link to="/planos">
             <Button size="sm" className="bg-accent text-accent-foreground hover:bg-accent/90">
-              Anunciar grátis
+              Anunciar
             </Button>
           </Link>
         </div>
