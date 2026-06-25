@@ -113,7 +113,8 @@ function Home() {
               <CompanyCard
                 key={co.id}
                 company={{
-                  slug: co.slug,
+                      id: co.id,
+                      slug: co.slug,
                   name: co.name,
                   tagline: co.tagline,
                   banner_url: co.banner_url,

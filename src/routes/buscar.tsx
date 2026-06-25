@@ -102,6 +102,7 @@ function BuscarPage() {
                   <CompanyCard
                     key={co.id}
                     company={{
+                      id: co.id,
                       slug: co.slug,
                       name: co.name,
                       tagline: co.tagline,
