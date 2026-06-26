@@ -63,6 +63,26 @@ function BuscarPage() {
           <div className="mt-5">
             <SearchBar defaultQ={q ?? ""} defaultCity={city ?? "todas"} />
           </div>
+          <div className="mt-5 flex flex-wrap gap-2">
+            {([
+              { v: "all", label: "Todas" },
+              { v: "featured", label: "⭐ Destaques" },
+              { v: "premium", label: "Premium" },
+              { v: "free", label: "Grátis" },
+            ] as const).map((t) => (
+              <button
+                key={t.v}
+                onClick={() => setParam("plan", t.v === "all" ? undefined : t.v)}
+                className={`rounded-full px-4 py-1.5 text-sm font-medium transition ${
+                  (plan ?? "all") === t.v
+                    ? "bg-primary text-primary-foreground shadow"
+                    : "bg-background border border-border text-foreground hover:bg-muted"
+                }`}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
         </div>
       </section>
 
