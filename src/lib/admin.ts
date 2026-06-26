@@ -43,7 +43,8 @@ export async function adminListCompanies(opts: { q?: string; plan?: string; limi
 }
 
 export async function adminUpdateCompany(id: string, patch: Record<string, unknown>) {
-  const { error } = await supabase.from("companies").update(patch).eq("id", id);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { error } = await supabase.from("companies").update(patch as any).eq("id", id);
   if (error) throw error;
 }
 
