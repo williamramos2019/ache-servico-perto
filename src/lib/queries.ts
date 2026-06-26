@@ -140,7 +140,7 @@ export async function searchCompanies(params: {
 export async function fetchCompanyBySlug(slug: string) {
   const { data, error } = await supabase
     .from("companies")
-    .select(`*, cities ( name, slug, state ), company_categories ( categories ( name, slug, icon ) ), company_media ( id, url, type, caption, sort )`)
+    .select(`*, cities ( name, slug, state ), company_categories ( categories ( id, name, slug, icon ) ), company_media ( id, url, type, caption, sort )`)
     .eq("slug", slug)
     .maybeSingle();
   if (error) throw error;
