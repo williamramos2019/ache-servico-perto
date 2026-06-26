@@ -129,6 +129,7 @@ export type Database = {
           hours: Json | null
           id: string
           instagram: string | null
+          is_verified: boolean
           lat: number | null
           lng: number | null
           logo_url: string | null
@@ -136,10 +137,13 @@ export type Database = {
           owner_id: string | null
           phone: string | null
           plan: string
+          plan_expires_at: string | null
           slug: string
           status: string
           tagline: string | null
           updated_at: string
+          video_url: string | null
+          views_count: number
           website: string | null
           whatsapp: string | null
           zip: string | null
@@ -156,6 +160,7 @@ export type Database = {
           hours?: Json | null
           id?: string
           instagram?: string | null
+          is_verified?: boolean
           lat?: number | null
           lng?: number | null
           logo_url?: string | null
@@ -163,10 +168,13 @@ export type Database = {
           owner_id?: string | null
           phone?: string | null
           plan?: string
+          plan_expires_at?: string | null
           slug: string
           status?: string
           tagline?: string | null
           updated_at?: string
+          video_url?: string | null
+          views_count?: number
           website?: string | null
           whatsapp?: string | null
           zip?: string | null
@@ -183,6 +191,7 @@ export type Database = {
           hours?: Json | null
           id?: string
           instagram?: string | null
+          is_verified?: boolean
           lat?: number | null
           lng?: number | null
           logo_url?: string | null
@@ -190,10 +199,13 @@ export type Database = {
           owner_id?: string | null
           phone?: string | null
           plan?: string
+          plan_expires_at?: string | null
           slug?: string
           status?: string
           tagline?: string | null
           updated_at?: string
+          video_url?: string | null
+          views_count?: number
           website?: string | null
           whatsapp?: string | null
           zip?: string | null
@@ -269,6 +281,35 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "company_media_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      company_views: {
+        Row: {
+          company_id: string
+          id: number
+          ip_hash: string | null
+          viewed_at: string
+        }
+        Insert: {
+          company_id: string
+          id?: number
+          ip_hash?: string | null
+          viewed_at?: string
+        }
+        Update: {
+          company_id?: string
+          id?: number
+          ip_hash?: string | null
+          viewed_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_views_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies"
@@ -406,6 +447,39 @@ export type Database = {
         }
         Relationships: []
       }
+      plans_config: {
+        Row: {
+          duration_days: number
+          features: Json
+          max_photos: number
+          name: string
+          price_cents: number
+          slug: string
+          sort: number
+          updated_at: string
+        }
+        Insert: {
+          duration_days?: number
+          features?: Json
+          max_photos?: number
+          name: string
+          price_cents?: number
+          slug: string
+          sort?: number
+          updated_at?: string
+        }
+        Update: {
+          duration_days?: number
+          features?: Json
+          max_photos?: number
+          name?: string
+          price_cents?: number
+          slug?: string
+          sort?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -464,6 +538,27 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      system_settings: {
+        Row: {
+          is_public: boolean
+          key: string
+          updated_at: string
+          value: Json
+        }
+        Insert: {
+          is_public?: boolean
+          key: string
+          updated_at?: string
+          value?: Json
+        }
+        Update: {
+          is_public?: boolean
+          key?: string
+          updated_at?: string
+          value?: Json
+        }
+        Relationships: []
       }
       user_roles: {
         Row: {

@@ -78,7 +78,8 @@ export async function fetchFeaturedCompanies(limit = 6): Promise<CompanyListItem
     .from("companies")
     .select(SELECT)
     .eq("status", "active")
-    .eq("featured", true)
+    .in("plan", ["premium", "featured"])
+    .order("featured", { ascending: false })
     .limit(limit);
   if (error) throw error;
   return (data as CompanyRow[] | null ?? []).map(mapCompany);
@@ -90,6 +91,7 @@ export async function searchCompanies(params: {
   category?: string;
   minRating?: number;
   premiumOnly?: boolean;
+  plan?: "free" | "premium" | "featured" | "all";
   sort?: "relevance" | "rating" | "name" | "newest";
 }): Promise<CompanyListItem[]> {
   let query = supabase
@@ -97,11 +99,11 @@ export async function searchCompanies(params: {
     .select(SELECT)
     .eq("status", "active");
 
-  if (params.premiumOnly) query = query.eq("plan", "premium");
+  if (params.premiumOnly) query = query.in("plan", ["premium", "featured"]);
+  if (params.plan && params.plan !== "all") query = query.eq("plan", params.plan);
 
   if (params.sort === "name") query = query.order("name");
   else if (params.sort === "newest") query = query.order("created_at", { ascending: false });
-  else query = query.order("featured", { ascending: false }).order("name");
 
   if (params.q) {
     const safe = params.q.replace(/[%,]/g, " ").trim();
@@ -124,14 +126,26 @@ export async function searchCompanies(params: {
     }
   }
 
-  const { data, error } = await query.limit(120);
+  const { data, error } = await query.limit(200);
   if (error) throw error;
   let results = (data as CompanyRow[] | null ?? []).map(mapCompany);
 
   if (params.minRating && params.minRating > 0) {
     results = results.filter((r) => r.rating >= params.minRating!);
   }
-  if (params.sort === "rating") {
+  // Default: rank by plan first (premium/featured before free), then rating
+  if (!params.sort || params.sort === "relevance") {
+    const planRank = (p: string | null) => (p === "premium" || p === "featured" ? 0 : 2);
+    results = [...results].sort((a, b) => {
+      const pr = planRank(a.plan) - planRank(b.plan);
+      if (pr !== 0) return pr;
+      const fa = a.featured ? 0 : 1;
+      const fb = b.featured ? 0 : 1;
+      if (fa !== fb) return fa - fb;
+      if (b.rating !== a.rating) return b.rating - a.rating;
+      return b.review_count - a.review_count;
+    });
+  } else if (params.sort === "rating") {
     results = [...results].sort((a, b) => b.rating - a.rating || b.review_count - a.review_count);
   }
   return results;

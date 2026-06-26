@@ -1,74 +1,98 @@
-# AgendaAqui — Entrega 1 (Núcleo Público)
+# AgendaAqui — Planos, Ranking e Painel Admin
 
-Marketplace regional de serviços/empresas, inspirado no visual do template U-Listing, reconstruído como app moderno em React + Lovable Cloud. Esta entrega cobre o que o usuário final vê e usa para descobrir empresas. Áreas da empresa, planos, créditos, pagamentos, blog, chat IA Lara, agendamento e admin ficam para próximas entregas.
+Você já tem a base (1.743 empresas, categorias, cidades, busca, página de empresa rica, favoritos, blog, newsletter, planos como página comercial). Esta entrega adiciona a **lógica de planos como motor do sistema** + **painel admin completo**.
 
-## Stack
-- Frontend: TanStack Start (React + TS), Tailwind, shadcn/ui
-- Backend: Lovable Cloud (Postgres + Auth + Storage)
-- Mapa: Google Maps (via conector Lovable, configurável depois — fallback estático no v1)
-- Domínio agendaaqui.online: apontado depois via Publish
+---
 
-> Observação: Laravel/PHP/MySQL/FilamentPHP/HostGator não são suportados no Lovable. O equivalente é Lovable Cloud (Postgres) e o painel admin será web em React (entrega futura).
+## 1. Banco de dados (migration)
 
-## Identidade visual
-- Marca: AgendaAqui — "Seu serviço certo, na hora certa."
-- Tokens semânticos (index.css):
-  - `--primary` #0057FF / `--primary-dark` #0037A6
-  - `--accent` #FF6B00
-  - `--surface` #F5F7FA / `--background` #FFFFFF
-- Tipografia: Inter (corpo) + Plus Jakarta Sans (display) via @fontsource
-- Componentes inspirados no U-Listing: hero com busca dupla, cards de categoria com ícone, cards de listing com foto/rating/badge, mapa lateral, breadcrumb.
+Reaproveita a tabela `companies` existente (já tem `plan`, `featured`, `status`). Acrescenta:
 
-## Páginas (rotas TanStack)
-1. `/` Home
-   - Hero com busca: "O que procura?" + "Cidade" (4 cidades) + botão Buscar
-   - Grade de 12 categorias (ícone + nome)
-   - Carrossel "Empresas em destaque"
-   - Bloco "Como funciona" e cidades atendidas
-2. `/buscar` Resultados
-   - Filtros: categoria, cidade, distância, avaliação, abertos agora
-   - Lista de cards + mapa lateral (desktop) / toggle (mobile)
-   - Paginação
-3. `/categoria/$slug` Listagem por categoria
-4. `/empresa/$slug` Perfil
-   - Banner + logo, descrição, galeria, horários, mapa, avaliações
-   - Botões WhatsApp, Ligar, Compartilhar (Solicitar Orçamento abre modal simples gravando lead)
-5. `/cidades/$slug` Página da cidade (SEO)
-6. `/sobre`, `/contato` (estáticas leves)
-7. Auth: `/auth` (login/cadastro email+senha + Google) — necessário só para deixar avaliação
+- `companies.is_verified boolean default false`
+- `companies.views_count int default 0`
+- `companies.plan_expires_at timestamptz null`
+- `companies.banner_url` (já existe) — usado só por premium
+- `companies.video_url text null` (premium)
+- Constraint: `plan in ('free','premium','featured')`
 
-## Banco de dados (Lovable Cloud)
-Tabelas v1 com RLS:
-- `cities` (id, name, slug, state)
-- `categories` (id, name, slug, icon, description)
-- `companies` (id, slug, name, description, phone, whatsapp, address, city_id, zip, lat, lng, website, instagram, facebook, hours jsonb, logo_url, banner_url, plan text default 'free', featured bool, status, created_at)
-- `company_categories` (company_id, category_id) — N:N
-- `company_media` (id, company_id, type [photo|video], url, sort)
-- `reviews` (id, company_id, user_id, rating 1-5, comment, created_at)
-- `leads` (id, company_id, name, phone, message, created_at) — solicitar orçamento
-- `profiles` (id=auth.uid, name, avatar_url)
-- `user_roles` + enum `app_role` + função `has_role` (preparar admin)
+Novas tabelas:
 
-Políticas:
-- SELECT público (anon) em cities, categories, companies, company_media, reviews
-- INSERT reviews/leads apenas authenticated; user só edita o próprio review
-- Roles para futuro admin
+- `system_settings` (key/value JSON) — preço premium, duração, limite fotos free, raio busca, etc. RLS: leitura pública das chaves marcadas como públicas; escrita só admin.
+- `company_views` (company_id, viewed_at, ip_hash) — para métricas do dashboard.
+- `plans_config` (slug, name, price_cents, duration_days, max_photos, features jsonb) — fonte de verdade dos planos.
 
-## Seed
-~25 empresas fictícias distribuídas entre Vespasiano, São José da Lapa, Lagoa Santa e BH, cobrindo as 12 categorias, com lat/lng aproximadas, horários e 2–4 reviews cada.
+GRANTs + RLS conforme padrão (admin via `has_role`).
 
-## SEO
-- `head()` por rota com title/description/OG/twitter
-- JSON-LD `LocalBusiness` nas páginas de perfil
-- Sitemap dinâmico + robots.txt
-- URLs amigáveis por slug
+## 2. Lógica de ranking (queries.ts)
 
-## Fora do escopo desta entrega
-Área da empresa (dashboard), planos pagos, sistema de créditos, gateways (PIX/MP/Asaas/PagSeguro), blog, chat IA Lara, agendamento com calendário, PWA/push, painel admin completo, notificações por email/WhatsApp. Esquema deixa ganchos (campo `plan`, `featured`, tabela `leads`) para encaixar depois.
+Toda listagem (home, `/buscar`, `/categoria/$slug`, `/cidades/$slug`, "perto de você") ordena por:
 
-## Próximos passos sugeridos (entregas futuras)
-2. Área da empresa + cadastro/edição de perfil
-3. Chat IA Lara (Lovable AI) + agendamento
-4. Planos + créditos + pagamentos
-5. Blog + painel admin web
-6. PWA + notificações
+```
+ORDER BY
+  CASE plan WHEN 'premium' THEN 0 WHEN 'featured' THEN 1 ELSE 2 END,
+  rating DESC NULLS LAST,
+  review_count DESC
+```
+
+Filtros novos na busca: `?plan=free|premium`, abas **Grátis** / **Destaques**.
+
+## 3. UI — diferenciação visual Grátis vs Premium
+
+- **CompanyCard**: variante premium maior, borda gradiente, badge ⭐ Destaque, selo "Patrocinado"; free com card padrão e badge cinza "Grátis" (opcional).
+- **Página da empresa**:
+  - Free: galeria limitada a 3 fotos, sem banner, sem vídeo, CTAs padrão.
+  - Premium: banner topo, galeria ilimitada, vídeo embed, botão WhatsApp grande, CTA fixo no mobile, botão "Solicitar Orçamento" destacado.
+- Helper `getPlanLimits(plan)` centraliza limites (fotos, banner, vídeo, badge).
+
+## 4. Mapa (Google Maps)
+
+Novo componente `CompaniesMap` na `/buscar` e home:
+- Ícones diferentes: premium = pin laranja maior, free = pin cinza pequeno.
+- Filtro proximidade (geolocation do navegador).
+
+## 5. Painel Admin (`/admin/*`, dentro de `_authenticated/`)
+
+Gate: `_authenticated` + verifica `has_role(uid, 'admin')`; se não for admin → redirect.
+
+Rotas:
+- `/admin` — Dashboard: total empresas, free, premium, novos (7d), visualizações totais, gráfico simples (recharts já instalado).
+- `/admin/empresas` — tabela com busca/filtro, ações: editar, excluir, aprovar, mudar plano, toggle featured/verified.
+- `/admin/empresas/nova` e `/admin/empresas/$id` — formulário CRUD completo (com upload de fotos/banner via Storage bucket `company-media`).
+- `/admin/planos` — editar `plans_config` (preço, duração, max fotos, features).
+- `/admin/configuracoes` — `system_settings` (raio busca, categorias ativas, cidades ativas, limites upload, toggle mapa).
+- `/admin/leads` — visualizar leads e leads_planos.
+
+Server functions com `requireSupabaseAuth` + checagem `has_role('admin')` no handler para todas as mutações.
+
+## 6. Storage
+
+Bucket `company-media` (público) para fotos/banners/vídeos. Policies: admin escreve qualquer; owner escreve só sua pasta.
+
+## 7. Mobile-first
+
+Revisar header/cards/CTAs com foco em toque grande, CTA fixo bottom no mobile na página da empresa premium.
+
+## 8. Seed
+
+- Promover ~30 empresas reais existentes para `plan='premium'` e ~15 para `featured` (top rated) só pra demonstrar ranking funcionando.
+- Criar 1 conta admin (instruções no fim: usuário se cadastra em `/auth`, rodamos SQL pra atribuir role admin ao email informado).
+
+---
+
+## Entregáveis nesta rodada
+
+1. Migration: colunas novas, `system_settings`, `company_views`, `plans_config`, storage bucket.
+2. `src/lib/plans.ts` (limites por plano) + ranking nas queries.
+3. Visual: CompanyCard premium + página empresa diferenciada por plano + filtros/abas em `/buscar`.
+4. `CompaniesMap` com ícones diferenciados.
+5. Painel admin completo (dashboard, CRUD empresas, planos, configurações, leads).
+6. Seed promovendo empresas existentes a premium/featured.
+
+## Fora do escopo (ficam para depois)
+
+- Cobrança real (Stripe/Paddle) — hoje plano muda manualmente pelo admin.
+- Sistema de impulsionamento pago por busca.
+- App mobile nativo.
+- Auto-expiração de planos (a coluna `plan_expires_at` fica pronta, mas o cron job fica para próxima).
+
+Confirma que posso seguir? Se quiser, me diz **qual email** vai virar admin (te crio com role direto) — senão você cria conta em `/auth` e me passa o email depois.

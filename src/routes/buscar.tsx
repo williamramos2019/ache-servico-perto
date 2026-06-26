@@ -18,6 +18,7 @@ const searchSchema = z.object({
   sort: z.enum(["relevance", "rating", "name", "newest"]).optional(),
   minRating: z.coerce.number().min(0).max(5).optional(),
   premium: z.coerce.boolean().optional(),
+  plan: z.enum(["all", "free", "premium", "featured"]).optional(),
 });
 
 export const Route = createFileRoute("/buscar")({
@@ -35,14 +36,14 @@ export const Route = createFileRoute("/buscar")({
 
 function BuscarPage() {
   const search = Route.useSearch();
-  const { q, city, category, sort = "relevance", minRating = 0, premium = false } = search;
+  const { q, city, category, sort = "relevance", minRating = 0, premium = false, plan = "all" } = search;
   const navigate = Route.useNavigate();
 
   const cats = useQuery({ queryKey: ["categories"], queryFn: fetchCategories });
   const cities = useQuery({ queryKey: ["cities"], queryFn: fetchCities });
   const results = useQuery({
-    queryKey: ["search", q ?? "", city ?? "", category ?? "", sort, minRating, premium],
-    queryFn: () => searchCompanies({ q, city, category, sort, minRating, premiumOnly: premium }),
+    queryKey: ["search", q ?? "", city ?? "", category ?? "", sort, minRating, premium, plan],
+    queryFn: () => searchCompanies({ q, city, category, sort, minRating, premiumOnly: premium, plan }),
   });
 
   function setParam<K extends keyof typeof search>(k: K, v: typeof search[K]) {
@@ -61,6 +62,26 @@ function BuscarPage() {
           </p>
           <div className="mt-5">
             <SearchBar defaultQ={q ?? ""} defaultCity={city ?? "todas"} />
+          </div>
+          <div className="mt-5 flex flex-wrap gap-2">
+            {([
+              { v: "all", label: "Todas" },
+              { v: "featured", label: "⭐ Destaques" },
+              { v: "premium", label: "Premium" },
+              { v: "free", label: "Grátis" },
+            ] as const).map((t) => (
+              <button
+                key={t.v}
+                onClick={() => setParam("plan", t.v === "all" ? undefined : t.v)}
+                className={`rounded-full px-4 py-1.5 text-sm font-medium transition ${
+                  (plan ?? "all") === t.v
+                    ? "bg-primary text-primary-foreground shadow"
+                    : "bg-background border border-border text-foreground hover:bg-muted"
+                }`}
+              >
+                {t.label}
+              </button>
+            ))}
           </div>
         </div>
       </section>
