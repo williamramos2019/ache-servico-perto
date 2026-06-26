@@ -1,10 +1,13 @@
 import { Link } from "@tanstack/react-router";
-import { Heart, MapPin, Search } from "lucide-react";
+import { Heart, MapPin, Search, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useAdmin } from "@/hooks/use-admin";
 
 export function Header() {
+  const { isAdmin } = useAdmin();
   return (
     <header className="sticky top-0 z-40 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+
       <div className="container mx-auto flex h-16 items-center justify-between gap-4 px-4">
         <Link to="/" className="flex items-center gap-2">
           <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
@@ -30,6 +33,11 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-2">
+          {isAdmin ? (
+            <Link to="/admin" className="hidden md:inline-flex" aria-label="Admin">
+              <Button variant="ghost" size="sm" className="gap-1"><ShieldCheck className="h-4 w-4" /> Admin</Button>
+            </Link>
+          ) : null}
           <Link to="/favoritos" aria-label="Favoritos">
             <Button variant="ghost" size="icon"><Heart className="h-5 w-5" /></Button>
           </Link>
