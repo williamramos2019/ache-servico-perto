@@ -18,6 +18,7 @@ const searchSchema = z.object({
   sort: z.enum(["relevance", "rating", "name", "newest"]).optional(),
   minRating: z.coerce.number().min(0).max(5).optional(),
   premium: z.coerce.boolean().optional(),
+  plan: z.enum(["all", "free", "premium", "featured"]).optional(),
 });
 
 export const Route = createFileRoute("/buscar")({
@@ -35,14 +36,14 @@ export const Route = createFileRoute("/buscar")({
 
 function BuscarPage() {
   const search = Route.useSearch();
-  const { q, city, category, sort = "relevance", minRating = 0, premium = false } = search;
+  const { q, city, category, sort = "relevance", minRating = 0, premium = false, plan = "all" } = search;
   const navigate = Route.useNavigate();
 
   const cats = useQuery({ queryKey: ["categories"], queryFn: fetchCategories });
   const cities = useQuery({ queryKey: ["cities"], queryFn: fetchCities });
   const results = useQuery({
-    queryKey: ["search", q ?? "", city ?? "", category ?? "", sort, minRating, premium],
-    queryFn: () => searchCompanies({ q, city, category, sort, minRating, premiumOnly: premium }),
+    queryKey: ["search", q ?? "", city ?? "", category ?? "", sort, minRating, premium, plan],
+    queryFn: () => searchCompanies({ q, city, category, sort, minRating, premiumOnly: premium, plan }),
   });
 
   function setParam<K extends keyof typeof search>(k: K, v: typeof search[K]) {
