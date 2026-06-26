@@ -8,13 +8,13 @@ export const Route = createFileRoute("/admin")({
   component: AdminLayout,
 });
 
-const NAV = [
+const NAV: { to: "/admin" | "/admin/empresas" | "/admin/planos" | "/admin/leads" | "/admin/configuracoes"; label: string; icon: typeof LayoutDashboard; exact?: boolean }[] = [
   { to: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { to: "/admin/empresas", label: "Empresas", icon: Building2 },
   { to: "/admin/planos", label: "Planos", icon: BadgePercent },
   { to: "/admin/leads", label: "Leads", icon: Mail },
   { to: "/admin/configuracoes", label: "Configurações", icon: Settings },
-] as const;
+];
 
 function AdminLayout() {
   const { loading, isAdmin } = useAdmin();
