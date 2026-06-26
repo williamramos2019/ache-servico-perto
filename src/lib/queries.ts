@@ -156,3 +156,54 @@ export async function fetchCompanyReviews(companyId: string) {
   if (error) throw error;
   return data ?? [];
 }
+
+export async function fetchSimilarCompanies(opts: {
+  excludeId: string;
+  categoryIds: string[];
+  cityId?: string | null;
+  limit?: number;
+}): Promise<CompanyListItem[]> {
+  const limit = opts.limit ?? 6;
+  let companyIds: string[] = [];
+  if (opts.categoryIds.length > 0) {
+    const { data: links } = await supabase
+      .from("company_categories")
+      .select("company_id")
+      .in("category_id", opts.categoryIds);
+    companyIds = [...new Set((links ?? []).map((l) => l.company_id))].filter((id) => id !== opts.excludeId);
+  }
+  if (companyIds.length === 0 && opts.cityId) {
+    const { data } = await supabase
+      .from("companies")
+      .select(SELECT)
+      .eq("status", "active")
+      .eq("city_id", opts.cityId)
+      .neq("id", opts.excludeId)
+      .limit(limit);
+    return (data as CompanyRow[] | null ?? []).map(mapCompany);
+  }
+  if (companyIds.length === 0) return [];
+  let q = supabase
+    .from("companies")
+    .select(SELECT)
+    .eq("status", "active")
+    .in("id", companyIds.slice(0, 60))
+    .order("featured", { ascending: false })
+    .limit(limit);
+  if (opts.cityId) q = q.eq("city_id", opts.cityId);
+  const { data, error } = await q;
+  if (error) throw error;
+  let results = (data as CompanyRow[] | null ?? []).map(mapCompany);
+  if (results.length < limit) {
+    const have = new Set(results.map((r) => r.id));
+    const fallbackIds = companyIds.filter((id) => !have.has(id)).slice(0, limit - results.length);
+    if (fallbackIds.length) {
+      const { data: extra } = await supabase
+        .from("companies")
+        .select(SELECT)
+        .in("id", fallbackIds);
+      results = results.concat((extra as CompanyRow[] | null ?? []).map(mapCompany));
+    }
+  }
+  return results.slice(0, limit);
+}
