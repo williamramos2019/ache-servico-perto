@@ -1,7 +1,8 @@
 import { Link } from "@tanstack/react-router";
-import { MapPin, Star, BadgeCheck } from "lucide-react";
+import { MapPin, Star, BadgeCheck, Crown } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { FavoriteButton } from "@/components/site/FavoriteButton";
+import { getPlanLimits } from "@/lib/plans";
 
 export type CompanyCardData = {
   id?: string;
@@ -15,16 +16,32 @@ export type CompanyCardData = {
   city_name?: string | null;
   rating?: number;
   review_count?: number;
+  is_verified?: boolean | null;
 };
 
 export function CompanyCard({ company }: { company: CompanyCardData }) {
+  const limits = getPlanLimits(company.plan);
+  const isPremium = limits.cardVariant !== "default";
+  const isFeatured = limits.cardVariant === "featured";
+
   return (
     <Link
       to="/empresa/$slug"
       params={{ slug: company.slug }}
-      className="group flex flex-col overflow-hidden rounded-xl border border-border bg-card transition-shadow hover:shadow-lg"
+      className={`group relative flex flex-col overflow-hidden rounded-xl border bg-card transition-all hover:shadow-lg ${
+        isFeatured
+          ? "border-accent/60 ring-2 ring-accent/30 hover:ring-accent/50"
+          : isPremium
+          ? "border-primary/40 ring-1 ring-primary/20"
+          : "border-border"
+      }`}
     >
-      <div className="relative aspect-[16/10] overflow-hidden bg-muted">
+      {isPremium ? (
+        <div className="absolute right-0 top-0 z-10 rounded-bl-lg bg-gradient-to-r from-accent to-orange-500 px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-white shadow">
+          Patrocinado
+        </div>
+      ) : null}
+      <div className={`relative overflow-hidden bg-muted ${isFeatured ? "aspect-[16/9]" : "aspect-[16/10]"}`}>
         {company.banner_url ? (
           <img
             src={company.banner_url}
@@ -33,16 +50,19 @@ export function CompanyCard({ company }: { company: CompanyCardData }) {
             loading="lazy"
           />
         ) : null}
-        {company.featured ? (
+        {isFeatured ? (
           <Badge className="absolute left-3 top-3 bg-accent text-accent-foreground hover:bg-accent">
-            Destaque
+            <Crown className="mr-1 h-3 w-3" /> Destaque
           </Badge>
-        ) : null}
-        {company.plan === "premium" ? (
-          <Badge className="absolute right-3 top-3 bg-primary text-primary-foreground hover:bg-primary">
+        ) : isPremium ? (
+          <Badge className="absolute left-3 top-3 bg-primary text-primary-foreground hover:bg-primary">
             <BadgeCheck className="mr-1 h-3 w-3" /> Premium
           </Badge>
-        ) : null}
+        ) : (
+          <Badge variant="outline" className="absolute left-3 top-3 bg-background/80 backdrop-blur text-muted-foreground">
+            Grátis
+          </Badge>
+        )}
         {company.id ? <FavoriteButton companyId={company.id} className="absolute bottom-3 right-3" /> : null}
       </div>
       <div className="flex flex-1 flex-col gap-2 p-4">
@@ -58,8 +78,11 @@ export function CompanyCard({ company }: { company: CompanyCardData }) {
             <div className="h-12 w-12 shrink-0 rounded-lg bg-primary/10" />
           )}
           <div className="min-w-0 flex-1">
-            <h3 className="truncate font-display text-base font-semibold text-foreground">
+            <h3 className={`truncate font-display font-semibold text-foreground ${isFeatured ? "text-lg" : "text-base"}`}>
               {company.name}
+              {company.is_verified ? (
+                <BadgeCheck className="ml-1 inline h-4 w-4 text-primary" aria-label="Verificada" />
+              ) : null}
             </h3>
             {company.tagline ? (
               <p className="line-clamp-1 text-sm text-muted-foreground">{company.tagline}</p>
