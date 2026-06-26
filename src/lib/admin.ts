@@ -60,7 +60,8 @@ export async function fetchPlansConfig() {
 }
 
 export async function updatePlanConfig(slug: string, patch: Record<string, unknown>) {
-  const { error } = await supabase.from("plans_config").update(patch).eq("slug", slug);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { error } = await supabase.from("plans_config").update(patch as any).eq("slug", slug);
   if (error) throw error;
 }
 
@@ -71,7 +72,8 @@ export async function fetchSystemSettings() {
 }
 
 export async function updateSetting(key: string, value: unknown) {
-  const { error } = await supabase.from("system_settings").update({ value, updated_at: new Date().toISOString() }).eq("key", key);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { error } = await supabase.from("system_settings").update({ value: value as any, updated_at: new Date().toISOString() }).eq("key", key);
   if (error) throw error;
 }
 
