@@ -138,6 +138,8 @@ export type Database = {
           phone: string | null
           plan: string
           plan_expires_at: string | null
+          rating: number
+          review_count: number
           slug: string
           status: string
           tagline: string | null
@@ -169,6 +171,8 @@ export type Database = {
           phone?: string | null
           plan?: string
           plan_expires_at?: string | null
+          rating?: number
+          review_count?: number
           slug: string
           status?: string
           tagline?: string | null
@@ -200,6 +204,8 @@ export type Database = {
           phone?: string | null
           plan?: string
           plan_expires_at?: string | null
+          rating?: number
+          review_count?: number
           slug?: string
           status?: string
           tagline?: string | null
@@ -593,6 +599,12 @@ export type Database = {
         }
         Returns: boolean
       }
+      refresh_company_rating: {
+        Args: { _company_id: string }
+        Returns: undefined
+      }
+      show_limit: { Args: never; Returns: number }
+      show_trgm: { Args: { "": string }; Returns: string[] }
     }
     Enums: {
       app_role: "admin" | "company_owner" | "user"
