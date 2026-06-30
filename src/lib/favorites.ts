@@ -1,24 +1,44 @@
-import { useEffect, useState } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
-export function useCurrentUserId() {
-  const [userId, setUserId] = useState<string | null>(null);
-  useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id ?? null));
-    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
-      setUserId(session?.user?.id ?? null);
-    });
-    return () => sub.subscription.unsubscribe();
-  }, []);
-  return userId;
+// ---- Singleton auth state (1 listener for the whole app) ----
+let _userId: string | null = null;
+let _initialized = false;
+const _listeners = new Set<() => void>();
+
+function notify() { _listeners.forEach((l) => l()); }
+
+function ensureInit() {
+  if (_initialized) return;
+  _initialized = true;
+  supabase.auth.getUser().then(({ data }) => {
+    _userId = data.user?.id ?? null;
+    notify();
+  });
+  supabase.auth.onAuthStateChange((_e, session) => {
+    _userId = session?.user?.id ?? null;
+    notify();
+  });
 }
 
+function subscribe(cb: () => void) {
+  ensureInit();
+  _listeners.add(cb);
+  return () => { _listeners.delete(cb); };
+}
+
+export function useCurrentUserId() {
+  return useSyncExternalStore(subscribe, () => _userId, () => null);
+}
+
+// ---- Favorites: single query per user, O(1) membership check ----
 export function useFavorites() {
   const userId = useCurrentUserId();
   return useQuery({
     queryKey: ["favorites", userId],
     enabled: !!userId,
+    staleTime: 60_000,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("favorites")
@@ -30,28 +50,33 @@ export function useFavorites() {
   });
 }
 
+function useFavoriteIds() {
+  const userId = useCurrentUserId();
+  return useQuery({
+    queryKey: ["favorite-ids", userId],
+    enabled: !!userId,
+    staleTime: 60_000,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("favorites")
+        .select("company_id")
+        .eq("user_id", userId!);
+      if (error) throw error;
+      return new Set((data ?? []).map((r) => r.company_id as string));
+    },
+  });
+}
+
 export function useToggleFavorite(companyId: string) {
   const qc = useQueryClient();
   const userId = useCurrentUserId();
-
-  const isFav = useQuery({
-    queryKey: ["fav", userId, companyId],
-    enabled: !!userId,
-    queryFn: async () => {
-      const { data } = await supabase
-        .from("favorites")
-        .select("company_id")
-        .eq("user_id", userId!)
-        .eq("company_id", companyId)
-        .maybeSingle();
-      return !!data;
-    },
-  });
+  const ids = useFavoriteIds();
+  const isFav = !!ids.data?.has(companyId);
 
   const mutation = useMutation({
     mutationFn: async () => {
       if (!userId) throw new Error("auth");
-      if (isFav.data) {
+      if (isFav) {
         const { error } = await supabase.from("favorites").delete().eq("user_id", userId).eq("company_id", companyId);
         if (error) throw error;
         return false;
@@ -60,11 +85,25 @@ export function useToggleFavorite(companyId: string) {
       if (error) throw error;
       return true;
     },
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["fav", userId, companyId] });
+    onMutate: async () => {
+      await qc.cancelQueries({ queryKey: ["favorite-ids", userId] });
+      const prev = qc.getQueryData<Set<string>>(["favorite-ids", userId]);
+      const next = new Set(prev ?? []);
+      if (isFav) next.delete(companyId); else next.add(companyId);
+      qc.setQueryData(["favorite-ids", userId], next);
+      return { prev };
+    },
+    onError: (_e, _v, ctx) => {
+      if (ctx?.prev) qc.setQueryData(["favorite-ids", userId], ctx.prev);
+    },
+    onSettled: () => {
+      qc.invalidateQueries({ queryKey: ["favorite-ids", userId] });
       qc.invalidateQueries({ queryKey: ["favorites", userId] });
     },
   });
 
-  return { isFav: !!isFav.data, isLoggedIn: !!userId, toggle: mutation.mutate, isPending: mutation.isPending };
+  // Hook compat: keep effect-free signature
+  useEffect(() => {}, []);
+
+  return { isFav, isLoggedIn: !!userId, toggle: mutation.mutate, isPending: mutation.isPending };
 }
