@@ -48,8 +48,18 @@ export function CompanyCard({ company }: { company: CompanyCardData }) {
             alt={company.name}
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
             loading="lazy"
+            onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
           />
-        ) : null}
+        ) : (
+          <div
+            aria-hidden
+            className="flex h-full w-full items-center justify-center bg-gradient-to-br from-primary/15 via-primary/5 to-accent/20"
+          >
+            <span className="font-display text-5xl font-bold text-primary/40">
+              {company.name?.trim()?.charAt(0)?.toUpperCase() ?? "?"}
+            </span>
+          </div>
+        )}
         {isFeatured ? (
           <Badge className="absolute left-3 top-3 bg-accent text-accent-foreground hover:bg-accent">
             <Crown className="mr-1 h-3 w-3" /> Destaque
