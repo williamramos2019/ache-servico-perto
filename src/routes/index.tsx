@@ -5,6 +5,7 @@ import { SiteLayout } from "@/components/site/SiteLayout";
 import { SearchBar } from "@/components/site/SearchBar";
 import { CategoryIcon } from "@/components/site/CategoryIcon";
 import { CompanyCard } from "@/components/site/CompanyCard";
+import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import { fetchCategories, fetchFeaturedCompanies } from "@/lib/queries";
 
 export const Route = createFileRoute("/")({
@@ -27,6 +28,23 @@ const CITIES = [
   { slug: "lagoa-santa", name: "Lagoa Santa" },
   { slug: "belo-horizonte", name: "Belo Horizonte" },
 ];
+
+type Category = { id: string; slug: string; name: string; icon?: string | null };
+
+function CategoryCard({ category }: { category: Category }) {
+  return (
+    <Link
+      to="/categoria/$slug"
+      params={{ slug: category.slug }}
+      className="group flex flex-col items-center gap-3 rounded-xl border border-border bg-card p-5 text-center transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md"
+    >
+      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+        <CategoryIcon name={category.icon} className="h-6 w-6" />
+      </div>
+      <div className="text-sm font-medium text-foreground">{category.name}</div>
+    </Link>
+  );
+}
 
 function Home() {
   const cats = useQuery({ queryKey: ["categories"], queryFn: fetchCategories });
@@ -73,26 +91,35 @@ function Home() {
         <div className="mb-8 flex items-end justify-between gap-4">
           <div>
             <h2 className="font-display text-2xl font-bold md:text-3xl">Explore por categoria</h2>
-            <p className="mt-1 text-muted-foreground">12 categorias para encontrar o serviço ideal.</p>
+            <p className="mt-1 text-muted-foreground">{(cats.data ?? []).length} categorias para encontrar o serviço ideal.</p>
           </div>
           <Link to="/buscar" className="hidden text-sm font-medium text-primary hover:underline md:inline-flex">
             Ver todas
           </Link>
         </div>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+        {/* Desktop grid */}
+        <div className="hidden gap-3 md:grid md:grid-cols-4 lg:grid-cols-6">
           {(cats.data ?? []).map((c) => (
-            <Link
-              key={c.id}
-              to="/categoria/$slug"
-              params={{ slug: c.slug }}
-              className="group flex flex-col items-center gap-3 rounded-xl border border-border bg-card p-5 text-center transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md"
-            >
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
-                <CategoryIcon name={c.icon} className="h-6 w-6" />
-              </div>
-              <div className="text-sm font-medium text-foreground">{c.name}</div>
-            </Link>
+            <CategoryCard key={c.id} category={c} />
           ))}
+        </div>
+        {/* Mobile carousel */}
+        <div className="md:hidden">
+          <Carousel
+            opts={{
+              align: "start",
+              dragFree: true,
+            }}
+            className="w-full"
+          >
+            <CarouselContent className="-ml-3">
+              {(cats.data ?? []).map((c) => (
+                <CarouselItem key={c.id} className="basis-[44%] pl-3">
+                  <CategoryCard category={c} />
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+          </Carousel>
         </div>
       </section>
 
