@@ -5,6 +5,7 @@ import { SiteLayout } from "@/components/site/SiteLayout";
 import { SearchBar } from "@/components/site/SearchBar";
 import { CategoryIcon } from "@/components/site/CategoryIcon";
 import { CompanyCard } from "@/components/site/CompanyCard";
+import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import { fetchCategories, fetchFeaturedCompanies } from "@/lib/queries";
 
 export const Route = createFileRoute("/")({
