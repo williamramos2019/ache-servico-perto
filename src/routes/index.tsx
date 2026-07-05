@@ -29,6 +29,23 @@ const CITIES = [
   { slug: "belo-horizonte", name: "Belo Horizonte" },
 ];
 
+type Category = { id: string; slug: string; name: string; icon?: string | null };
+
+function CategoryCard({ category }: { category: Category }) {
+  return (
+    <Link
+      to="/categoria/$slug"
+      params={{ slug: category.slug }}
+      className="group flex flex-col items-center gap-3 rounded-xl border border-border bg-card p-5 text-center transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md"
+    >
+      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+        <CategoryIcon name={category.icon} className="h-6 w-6" />
+      </div>
+      <div className="text-sm font-medium text-foreground">{category.name}</div>
+    </Link>
+  );
+}
+
 function Home() {
   const cats = useQuery({ queryKey: ["categories"], queryFn: fetchCategories });
   const featured = useQuery({ queryKey: ["featured"], queryFn: () => fetchFeaturedCompanies(8) });
