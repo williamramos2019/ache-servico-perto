@@ -323,6 +323,53 @@ export type Database = {
           },
         ]
       }
+      emergency_contacts: {
+        Row: {
+          active: boolean
+          city_id: string | null
+          created_at: string
+          description: string | null
+          icon: string | null
+          id: string
+          name: string
+          phone: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          city_id?: string | null
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          name: string
+          phone: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          city_id?: string | null
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          name?: string
+          phone?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "emergency_contacts_city_id_fkey"
+            columns: ["city_id"]
+            isOneToOne: false
+            referencedRelation: "cities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       favorites: {
         Row: {
           company_id: string
@@ -510,6 +557,86 @@ export type Database = {
         }
         Relationships: []
       }
+      public_services: {
+        Row: {
+          active: boolean
+          address: string | null
+          category: Database["public"]["Enums"]["public_service_category"]
+          city_id: string
+          created_at: string
+          description: string | null
+          email: string | null
+          featured: boolean
+          hours: string | null
+          id: string
+          is_24h: boolean
+          lat: number | null
+          lng: number | null
+          name: string
+          neighborhood: string | null
+          phone: string | null
+          phone_secondary: string | null
+          subtype: string | null
+          updated_at: string
+          website: string | null
+          whatsapp: string | null
+        }
+        Insert: {
+          active?: boolean
+          address?: string | null
+          category: Database["public"]["Enums"]["public_service_category"]
+          city_id: string
+          created_at?: string
+          description?: string | null
+          email?: string | null
+          featured?: boolean
+          hours?: string | null
+          id?: string
+          is_24h?: boolean
+          lat?: number | null
+          lng?: number | null
+          name: string
+          neighborhood?: string | null
+          phone?: string | null
+          phone_secondary?: string | null
+          subtype?: string | null
+          updated_at?: string
+          website?: string | null
+          whatsapp?: string | null
+        }
+        Update: {
+          active?: boolean
+          address?: string | null
+          category?: Database["public"]["Enums"]["public_service_category"]
+          city_id?: string
+          created_at?: string
+          description?: string | null
+          email?: string | null
+          featured?: boolean
+          hours?: string | null
+          id?: string
+          is_24h?: boolean
+          lat?: number | null
+          lng?: number | null
+          name?: string
+          neighborhood?: string | null
+          phone?: string | null
+          phone_secondary?: string | null
+          subtype?: string | null
+          updated_at?: string
+          website?: string | null
+          whatsapp?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_services_city_id_fkey"
+            columns: ["city_id"]
+            isOneToOne: false
+            referencedRelation: "cities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       reviews: {
         Row: {
           comment: string | null
@@ -608,6 +735,15 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "company_owner" | "user"
+      public_service_category:
+        | "saude"
+        | "educacao"
+        | "seguranca"
+        | "prefeitura"
+        | "transporte"
+        | "assistencia_social"
+        | "emergencia"
+        | "outros"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -736,6 +872,16 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "company_owner", "user"],
+      public_service_category: [
+        "saude",
+        "educacao",
+        "seguranca",
+        "prefeitura",
+        "transporte",
+        "assistencia_social",
+        "emergencia",
+        "outros",
+      ],
     },
   },
 } as const
