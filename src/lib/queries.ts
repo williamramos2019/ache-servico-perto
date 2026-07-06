@@ -52,10 +52,14 @@ function mapCompany(c: CompanyRow): CompanyListItem {
   };
 }
 
+// App is scoped to Vespasiano and São José da Lapa only.
+export const APP_CITY_SLUGS = ["vespasiano", "sao-jose-da-lapa"] as const;
+
 export async function fetchCities() {
   const { data, error } = await supabase
     .from("cities")
     .select("id, name, slug, state")
+    .in("slug", APP_CITY_SLUGS as unknown as string[])
     .order("name");
   if (error) throw error;
   return data ?? [];

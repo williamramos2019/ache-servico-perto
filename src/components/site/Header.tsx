@@ -18,18 +18,18 @@ export function Header() {
               AgendaAqui
             </div>
             <div className="text-[10px] uppercase tracking-wider text-muted-foreground">
-              Serviços perto de você
+              Vespasiano · São José da Lapa
             </div>
           </div>
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex">
           <Link to="/" className="rounded-md px-3 py-2 text-sm font-medium text-foreground/80 hover:text-foreground">Início</Link>
-          <Link to="/buscar" className="rounded-md px-3 py-2 text-sm font-medium text-foreground/80 hover:text-foreground">Buscar</Link>
+          <Link to="/servicos-publicos" search={{}} className="rounded-md px-3 py-2 text-sm font-medium text-foreground/80 hover:text-foreground">Serviços Públicos</Link>
+          <Link to="/emergencia" className="rounded-md px-3 py-2 text-sm font-medium text-destructive hover:text-destructive/80">Emergência</Link>
+          <Link to="/buscar" className="rounded-md px-3 py-2 text-sm font-medium text-foreground/80 hover:text-foreground">Empresas</Link>
           <Link to="/blog" className="rounded-md px-3 py-2 text-sm font-medium text-foreground/80 hover:text-foreground">Blog</Link>
-          <Link to="/planos" className="rounded-md px-3 py-2 text-sm font-medium text-foreground/80 hover:text-foreground">Planos</Link>
           <Link to="/sobre" className="rounded-md px-3 py-2 text-sm font-medium text-foreground/80 hover:text-foreground">Sobre</Link>
-          <Link to="/contato" className="rounded-md px-3 py-2 text-sm font-medium text-foreground/80 hover:text-foreground">Contato</Link>
         </nav>
 
         <div className="flex items-center gap-2">
