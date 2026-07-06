@@ -1,98 +1,68 @@
-# AgendaAqui — Planos, Ranking e Painel Admin
+## Objetivo
 
-Você já tem a base (1.743 empresas, categorias, cidades, busca, página de empresa rica, favoritos, blog, newsletter, planos como página comercial). Esta entrega adiciona a **lógica de planos como motor do sistema** + **painel admin completo**.
+Transformar o marketplace atual em um **App da Cidade** focado em **Vespasiano** e **São José da Lapa**, mantendo o guia de empresas/serviços que já existe e adicionando uma seção de **Serviços Públicos** (prefeitura, saúde, segurança, educação, telefones úteis).
 
----
+## O que muda
 
-## 1. Banco de dados (migration)
+### 1. Limpar cidades
+- Remover Belo Horizonte, Lagoa Santa e qualquer outra cidade da tabela `cities`.
+- Manter apenas **Vespasiano** e **São José da Lapa**.
+- Desativar (não deletar) empresas cadastradas fora dessas duas cidades para não perder histórico. Filtro global do app passa a considerar só essas duas.
+- Remover o seletor "Todas as cidades / BH / Lagoa Santa" da SearchBar — vira um toggle simples entre as duas cidades (ou "Ambas").
 
-Reaproveita a tabela `companies` existente (já tem `plan`, `featured`, `status`). Acrescenta:
+### 2. Nova seção: Serviços Públicos
+Nova estrutura no banco:
 
-- `companies.is_verified boolean default false`
-- `companies.views_count int default 0`
-- `companies.plan_expires_at timestamptz null`
-- `companies.banner_url` (já existe) — usado só por premium
-- `companies.video_url text null` (premium)
-- Constraint: `plan in ('free','premium','featured')`
+- **`public_service_categories`** — categorias fixas: Saúde, Educação, Segurança, Prefeitura, Transporte, Assistência Social, Emergências.
+- **`public_services`** — cada item: nome, categoria, cidade (vespasiano/sjl), endereço, telefone(s), horário de funcionamento, descrição, coordenadas (lat/lng), site, e-mail, tipo (hospital, UBS, escola, delegacia, secretaria, etc.), ativo.
+- **`emergency_contacts`** — atalho fixo para SAMU 192, Bombeiros 193, Polícia 190, Defesa Civil, Guarda Municipal (por cidade).
 
-Novas tabelas:
+Todas com RLS: leitura pública (`TO anon`), escrita só admin (`has_role('admin')`).
 
-- `system_settings` (key/value JSON) — preço premium, duração, limite fotos free, raio busca, etc. RLS: leitura pública das chaves marcadas como públicas; escrita só admin.
-- `company_views` (company_id, viewed_at, ip_hash) — para métricas do dashboard.
-- `plans_config` (slug, name, price_cents, duration_days, max_photos, features jsonb) — fonte de verdade dos planos.
+### 3. Novas rotas
+- `/cidade/vespasiano` e `/cidade/sao-jose-da-lapa` — página-cidade com resumo, atalhos de emergência, categorias de serviço público, e empresas em destaque da cidade.
+- `/servicos-publicos` — índice geral, filtro por cidade + categoria.
+- `/servicos-publicos/$id` — detalhe do serviço público (mapa, telefone, horário, botão ligar/rota).
+- `/emergencia` — tela grande, botões diretos de ligação (SAMU, Bombeiros, Polícia, UBS 24h mais próxima).
 
-GRANTs + RLS conforme padrão (admin via `has_role`).
+### 4. Home reformulada
+Nova estrutura da home:
+1. Hero com escolha da cidade (Vespasiano / São José da Lapa).
+2. **Botão vermelho fixo "Emergência"** no canto (acessível de qualquer tela em mobile).
+3. Grid "Serviços Públicos" (6 categorias com ícone).
+4. "Explore por categoria" (guia de empresas — como já existe).
+5. Empresas em destaque.
+6. Rodapé cívico (link prefeitura oficial, telefones úteis).
 
-## 2. Lógica de ranking (queries.ts)
+### 5. Admin
+Adicionar no painel admin as novas telas:
+- Lista/CRUD de `public_services`.
+- Lista/CRUD de `emergency_contacts`.
+- Mantém todo o admin de empresas atual.
 
-Toda listagem (home, `/buscar`, `/categoria/$slug`, `/cidades/$slug`, "perto de você") ordena por:
+### 6. Marca
+Como você não respondeu, vou manter **"AgendaAqui"** por enquanto, mas adicionar o subtítulo **"Vespasiano & São José da Lapa"** no header e no `<title>`. Se quiser mudar o nome depois, é uma edição rápida.
 
-```
-ORDER BY
-  CASE plan WHEN 'premium' THEN 0 WHEN 'featured' THEN 1 ELSE 2 END,
-  rating DESC NULLS LAST,
-  review_count DESC
-```
+## O que NÃO vou fazer nesta rodada
+- Não vou popular com dados reais (você disse "cadastro manual pelo admin"). Vou deixar o banco vazio + admin pronto pra você preencher. Se quiser, insiro os **contatos de emergência básicos** (SAMU/Bombeiros/Polícia) que são nacionais — me confirme.
+- Não vou incluir notícias, eventos, transporte nem turismo (fora do escopo escolhido).
+- Não vou remover fisicamente empresas de outras cidades (só desativar), pra não perder dado.
 
-Filtros novos na busca: `?plan=free|premium`, abas **Grátis** / **Destaques**.
+## Detalhes técnicos
 
-## 3. UI — diferenciação visual Grátis vs Premium
+- **Banco:** 3 novas tabelas + policies + GRANTs conforme padrão do projeto. Enum `city_slug` ('vespasiano','sao-jose-da-lapa').
+- **Queries:** novo `src/lib/publicServices.ts` com `createServerFn` público (leitura anon). Cache TanStack Query com `staleTime: 5min`.
+- **UI:** reaproveitar `CategoryCard`, `Carousel`, tokens do design system existentes. Nada de cores hardcoded.
+- **Filtro global de cidade:** persistido em `localStorage` (`selected_city`), lido no header e propagado às queries de empresas e serviços públicos.
+- **SearchBar:** simplificar — remover Select genérico, virar toggle das 2 cidades.
+- **Rotas antigas de cidade** (`/cidade/[outras]`): 404 automático (só existirão as duas).
 
-- **CompanyCard**: variante premium maior, borda gradiente, badge ⭐ Destaque, selo "Patrocinado"; free com card padrão e badge cinza "Grátis" (opcional).
-- **Página da empresa**:
-  - Free: galeria limitada a 3 fotos, sem banner, sem vídeo, CTAs padrão.
-  - Premium: banner topo, galeria ilimitada, vídeo embed, botão WhatsApp grande, CTA fixo no mobile, botão "Solicitar Orçamento" destacado.
-- Helper `getPlanLimits(plan)` centraliza limites (fotos, banner, vídeo, badge).
+## Ordem de execução
+1. Migration (tabelas + enum + policies + GRANTs + soft-disable de empresas fora do escopo).
+2. Server fns + queries de serviços públicos.
+3. Rotas novas (`/cidade/...`, `/servicos-publicos`, `/emergencia`).
+4. Home reformulada + header com seletor de cidade.
+5. Admin CRUD dos novos recursos.
+6. Ajustar SearchBar e remover cidades no seletor.
 
-## 4. Mapa (Google Maps)
-
-Novo componente `CompaniesMap` na `/buscar` e home:
-- Ícones diferentes: premium = pin laranja maior, free = pin cinza pequeno.
-- Filtro proximidade (geolocation do navegador).
-
-## 5. Painel Admin (`/admin/*`, dentro de `_authenticated/`)
-
-Gate: `_authenticated` + verifica `has_role(uid, 'admin')`; se não for admin → redirect.
-
-Rotas:
-- `/admin` — Dashboard: total empresas, free, premium, novos (7d), visualizações totais, gráfico simples (recharts já instalado).
-- `/admin/empresas` — tabela com busca/filtro, ações: editar, excluir, aprovar, mudar plano, toggle featured/verified.
-- `/admin/empresas/nova` e `/admin/empresas/$id` — formulário CRUD completo (com upload de fotos/banner via Storage bucket `company-media`).
-- `/admin/planos` — editar `plans_config` (preço, duração, max fotos, features).
-- `/admin/configuracoes` — `system_settings` (raio busca, categorias ativas, cidades ativas, limites upload, toggle mapa).
-- `/admin/leads` — visualizar leads e leads_planos.
-
-Server functions com `requireSupabaseAuth` + checagem `has_role('admin')` no handler para todas as mutações.
-
-## 6. Storage
-
-Bucket `company-media` (público) para fotos/banners/vídeos. Policies: admin escreve qualquer; owner escreve só sua pasta.
-
-## 7. Mobile-first
-
-Revisar header/cards/CTAs com foco em toque grande, CTA fixo bottom no mobile na página da empresa premium.
-
-## 8. Seed
-
-- Promover ~30 empresas reais existentes para `plan='premium'` e ~15 para `featured` (top rated) só pra demonstrar ranking funcionando.
-- Criar 1 conta admin (instruções no fim: usuário se cadastra em `/auth`, rodamos SQL pra atribuir role admin ao email informado).
-
----
-
-## Entregáveis nesta rodada
-
-1. Migration: colunas novas, `system_settings`, `company_views`, `plans_config`, storage bucket.
-2. `src/lib/plans.ts` (limites por plano) + ranking nas queries.
-3. Visual: CompanyCard premium + página empresa diferenciada por plano + filtros/abas em `/buscar`.
-4. `CompaniesMap` com ícones diferenciados.
-5. Painel admin completo (dashboard, CRUD empresas, planos, configurações, leads).
-6. Seed promovendo empresas existentes a premium/featured.
-
-## Fora do escopo (ficam para depois)
-
-- Cobrança real (Stripe/Paddle) — hoje plano muda manualmente pelo admin.
-- Sistema de impulsionamento pago por busca.
-- App mobile nativo.
-- Auto-expiração de planos (a coluna `plan_expires_at` fica pronta, mas o cron job fica para próxima).
-
-Confirma que posso seguir? Se quiser, me diz **qual email** vai virar admin (te crio com role direto) — senão você cria conta em `/auth` e me passa o email depois.
+Posso seguir?
