@@ -32,6 +32,10 @@ export const Route = createFileRoute("/buscar")({
     links: [{ rel: "canonical", href: "/buscar" }],
   }),
   component: BuscarPage,
+  loader: ({ context }) => {
+    void context.queryClient.prefetchQuery(categoriesQueryOptions);
+    void context.queryClient.prefetchQuery(citiesQueryOptions);
+  },
 });
 
 function BuscarPage() {
