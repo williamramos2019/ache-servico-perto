@@ -28,16 +28,16 @@ export function CompanyCard({ company }: { company: CompanyCardData }) {
     <Link
       to="/empresa/$slug"
       params={{ slug: company.slug }}
-      className={`group relative flex flex-col overflow-hidden rounded-xl border bg-card transition-all hover:shadow-lg ${
+      className={`group relative flex flex-col overflow-hidden rounded-2xl border bg-card transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_-16px_rgb(15_23_42/0.22)] ${
         isFeatured
-          ? "border-accent/60 ring-2 ring-accent/30 hover:ring-accent/50"
+          ? "border-accent/60 ring-2 ring-accent/30 hover:ring-accent/60"
           : isPremium
           ? "border-primary/40 ring-1 ring-primary/20"
           : "border-border"
       }`}
     >
       {isPremium ? (
-        <div className="absolute right-0 top-0 z-10 rounded-bl-lg bg-gradient-to-r from-accent to-orange-500 px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-white shadow">
+        <div className="absolute right-0 top-0 z-10 rounded-bl-xl bg-gradient-to-r from-accent to-orange-500 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-white shadow-md">
           Patrocinado
         </div>
       ) : null}

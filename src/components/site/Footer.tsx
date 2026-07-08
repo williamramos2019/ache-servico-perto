@@ -4,17 +4,17 @@ import { NewsletterForm } from "@/components/site/NewsletterForm";
 
 export function Footer() {
   return (
-    <footer className="mt-16 border-t border-border bg-surface">
-      <div className="container mx-auto grid gap-10 px-4 py-12 md:grid-cols-4">
+    <footer className="mt-20 border-t border-border bg-surface">
+      <div className="container mx-auto grid gap-10 px-4 py-14 md:grid-cols-4">
         <div>
-          <div className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary-dark text-primary-foreground shadow-sm">
               <MapPin className="h-5 w-5" />
             </div>
-            <div className="font-display text-lg font-extrabold">AgendaAqui</div>
+            <div className="font-display text-lg font-extrabold tracking-tight">AgendaAqui</div>
           </div>
-          <p className="mt-3 text-sm text-muted-foreground">
-            Seu serviço certo, na hora certa. Encontre empresas e profissionais verificados perto de você.
+          <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+            Tudo sobre sua cidade num só app. Serviços públicos, emergência e o guia de empresas de Vespasiano e São José da Lapa.
           </p>
         </div>
         <div>
