@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ReviewsSection } from "@/components/site/ReviewsSection";
 import { QuoteDialog } from "@/components/site/QuoteDialog";
-import { CompanyCard } from "@/components/site/CompanyCard";
+import { CompanyCard, toCompanyCardData } from "@/components/site/CompanyCard";
 import { fetchCompanyBySlug, fetchCompanyReviews, fetchSimilarCompanies } from "@/lib/queries";
 import { FavoriteButton } from "@/components/site/FavoriteButton";
 import { telUrl, waUrl } from "@/lib/format";

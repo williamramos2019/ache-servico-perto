@@ -1,7 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { SiteLayout } from "@/components/site/SiteLayout";
-import { CompanyCard } from "@/components/site/CompanyCard";
+import { CompanyCard, toCompanyCardData } from "@/components/site/CompanyCard";
 import { CategoryIcon } from "@/components/site/CategoryIcon";
 import { fetchCategories, searchCompanies } from "@/lib/queries";
 
