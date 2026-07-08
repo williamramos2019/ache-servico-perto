@@ -13,6 +13,7 @@ import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ServicosPublicosRouteImport } from './routes/servicos-publicos'
 import { Route as PlanosRouteImport } from './routes/planos'
+import { Route as PainelRouteImport } from './routes/painel'
 import { Route as FavoritosRouteImport } from './routes/favoritos'
 import { Route as EmergenciaRouteImport } from './routes/emergencia'
 import { Route as ContatoRouteImport } from './routes/contato'
@@ -21,7 +22,13 @@ import { Route as BlogRouteImport } from './routes/blog'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PainelIndexRouteImport } from './routes/painel.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as PainelPerfilRouteImport } from './routes/painel.perfil'
+import { Route as PainelLeadsRouteImport } from './routes/painel.leads'
+import { Route as PainelFavoritosRouteImport } from './routes/painel.favoritos'
+import { Route as PainelEmpresasRouteImport } from './routes/painel.empresas'
+import { Route as PainelAvaliacoesRouteImport } from './routes/painel.avaliacoes'
 import { Route as EmpresaSlugRouteImport } from './routes/empresa.$slug'
 import { Route as CidadesSlugRouteImport } from './routes/cidades.$slug'
 import { Route as CategoriaSlugRouteImport } from './routes/categoria.$slug'
@@ -32,6 +39,8 @@ import { Route as AdminLeadsRouteImport } from './routes/admin.leads'
 import { Route as AdminEmpresasRouteImport } from './routes/admin.empresas'
 import { Route as AdminEmergenciaRouteImport } from './routes/admin.emergencia'
 import { Route as AdminConfiguracoesRouteImport } from './routes/admin.configuracoes'
+import { Route as PainelEmpresasNovaRouteImport } from './routes/painel.empresas.nova'
+import { Route as PainelEmpresasIdRouteImport } from './routes/painel.empresas.$id'
 
 const SobreRoute = SobreRouteImport.update({
   id: '/sobre',
@@ -51,6 +60,11 @@ const ServicosPublicosRoute = ServicosPublicosRouteImport.update({
 const PlanosRoute = PlanosRouteImport.update({
   id: '/planos',
   path: '/planos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PainelRoute = PainelRouteImport.update({
+  id: '/painel',
+  path: '/painel',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FavoritosRoute = FavoritosRouteImport.update({
@@ -93,10 +107,40 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PainelIndexRoute = PainelIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => PainelRoute,
+} as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AdminRoute,
+} as any)
+const PainelPerfilRoute = PainelPerfilRouteImport.update({
+  id: '/perfil',
+  path: '/perfil',
+  getParentRoute: () => PainelRoute,
+} as any)
+const PainelLeadsRoute = PainelLeadsRouteImport.update({
+  id: '/leads',
+  path: '/leads',
+  getParentRoute: () => PainelRoute,
+} as any)
+const PainelFavoritosRoute = PainelFavoritosRouteImport.update({
+  id: '/favoritos',
+  path: '/favoritos',
+  getParentRoute: () => PainelRoute,
+} as any)
+const PainelEmpresasRoute = PainelEmpresasRouteImport.update({
+  id: '/empresas',
+  path: '/empresas',
+  getParentRoute: () => PainelRoute,
+} as any)
+const PainelAvaliacoesRoute = PainelAvaliacoesRouteImport.update({
+  id: '/avaliacoes',
+  path: '/avaliacoes',
+  getParentRoute: () => PainelRoute,
 } as any)
 const EmpresaSlugRoute = EmpresaSlugRouteImport.update({
   id: '/empresa/$slug',
@@ -148,6 +192,16 @@ const AdminConfiguracoesRoute = AdminConfiguracoesRouteImport.update({
   path: '/configuracoes',
   getParentRoute: () => AdminRoute,
 } as any)
+const PainelEmpresasNovaRoute = PainelEmpresasNovaRouteImport.update({
+  id: '/nova',
+  path: '/nova',
+  getParentRoute: () => PainelEmpresasRoute,
+} as any)
+const PainelEmpresasIdRoute = PainelEmpresasIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => PainelEmpresasRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -158,6 +212,7 @@ export interface FileRoutesByFullPath {
   '/contato': typeof ContatoRoute
   '/emergencia': typeof EmergenciaRoute
   '/favoritos': typeof FavoritosRoute
+  '/painel': typeof PainelRouteWithChildren
   '/planos': typeof PlanosRoute
   '/servicos-publicos': typeof ServicosPublicosRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -172,7 +227,15 @@ export interface FileRoutesByFullPath {
   '/categoria/$slug': typeof CategoriaSlugRoute
   '/cidades/$slug': typeof CidadesSlugRoute
   '/empresa/$slug': typeof EmpresaSlugRoute
+  '/painel/avaliacoes': typeof PainelAvaliacoesRoute
+  '/painel/empresas': typeof PainelEmpresasRouteWithChildren
+  '/painel/favoritos': typeof PainelFavoritosRoute
+  '/painel/leads': typeof PainelLeadsRoute
+  '/painel/perfil': typeof PainelPerfilRoute
   '/admin/': typeof AdminIndexRoute
+  '/painel/': typeof PainelIndexRoute
+  '/painel/empresas/$id': typeof PainelEmpresasIdRoute
+  '/painel/empresas/nova': typeof PainelEmpresasNovaRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -196,7 +259,15 @@ export interface FileRoutesByTo {
   '/categoria/$slug': typeof CategoriaSlugRoute
   '/cidades/$slug': typeof CidadesSlugRoute
   '/empresa/$slug': typeof EmpresaSlugRoute
+  '/painel/avaliacoes': typeof PainelAvaliacoesRoute
+  '/painel/empresas': typeof PainelEmpresasRouteWithChildren
+  '/painel/favoritos': typeof PainelFavoritosRoute
+  '/painel/leads': typeof PainelLeadsRoute
+  '/painel/perfil': typeof PainelPerfilRoute
   '/admin': typeof AdminIndexRoute
+  '/painel': typeof PainelIndexRoute
+  '/painel/empresas/$id': typeof PainelEmpresasIdRoute
+  '/painel/empresas/nova': typeof PainelEmpresasNovaRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -208,6 +279,7 @@ export interface FileRoutesById {
   '/contato': typeof ContatoRoute
   '/emergencia': typeof EmergenciaRoute
   '/favoritos': typeof FavoritosRoute
+  '/painel': typeof PainelRouteWithChildren
   '/planos': typeof PlanosRoute
   '/servicos-publicos': typeof ServicosPublicosRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -222,7 +294,15 @@ export interface FileRoutesById {
   '/categoria/$slug': typeof CategoriaSlugRoute
   '/cidades/$slug': typeof CidadesSlugRoute
   '/empresa/$slug': typeof EmpresaSlugRoute
+  '/painel/avaliacoes': typeof PainelAvaliacoesRoute
+  '/painel/empresas': typeof PainelEmpresasRouteWithChildren
+  '/painel/favoritos': typeof PainelFavoritosRoute
+  '/painel/leads': typeof PainelLeadsRoute
+  '/painel/perfil': typeof PainelPerfilRoute
   '/admin/': typeof AdminIndexRoute
+  '/painel/': typeof PainelIndexRoute
+  '/painel/empresas/$id': typeof PainelEmpresasIdRoute
+  '/painel/empresas/nova': typeof PainelEmpresasNovaRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -235,6 +315,7 @@ export interface FileRouteTypes {
     | '/contato'
     | '/emergencia'
     | '/favoritos'
+    | '/painel'
     | '/planos'
     | '/servicos-publicos'
     | '/sitemap.xml'
@@ -249,7 +330,15 @@ export interface FileRouteTypes {
     | '/categoria/$slug'
     | '/cidades/$slug'
     | '/empresa/$slug'
+    | '/painel/avaliacoes'
+    | '/painel/empresas'
+    | '/painel/favoritos'
+    | '/painel/leads'
+    | '/painel/perfil'
     | '/admin/'
+    | '/painel/'
+    | '/painel/empresas/$id'
+    | '/painel/empresas/nova'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -273,7 +362,15 @@ export interface FileRouteTypes {
     | '/categoria/$slug'
     | '/cidades/$slug'
     | '/empresa/$slug'
+    | '/painel/avaliacoes'
+    | '/painel/empresas'
+    | '/painel/favoritos'
+    | '/painel/leads'
+    | '/painel/perfil'
     | '/admin'
+    | '/painel'
+    | '/painel/empresas/$id'
+    | '/painel/empresas/nova'
   id:
     | '__root__'
     | '/'
@@ -284,6 +381,7 @@ export interface FileRouteTypes {
     | '/contato'
     | '/emergencia'
     | '/favoritos'
+    | '/painel'
     | '/planos'
     | '/servicos-publicos'
     | '/sitemap.xml'
@@ -298,7 +396,15 @@ export interface FileRouteTypes {
     | '/categoria/$slug'
     | '/cidades/$slug'
     | '/empresa/$slug'
+    | '/painel/avaliacoes'
+    | '/painel/empresas'
+    | '/painel/favoritos'
+    | '/painel/leads'
+    | '/painel/perfil'
     | '/admin/'
+    | '/painel/'
+    | '/painel/empresas/$id'
+    | '/painel/empresas/nova'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -310,6 +416,7 @@ export interface RootRouteChildren {
   ContatoRoute: typeof ContatoRoute
   EmergenciaRoute: typeof EmergenciaRoute
   FavoritosRoute: typeof FavoritosRoute
+  PainelRoute: typeof PainelRouteWithChildren
   PlanosRoute: typeof PlanosRoute
   ServicosPublicosRoute: typeof ServicosPublicosRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
@@ -347,6 +454,13 @@ declare module '@tanstack/react-router' {
       path: '/planos'
       fullPath: '/planos'
       preLoaderRoute: typeof PlanosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/painel': {
+      id: '/painel'
+      path: '/painel'
+      fullPath: '/painel'
+      preLoaderRoute: typeof PainelRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/favoritos': {
@@ -405,12 +519,54 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/painel/': {
+      id: '/painel/'
+      path: '/'
+      fullPath: '/painel/'
+      preLoaderRoute: typeof PainelIndexRouteImport
+      parentRoute: typeof PainelRoute
+    }
     '/admin/': {
       id: '/admin/'
       path: '/'
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
+    }
+    '/painel/perfil': {
+      id: '/painel/perfil'
+      path: '/perfil'
+      fullPath: '/painel/perfil'
+      preLoaderRoute: typeof PainelPerfilRouteImport
+      parentRoute: typeof PainelRoute
+    }
+    '/painel/leads': {
+      id: '/painel/leads'
+      path: '/leads'
+      fullPath: '/painel/leads'
+      preLoaderRoute: typeof PainelLeadsRouteImport
+      parentRoute: typeof PainelRoute
+    }
+    '/painel/favoritos': {
+      id: '/painel/favoritos'
+      path: '/favoritos'
+      fullPath: '/painel/favoritos'
+      preLoaderRoute: typeof PainelFavoritosRouteImport
+      parentRoute: typeof PainelRoute
+    }
+    '/painel/empresas': {
+      id: '/painel/empresas'
+      path: '/empresas'
+      fullPath: '/painel/empresas'
+      preLoaderRoute: typeof PainelEmpresasRouteImport
+      parentRoute: typeof PainelRoute
+    }
+    '/painel/avaliacoes': {
+      id: '/painel/avaliacoes'
+      path: '/avaliacoes'
+      fullPath: '/painel/avaliacoes'
+      preLoaderRoute: typeof PainelAvaliacoesRouteImport
+      parentRoute: typeof PainelRoute
     }
     '/empresa/$slug': {
       id: '/empresa/$slug'
@@ -482,6 +638,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminConfiguracoesRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/painel/empresas/nova': {
+      id: '/painel/empresas/nova'
+      path: '/nova'
+      fullPath: '/painel/empresas/nova'
+      preLoaderRoute: typeof PainelEmpresasNovaRouteImport
+      parentRoute: typeof PainelEmpresasRoute
+    }
+    '/painel/empresas/$id': {
+      id: '/painel/empresas/$id'
+      path: '/$id'
+      fullPath: '/painel/empresas/$id'
+      preLoaderRoute: typeof PainelEmpresasIdRouteImport
+      parentRoute: typeof PainelEmpresasRoute
+    }
   }
 }
 
@@ -517,6 +687,41 @@ const BlogRouteChildren: BlogRouteChildren = {
 
 const BlogRouteWithChildren = BlogRoute._addFileChildren(BlogRouteChildren)
 
+interface PainelEmpresasRouteChildren {
+  PainelEmpresasIdRoute: typeof PainelEmpresasIdRoute
+  PainelEmpresasNovaRoute: typeof PainelEmpresasNovaRoute
+}
+
+const PainelEmpresasRouteChildren: PainelEmpresasRouteChildren = {
+  PainelEmpresasIdRoute: PainelEmpresasIdRoute,
+  PainelEmpresasNovaRoute: PainelEmpresasNovaRoute,
+}
+
+const PainelEmpresasRouteWithChildren = PainelEmpresasRoute._addFileChildren(
+  PainelEmpresasRouteChildren,
+)
+
+interface PainelRouteChildren {
+  PainelAvaliacoesRoute: typeof PainelAvaliacoesRoute
+  PainelEmpresasRoute: typeof PainelEmpresasRouteWithChildren
+  PainelFavoritosRoute: typeof PainelFavoritosRoute
+  PainelLeadsRoute: typeof PainelLeadsRoute
+  PainelPerfilRoute: typeof PainelPerfilRoute
+  PainelIndexRoute: typeof PainelIndexRoute
+}
+
+const PainelRouteChildren: PainelRouteChildren = {
+  PainelAvaliacoesRoute: PainelAvaliacoesRoute,
+  PainelEmpresasRoute: PainelEmpresasRouteWithChildren,
+  PainelFavoritosRoute: PainelFavoritosRoute,
+  PainelLeadsRoute: PainelLeadsRoute,
+  PainelPerfilRoute: PainelPerfilRoute,
+  PainelIndexRoute: PainelIndexRoute,
+}
+
+const PainelRouteWithChildren =
+  PainelRoute._addFileChildren(PainelRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
@@ -526,6 +731,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContatoRoute: ContatoRoute,
   EmergenciaRoute: EmergenciaRoute,
   FavoritosRoute: FavoritosRoute,
+  PainelRoute: PainelRouteWithChildren,
   PlanosRoute: PlanosRoute,
   ServicosPublicosRoute: ServicosPublicosRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
