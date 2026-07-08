@@ -32,9 +32,9 @@ function CategoryCard({ category }: { category: Category }) {
     <Link
       to="/categoria/$slug"
       params={{ slug: category.slug }}
-      className="group flex flex-col items-center gap-3 rounded-xl border border-border bg-card p-5 text-center transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md"
+      className="group flex flex-col items-center gap-3 rounded-2xl border border-border bg-card p-5 text-center transition-all duration-200 hover:-translate-y-1 hover:border-primary/40 hover:shadow-[0_12px_32px_-12px_rgb(15_23_42/0.18)]"
     >
-      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary transition-all group-hover:scale-110 group-hover:bg-primary group-hover:text-primary-foreground group-hover:shadow-md">
         <CategoryIcon name={category.icon} className="h-6 w-6" />
       </div>
       <div className="text-sm font-medium text-foreground">{category.name}</div>
@@ -47,14 +47,14 @@ function PublicServiceCard({ slug, label, icon, description }: { slug: string; l
     <Link
       to="/servicos-publicos"
       search={{ cat: slug }}
-      className="group flex items-start gap-3 rounded-xl border border-border bg-card p-4 transition hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md"
+      className="group flex items-start gap-3 rounded-2xl border border-border bg-card p-4 transition-all duration-200 hover:-translate-y-1 hover:border-primary/40 hover:shadow-[0_12px_32px_-12px_rgb(15_23_42/0.18)]"
     >
-      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary transition-all group-hover:scale-110 group-hover:bg-primary group-hover:text-primary-foreground">
         <CategoryIcon name={icon} className="h-5 w-5" />
       </div>
       <div className="min-w-0">
         <div className="font-medium text-foreground">{label}</div>
-        <div className="text-xs text-muted-foreground">{description}</div>
+        <div className="mt-0.5 text-xs leading-relaxed text-muted-foreground">{description}</div>
       </div>
     </Link>
   );
@@ -70,42 +70,44 @@ function Home() {
     <SiteLayout>
       {/* HERO */}
       <section className="relative overflow-hidden bg-gradient-to-br from-primary via-primary to-primary-dark text-primary-foreground">
-        <div className="absolute inset-0 opacity-20 [background-image:radial-gradient(circle_at_1px_1px,white_1px,transparent_0)] [background-size:32px_32px]" />
-        <div className="container relative mx-auto px-4 py-14 md:py-20">
-          <div className="mx-auto max-w-3xl text-center">
-            <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-medium uppercase tracking-wider backdrop-blur">
+        <div className="absolute inset-0 opacity-[0.15] [background-image:radial-gradient(circle_at_1px_1px,white_1px,transparent_0)] [background-size:28px_28px]" />
+        <div className="absolute -top-24 -left-24 h-96 w-96 rounded-full bg-white/10 blur-3xl" />
+        <div className="absolute -bottom-24 -right-24 h-96 w-96 rounded-full bg-accent/25 blur-3xl" />
+        <div className="container relative mx-auto px-4 py-16 md:py-24">
+          <div className="mx-auto max-w-3xl text-center animate-fade-up">
+            <span className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] ring-1 ring-white/20 backdrop-blur">
               <Sparkles className="h-3.5 w-3.5" /> App da Cidade
             </span>
-            <h1 className="mt-5 font-display text-4xl font-extrabold leading-tight md:text-5xl lg:text-6xl">
-              Tudo sobre {cityName} num só app
+            <h1 className="mt-6 font-display text-4xl font-extrabold leading-[1.05] md:text-6xl lg:text-7xl">
+              Tudo sobre <span className="whitespace-nowrap bg-gradient-to-r from-white to-accent bg-clip-text text-transparent">{cityName}</span><br className="hidden md:block" /> num só app
             </h1>
-            <p className="mt-4 text-base text-white/85 md:text-lg">
+            <p className="mx-auto mt-5 max-w-2xl text-base text-white/85 md:text-lg">
               Serviços públicos, telefones de emergência e o guia de empresas locais de Vespasiano e São José da Lapa.
             </p>
-            <div className="mt-6 flex justify-center"><CitySwitch onDark /></div>
+            <div className="mt-7 flex justify-center"><CitySwitch onDark /></div>
           </div>
-          <div className="mx-auto mt-8 max-w-3xl">
+          <div className="mx-auto mt-10 max-w-3xl">
             <SearchBar />
           </div>
         </div>
       </section>
 
       {/* EMERGENCY CTA */}
-      <section className="container mx-auto -mt-6 px-4 md:-mt-8">
+      <section className="container mx-auto -mt-7 px-4 md:-mt-9">
         <Link
           to="/emergencia"
-          className="flex items-center justify-between gap-4 rounded-2xl border border-destructive/20 bg-destructive text-destructive-foreground px-5 py-4 shadow-lg transition hover:shadow-xl"
+          className="group flex items-center justify-between gap-4 rounded-2xl border border-destructive/30 bg-gradient-to-r from-destructive to-red-600 text-destructive-foreground px-5 py-4 shadow-[0_16px_40px_-16px_rgb(220_38_38/0.55)] transition-all hover:-translate-y-0.5 hover:shadow-[0_20px_48px_-16px_rgb(220_38_38/0.6)]"
         >
           <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/15">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/20 ring-1 ring-white/25">
               <Siren className="h-6 w-6" />
             </div>
             <div>
               <div className="font-display text-lg font-bold">Emergência 24h</div>
-              <div className="text-xs text-destructive-foreground/85">SAMU, Bombeiros, Polícia e serviços de urgência</div>
+              <div className="text-xs text-destructive-foreground/90">SAMU, Bombeiros, Polícia e serviços de urgência</div>
             </div>
           </div>
-          <ArrowRight className="h-5 w-5" />
+          <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
         </Link>
       </section>
 
@@ -192,20 +194,22 @@ function Home() {
       </section>
 
       {/* CTA */}
-      <section className="container mx-auto px-4 pb-16">
-        <div className="overflow-hidden rounded-2xl bg-gradient-to-r from-accent to-orange-500 p-8 text-accent-foreground md:p-12">
-          <div className="flex flex-col items-start gap-4 md:flex-row md:items-center md:justify-between">
+      <section className="container mx-auto px-4 pb-20">
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-accent via-orange-500 to-orange-600 p-8 text-accent-foreground shadow-[0_20px_60px_-20px_rgb(234_88_12/0.5)] md:p-14">
+          <div className="absolute -top-16 -right-16 h-64 w-64 rounded-full bg-white/15 blur-3xl" />
+          <div className="absolute -bottom-20 -left-10 h-56 w-56 rounded-full bg-white/10 blur-3xl" />
+          <div className="relative flex flex-col items-start gap-5 md:flex-row md:items-center md:justify-between">
             <div>
-              <h3 className="font-display text-2xl font-bold md:text-3xl">Tem uma empresa na cidade?</h3>
-              <p className="mt-2 max-w-xl text-white/90">
+              <h3 className="font-display text-2xl font-bold leading-tight md:text-3xl">Tem uma empresa na cidade?</h3>
+              <p className="mt-2 max-w-xl text-white/95">
                 Cadastre-se grátis e apareça para quem mora em Vespasiano e São José da Lapa.
               </p>
             </div>
             <Link
               to="/auth"
-              className="inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3 font-semibold text-accent shadow-md hover:bg-white/95"
+              className="group inline-flex items-center gap-2 rounded-full bg-white px-6 py-3.5 font-semibold text-accent shadow-lg transition-all hover:-translate-y-0.5 hover:shadow-xl"
             >
-              Anunciar grátis <ArrowRight className="h-4 w-4" />
+              Anunciar grátis <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Link>
           </div>
         </div>
