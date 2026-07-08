@@ -147,7 +147,7 @@ function Home() {
               Ver todas
             </Link>
           </div>
-          <div className="hidden gap-3 md:grid md:grid-cols-4 lg:grid-cols-6">
+          <div className="reveal-grid hidden gap-3 md:grid md:grid-cols-4 lg:grid-cols-6">
             {(cats.data ?? []).map((c) => (
               <CategoryCard key={c.id} category={c} />
             ))}
