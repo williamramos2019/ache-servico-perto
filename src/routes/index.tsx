@@ -32,9 +32,9 @@ function CategoryCard({ category }: { category: Category }) {
     <Link
       to="/categoria/$slug"
       params={{ slug: category.slug }}
-      className="group flex flex-col items-center gap-3 rounded-2xl border border-border bg-card p-5 text-center transition-all duration-200 hover:-translate-y-1 hover:border-primary/40 hover:shadow-[0_12px_32px_-12px_rgb(15_23_42/0.18)]"
+      className="group flex flex-col items-center gap-3 rounded-2xl border border-border bg-card p-5 text-center transition-all duration-300 ease-out hover:-translate-y-1 hover:border-primary/40 hover:shadow-[0_12px_32px_-12px_rgb(15_23_42/0.18)] focus-ring active:translate-y-0 active:scale-[0.98]"
     >
-      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary transition-all group-hover:scale-110 group-hover:bg-primary group-hover:text-primary-foreground group-hover:shadow-md">
+      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary transition-all duration-300 group-hover:scale-110 group-hover:bg-primary group-hover:text-primary-foreground group-hover:shadow-md">
         <CategoryIcon name={category.icon} className="h-6 w-6" />
       </div>
       <div className="text-sm font-medium text-foreground">{category.name}</div>
@@ -47,13 +47,13 @@ function PublicServiceCard({ slug, label, icon, description }: { slug: string; l
     <Link
       to="/servicos-publicos"
       search={{ cat: slug }}
-      className="group flex items-start gap-3 rounded-2xl border border-border bg-card p-4 transition-all duration-200 hover:-translate-y-1 hover:border-primary/40 hover:shadow-[0_12px_32px_-12px_rgb(15_23_42/0.18)]"
+      className="group flex items-start gap-3 rounded-2xl border border-border bg-card p-4 transition-all duration-300 ease-out hover:-translate-y-1 hover:border-primary/40 hover:shadow-[0_12px_32px_-12px_rgb(15_23_42/0.18)] focus-ring active:translate-y-0 active:scale-[0.99]"
     >
-      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary transition-all group-hover:scale-110 group-hover:bg-primary group-hover:text-primary-foreground">
+      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary transition-all duration-300 group-hover:scale-110 group-hover:bg-primary group-hover:text-primary-foreground">
         <CategoryIcon name={icon} className="h-5 w-5" />
       </div>
       <div className="min-w-0">
-        <div className="font-medium text-foreground">{label}</div>
+        <div className="font-medium text-foreground transition-colors group-hover:text-primary">{label}</div>
         <div className="mt-0.5 text-xs leading-relaxed text-muted-foreground">{description}</div>
       </div>
     </Link>
@@ -96,10 +96,10 @@ function Home() {
       <section className="container mx-auto -mt-7 px-4 md:-mt-9">
         <Link
           to="/emergencia"
-          className="group flex items-center justify-between gap-4 rounded-2xl border border-destructive/30 bg-gradient-to-r from-destructive to-red-600 text-destructive-foreground px-5 py-4 shadow-[0_16px_40px_-16px_rgb(220_38_38/0.55)] transition-all hover:-translate-y-0.5 hover:shadow-[0_20px_48px_-16px_rgb(220_38_38/0.6)]"
+          className="group btn-shine focus-ring flex items-center justify-between gap-4 rounded-2xl border border-destructive/30 bg-gradient-to-r from-destructive to-red-600 text-destructive-foreground px-5 py-4 shadow-[0_16px_40px_-16px_rgb(220_38_38/0.55)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_20px_48px_-16px_rgb(220_38_38/0.65)] active:translate-y-0"
         >
           <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/20 ring-1 ring-white/25">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/20 ring-1 ring-white/25 transition-transform duration-300 group-hover:scale-105">
               <Siren className="h-6 w-6" />
             </div>
             <div>
@@ -107,7 +107,7 @@ function Home() {
               <div className="text-xs text-destructive-foreground/90">SAMU, Bombeiros, Polícia e serviços de urgência</div>
             </div>
           </div>
-          <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+          <ArrowRight className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
         </Link>
       </section>
 
@@ -207,9 +207,9 @@ function Home() {
             </div>
             <Link
               to="/auth"
-              className="group inline-flex items-center gap-2 rounded-full bg-white px-6 py-3.5 font-semibold text-accent shadow-lg transition-all hover:-translate-y-0.5 hover:shadow-xl"
+              className="group btn-shine focus-ring inline-flex items-center gap-2 rounded-full bg-white px-6 py-3.5 font-semibold text-accent shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0"
             >
-              Anunciar grátis <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+              Anunciar grátis <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
             </Link>
           </div>
         </div>
