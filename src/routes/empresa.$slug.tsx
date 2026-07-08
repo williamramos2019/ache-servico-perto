@@ -355,7 +355,7 @@ function CompanyPage() {
                 <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-3">
                   {company.company_media.sort((a, b) => a.sort - b.sort).map((m) => (
                     <a key={m.id} href={m.url} target="_blank" rel="noreferrer">
-                      <img src={m.url} alt="" loading="lazy"
+                      <img src={m.url} alt="" loading="lazy" decoding="async"
                         className="aspect-square w-full rounded-lg object-cover transition-transform hover:scale-105" />
                     </a>
                   ))}
