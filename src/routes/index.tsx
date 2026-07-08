@@ -85,7 +85,7 @@ function Home() {
               <Sparkles className="h-3.5 w-3.5" /> App da Cidade
             </span>
             <h1 className="mt-6 font-display text-4xl font-extrabold leading-[1.05] md:text-6xl lg:text-7xl">
-              Tudo sobre <span className="whitespace-nowrap bg-gradient-to-r from-white to-accent bg-clip-text text-transparent">{cityName}</span><br className="hidden md:block" /> num só app
+              Tudo sobre <span className="md:whitespace-nowrap bg-gradient-to-r from-white to-accent bg-clip-text text-transparent">{cityName}</span><br className="hidden md:block" /> num só app
             </h1>
             <p className="mx-auto mt-5 max-w-2xl text-base text-white/85 md:text-lg">
               Serviços públicos, telefones de emergência e o guia de empresas locais de Vespasiano e São José da Lapa.
