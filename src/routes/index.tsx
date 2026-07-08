@@ -7,7 +7,7 @@ import { CategoryIcon } from "@/components/site/CategoryIcon";
 import { CompanyCard, toCompanyCardData } from "@/components/site/CompanyCard";
 import { CitySwitch } from "@/components/site/CitySwitch";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
-import { fetchCategories, fetchFeaturedCompanies } from "@/lib/queries";
+import { categoriesQueryOptions, featuredCompaniesQueryOptions } from "@/lib/queries";
 import { PUBLIC_SERVICE_CATEGORIES } from "@/lib/publicServices";
 import { useSelectedCity, CITY_OPTIONS } from "@/hooks/useSelectedCity";
 
