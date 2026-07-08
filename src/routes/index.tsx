@@ -4,7 +4,7 @@ import { ArrowRight, Siren, Sparkles } from "lucide-react";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { SearchBar } from "@/components/site/SearchBar";
 import { CategoryIcon } from "@/components/site/CategoryIcon";
-import { CompanyCard } from "@/components/site/CompanyCard";
+import { CompanyCard, toCompanyCardData } from "@/components/site/CompanyCard";
 import { CitySwitch } from "@/components/site/CitySwitch";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import { fetchCategories, fetchFeaturedCompanies } from "@/lib/queries";
