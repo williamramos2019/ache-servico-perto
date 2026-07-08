@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Heart, MapPin, Menu, Search, ShieldCheck, X } from "lucide-react";
+import { Heart, LogOut, MapPin, Menu, Search, ShieldCheck, X } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { useAdmin } from "@/hooks/use-admin";
+import { supabase } from "@/integrations/supabase/client";
 
 type NavItem = { to: string; label: string; danger?: boolean };
 const NAV: NavItem[] = [
