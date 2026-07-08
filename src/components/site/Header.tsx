@@ -63,17 +63,17 @@ export function Header() {
 
         <div className="flex items-center gap-1.5">
           {isAdmin ? (
-            <Link to="/admin" className="hidden md:inline-flex" aria-label="Admin">
+            <Link to="/admin" className="hidden lg:inline-flex" aria-label="Admin">
               <Button variant="ghost" size="sm" className="gap-1"><ShieldCheck className="h-4 w-4" /> Admin</Button>
             </Link>
           ) : null}
           <Link to="/favoritos" aria-label="Favoritos" className="hidden sm:inline-flex">
             <Button variant="ghost" size="icon" className="rounded-full"><Heart className="h-5 w-5" /></Button>
           </Link>
-          <Link to="/buscar" className="md:hidden">
+          <Link to="/buscar" className="lg:hidden">
             <Button variant="ghost" size="icon" aria-label="Buscar" className="rounded-full"><Search className="h-5 w-5" /></Button>
           </Link>
-          <Link to="/auth" className="hidden md:inline-flex">
+          <Link to="/auth" className="hidden lg:inline-flex">
             <Button variant="ghost" size="sm">Entrar</Button>
           </Link>
           <Link to="/planos">
@@ -85,7 +85,7 @@ export function Header() {
             variant="ghost"
             size="icon"
             aria-label={open ? "Fechar menu" : "Abrir menu"}
-            className="md:hidden rounded-full"
+            className="lg:hidden rounded-full"
             onClick={() => setOpen((v) => !v)}
           >
             {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
