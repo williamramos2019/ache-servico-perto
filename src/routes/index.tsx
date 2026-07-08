@@ -128,7 +128,7 @@ function Home() {
             Ver todos
           </Link>
         </div>
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="reveal-grid grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {PUBLIC_SERVICE_CATEGORIES.filter((c) => c.slug !== "outros").map((c) => (
             <PublicServiceCard key={c.slug} {...c} />
           ))}
