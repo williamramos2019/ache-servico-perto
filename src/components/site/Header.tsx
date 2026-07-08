@@ -99,7 +99,7 @@ export function Header() {
             </Link>
           )}
           <Link to="/planos">
-            <Button size="sm" className="rounded-full bg-accent px-4 text-accent-foreground shadow-sm hover:bg-accent/90 hover:shadow-md">
+            <Button size="sm" className="btn-shine press-scale rounded-full bg-accent px-4 text-accent-foreground shadow-sm transition-all hover:-translate-y-0.5 hover:bg-accent/90 hover:shadow-md">
               Anunciar
             </Button>
           </Link>
