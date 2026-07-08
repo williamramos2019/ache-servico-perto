@@ -38,7 +38,7 @@ export function Header() {
           </div>
         </Link>
 
-        <nav className="hidden items-center gap-0.5 md:flex">
+        <nav className="hidden items-center gap-0.5 lg:flex">
           {NAV.map((n) => {
             const active = isActive(n.to);
             return (
@@ -95,7 +95,7 @@ export function Header() {
 
       {/* Mobile menu */}
       {open ? (
-        <div className="md:hidden border-t border-border bg-background/95 backdrop-blur-xl animate-fade-up">
+        <div className="lg:hidden border-t border-border bg-background/95 backdrop-blur-xl animate-fade-up">
           <nav className="container mx-auto flex flex-col gap-1 px-4 py-3">
             {NAV.map((n) => {
               const active = isActive(n.to);
