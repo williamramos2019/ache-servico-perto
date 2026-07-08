@@ -45,7 +45,7 @@ export function Header() {
               <Link
                 key={n.to}
                 to={n.to as any}
-                {...(n.to === "/servicos-publicos" ? { search: {} } : {})}
+                search={n.to === "/servicos-publicos" ? ({} as any) : undefined}
                 className={[
                   "relative rounded-full px-3.5 py-2 text-sm font-medium transition-colors",
                   n.danger
