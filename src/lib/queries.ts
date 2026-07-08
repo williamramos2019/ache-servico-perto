@@ -77,50 +77,35 @@ export async function fetchCategories() {
 
 export async function fetchFeaturedCompanies(limit = 6): Promise<CompanyListItem[]> {
   // Prefer companies that actually have a banner image first, so the home
-  // showcase doesn't fill up with gradient placeholders.
-  const withBanner = await supabase
+  // Single-shot query: fetch a wider pool of active companies and sort in
+  // memory so companies with a banner win, then premium/featured, then rating.
+  // Avoids the previous 1–3 sequential round-trips.
+  const pool = await supabase
     .from("companies")
     .select(SELECT)
     .eq("status", "active")
-    .in("plan", ["premium", "featured"])
-    .not("banner_url", "is", null)
     .order("featured", { ascending: false })
     .order("rating", { ascending: false })
     .order("review_count", { ascending: false })
-    .limit(limit);
-  if (withBanner.error) throw withBanner.error;
-  const rows = (withBanner.data as CompanyRow[] | null) ?? [];
-  if (rows.length >= limit) return rows.map(mapCompany);
-
-  // Fallback: fill remaining slots. Prefer any active company with a banner
-  // before falling back to premium/featured without images.
-  const missing = limit - rows.length;
-  const existingIds = rows.map((r) => r.id);
-  const fillWithImg = await supabase
-    .from("companies")
-    .select(SELECT)
-    .eq("status", "active")
-    .not("banner_url", "is", null)
-    .not("id", "in", `(${existingIds.length ? existingIds.join(",") : "00000000-0000-0000-0000-000000000000"})`)
-    .order("rating", { ascending: false })
-    .order("review_count", { ascending: false })
-    .limit(missing);
-  const filled = [...rows, ...(((fillWithImg.data as CompanyRow[] | null) ?? []))];
-  if (filled.length >= limit) return filled.slice(0, limit).map(mapCompany);
-
-  const stillMissing = limit - filled.length;
-  const filledIds = filled.map((r) => r.id);
-  const fillAny = await supabase
-    .from("companies")
-    .select(SELECT)
-    .eq("status", "active")
-    .in("plan", ["premium", "featured"])
-    .not("id", "in", `(${filledIds.length ? filledIds.join(",") : "00000000-0000-0000-0000-000000000000"})`)
-    .order("featured", { ascending: false })
-    .order("rating", { ascending: false })
-    .limit(stillMissing);
-  return [...filled, ...(((fillAny.data as CompanyRow[] | null) ?? []))].slice(0, limit).map(mapCompany);
+    .limit(Math.max(limit * 4, 24));
+  if (pool.error) throw pool.error;
+  const rows = (pool.data as CompanyRow[] | null) ?? [];
+  const score = (c: CompanyRow) => {
+    let s = 0;
+    if (c.banner_url) s += 100;
+    if (c.plan === "featured") s += 20;
+    else if (c.plan === "premium") s += 10;
+    if (c.featured) s += 5;
+    s += Number(c.rating ?? 0);
+    return s;
+  };
+  return rows
+    .slice()
+    .sort((a, b) => score(b) - score(a))
+    .slice(0, limit)
+    .map(mapCompany);
 }
+
 
 export async function searchCompanies(params: {
   q?: string;
