@@ -178,22 +178,7 @@ function BuscarPage() {
               </p>
               <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
                 {(results.data ?? []).map((co) => (
-                  <CompanyCard
-                    key={co.id}
-                    company={{
-                      id: co.id,
-                      slug: co.slug,
-                      name: co.name,
-                      tagline: co.tagline,
-                      banner_url: co.banner_url,
-                      logo_url: co.logo_url,
-                      plan: co.plan,
-                      featured: co.featured,
-                      city_name: co.city?.name,
-                      rating: co.rating,
-                      review_count: co.review_count,
-                    }}
-                  />
+                  <CompanyCard key={co.id} company={toCompanyCardData(co)} />
                 ))}
               </div>
             </>
