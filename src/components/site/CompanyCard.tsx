@@ -28,7 +28,7 @@ export function CompanyCard({ company }: { company: CompanyCardData }) {
     <Link
       to="/empresa/$slug"
       params={{ slug: company.slug }}
-      className={`group relative flex flex-col overflow-hidden rounded-2xl border bg-card transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_-16px_rgb(15_23_42/0.22)] ${
+      className={`group relative flex flex-col overflow-hidden rounded-2xl border bg-card transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_20px_40px_-16px_rgb(15_23_42/0.22)] focus-ring active:translate-y-0 active:scale-[0.99] ${
         isFeatured
           ? "border-accent/60 ring-2 ring-accent/30 hover:ring-accent/60"
           : isPremium
