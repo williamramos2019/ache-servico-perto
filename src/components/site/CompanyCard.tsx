@@ -3,6 +3,7 @@ import { MapPin, Star, BadgeCheck, Crown } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { FavoriteButton } from "@/components/site/FavoriteButton";
 import { getPlanLimits } from "@/lib/plans";
+import type { CompanyListItem } from "@/lib/queries";
 
 export type CompanyCardData = {
   id?: string;
@@ -18,6 +19,29 @@ export type CompanyCardData = {
   review_count?: number;
   is_verified?: boolean | null;
 };
+
+/**
+ * Adapter: convert the shared `CompanyListItem` shape (as returned by
+ * `src/lib/queries`) into the flat props the card renders. Centralised here
+ * so every list page uses the same mapping.
+ */
+export function toCompanyCardData(co: CompanyListItem): CompanyCardData {
+  return {
+    id: co.id,
+    slug: co.slug,
+    name: co.name,
+    tagline: co.tagline,
+    banner_url: co.banner_url,
+    logo_url: co.logo_url,
+    plan: co.plan,
+    featured: co.featured,
+    city_name: co.city?.name ?? null,
+    rating: co.rating,
+    review_count: co.review_count,
+    is_verified: co.is_verified,
+  };
+}
+
 
 export function CompanyCard({ company }: { company: CompanyCardData }) {
   const limits = getPlanLimits(company.plan);
