@@ -23,6 +23,12 @@ export const Route = createFileRoute("/")({
     links: [{ rel: "canonical", href: "/" }],
   }),
   component: Home,
+  loader: ({ context }) => {
+    // Prime cache in parallel so first paint has data (also warms on hover
+    // preload since defaultPreload: "intent").
+    void context.queryClient.prefetchQuery(categoriesQueryOptions);
+    void context.queryClient.prefetchQuery(featuredCompaniesQueryOptions(8));
+  },
 });
 
 type Category = { id: string; slug: string; name: string; icon?: string | null };
