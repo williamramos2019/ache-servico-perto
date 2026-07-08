@@ -139,9 +139,15 @@ export function Header() {
               <Link to="/favoritos" className="flex-1" onClick={() => setOpen(false)}>
                 <Button variant="outline" size="sm" className="w-full gap-2"><Heart className="h-4 w-4" /> Favoritos</Button>
               </Link>
-              <Link to="/auth" className="flex-1" onClick={() => setOpen(false)}>
-                <Button variant="outline" size="sm" className="w-full">Entrar</Button>
-              </Link>
+              {isAuthed ? (
+                <Button variant="outline" size="sm" className="flex-1 gap-2" onClick={handleSignOut}>
+                  <LogOut className="h-4 w-4" /> Sair
+                </Button>
+              ) : (
+                <Link to="/auth" className="flex-1" onClick={() => setOpen(false)}>
+                  <Button variant="outline" size="sm" className="w-full">Entrar</Button>
+                </Link>
+              )}
             </div>
           </nav>
         </div>
