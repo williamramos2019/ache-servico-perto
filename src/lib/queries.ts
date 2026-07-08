@@ -235,3 +235,36 @@ export async function fetchSimilarCompanies(opts: {
   if (error) throw error;
   return (data as CompanyRow[] | null ?? []).map(mapCompany);
 }
+
+// ---------- Query options (centralised staleTime + keys) ----------
+// Static-ish reference data lives for 10 minutes; company details are cached
+// for 2 minutes so navigation feels instant on revisit.
+export const categoriesQueryOptions = queryOptions({
+  queryKey: ["categories"],
+  queryFn: fetchCategories,
+  staleTime: 10 * 60_000,
+  gcTime: 30 * 60_000,
+});
+
+export const citiesQueryOptions = queryOptions({
+  queryKey: ["cities"],
+  queryFn: fetchCities,
+  staleTime: 10 * 60_000,
+  gcTime: 30 * 60_000,
+});
+
+export const featuredCompaniesQueryOptions = (limit = 8) =>
+  queryOptions({
+    queryKey: ["featured", limit],
+    queryFn: () => fetchFeaturedCompanies(limit),
+    staleTime: 5 * 60_000,
+    gcTime: 15 * 60_000,
+  });
+
+export const companyBySlugQueryOptions = (slug: string) =>
+  queryOptions({
+    queryKey: ["company", slug],
+    queryFn: () => fetchCompanyBySlug(slug),
+    staleTime: 2 * 60_000,
+    gcTime: 10 * 60_000,
+  });
