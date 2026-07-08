@@ -526,7 +526,7 @@ function CompanyPage() {
             {mapSrc && (
               <section className="overflow-hidden rounded-xl border border-border bg-card">
                 <h3 className="border-b border-border px-6 py-4 font-display text-lg font-bold">Localização</h3>
-                <iframe title="Mapa" src={mapSrc} className="h-64 w-full" loading="lazy" decoding="async"
+                <iframe title="Mapa" src={mapSrc} className="h-64 w-full" loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade" />
                 {directionsUrl && (
                   <a href={directionsUrl} target="_blank" rel="noreferrer" className="block">
