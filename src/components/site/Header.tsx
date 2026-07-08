@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Heart, MapPin, Menu, Search, ShieldCheck, X } from "lucide-react";
+import { Heart, LogOut, MapPin, Menu, Search, ShieldCheck, X } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { useAdmin } from "@/hooks/use-admin";
+import { supabase } from "@/integrations/supabase/client";
 
 type NavItem = { to: string; label: string; danger?: boolean };
 const NAV: NavItem[] = [
@@ -15,11 +17,20 @@ const NAV: NavItem[] = [
 ];
 
 export function Header() {
-  const { isAdmin } = useAdmin();
+  const { isAdmin, userId } = useAdmin();
   const [open, setOpen] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isAuthed = !!userId;
 
   const isActive = (to: string) => (to === "/" ? pathname === "/" : pathname.startsWith(to));
+
+  async function handleSignOut() {
+    const { error } = await supabase.auth.signOut();
+    if (error) toast.error("Erro ao sair");
+    else toast.success("Você saiu da conta");
+    setOpen(false);
+  }
+
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-border/70 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/70">
@@ -73,9 +84,15 @@ export function Header() {
           <Link to="/buscar" className="lg:hidden">
             <Button variant="ghost" size="icon" aria-label="Buscar" className="rounded-full"><Search className="h-5 w-5" /></Button>
           </Link>
-          <Link to="/auth" className="hidden lg:inline-flex">
-            <Button variant="ghost" size="sm">Entrar</Button>
-          </Link>
+          {isAuthed ? (
+            <Button variant="ghost" size="sm" className="hidden lg:inline-flex gap-1" onClick={handleSignOut} aria-label="Sair">
+              <LogOut className="h-4 w-4" /> Sair
+            </Button>
+          ) : (
+            <Link to="/auth" className="hidden lg:inline-flex">
+              <Button variant="ghost" size="sm">Entrar</Button>
+            </Link>
+          )}
           <Link to="/planos">
             <Button size="sm" className="rounded-full bg-accent px-4 text-accent-foreground shadow-sm hover:bg-accent/90 hover:shadow-md">
               Anunciar
@@ -122,9 +139,15 @@ export function Header() {
               <Link to="/favoritos" className="flex-1" onClick={() => setOpen(false)}>
                 <Button variant="outline" size="sm" className="w-full gap-2"><Heart className="h-4 w-4" /> Favoritos</Button>
               </Link>
-              <Link to="/auth" className="flex-1" onClick={() => setOpen(false)}>
-                <Button variant="outline" size="sm" className="w-full">Entrar</Button>
-              </Link>
+              {isAuthed ? (
+                <Button variant="outline" size="sm" className="flex-1 gap-2" onClick={handleSignOut}>
+                  <LogOut className="h-4 w-4" /> Sair
+                </Button>
+              ) : (
+                <Link to="/auth" className="flex-1" onClick={() => setOpen(false)}>
+                  <Button variant="outline" size="sm" className="w-full">Entrar</Button>
+                </Link>
+              )}
             </div>
           </nav>
         </div>

@@ -9,23 +9,29 @@ export function useAdmin() {
 
   useEffect(() => {
     let mounted = true;
+    let currentUid: string | null = null;
 
     const evaluate = (uid: string | null) => {
       if (!mounted) return;
+      // Skip if same user — avoids re-checking admin role on every token refresh.
+      if (uid === currentUid) {
+        setLoading(false);
+        return;
+      }
+      currentUid = uid;
       setUserId(uid);
       if (!uid) {
         setIsAdmin(false);
         setLoading(false);
         return;
       }
-      // fire-and-forget to avoid blocking auth callback
       checkIsAdmin(uid)
         .then((ok) => {
-          if (!mounted) return;
+          if (!mounted || currentUid !== uid) return;
           setIsAdmin(ok);
         })
         .catch(() => {
-          if (!mounted) return;
+          if (!mounted || currentUid !== uid) return;
           setIsAdmin(false);
         })
         .finally(() => {
@@ -34,14 +40,10 @@ export function useAdmin() {
         });
     };
 
-    // Subscribe FIRST so we don't miss the INITIAL_SESSION event
+    // onAuthStateChange fires INITIAL_SESSION on subscribe — no separate
+    // getSession() call needed, which removes the double-fire race.
     const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
       evaluate(session?.user?.id ?? null);
-    });
-
-    // Then restore session from storage
-    supabase.auth.getSession().then(({ data }) => {
-      evaluate(data.session?.user?.id ?? null);
     });
 
     return () => {

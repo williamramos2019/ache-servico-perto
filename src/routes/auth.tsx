@@ -29,9 +29,13 @@ function AuthPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
-      if (data.user) navigate({ to: "/" });
+    // Redirect if already signed in AND react to sign-in from OAuth callbacks.
+    const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session?.user && (event === "INITIAL_SESSION" || event === "SIGNED_IN")) {
+        navigate({ to: "/" });
+      }
     });
+    return () => sub.subscription.unsubscribe();
   }, [navigate]);
 
   async function signIn(e: React.FormEvent) {
