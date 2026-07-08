@@ -13,7 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { ReviewsSection } from "@/components/site/ReviewsSection";
 import { QuoteDialog } from "@/components/site/QuoteDialog";
 import { CompanyCard, toCompanyCardData } from "@/components/site/CompanyCard";
-import { fetchCompanyBySlug, fetchCompanyReviews, fetchSimilarCompanies } from "@/lib/queries";
+import { companyBySlugQueryOptions, fetchCompanyReviews, fetchSimilarCompanies } from "@/lib/queries";
 import { FavoriteButton } from "@/components/site/FavoriteButton";
 import { telUrl, waUrl } from "@/lib/format";
 
@@ -28,6 +28,10 @@ export const Route = createFileRoute("/empresa/$slug")({
     links: [{ rel: "canonical", href: `/empresa/${params.slug}` }],
   }),
   component: CompanyPage,
+  // Prefetch on hover / SSR so page paint is instant.
+  loader: ({ context, params }) => {
+    void context.queryClient.prefetchQuery(companyBySlugQueryOptions(params.slug));
+  },
 });
 
 type Media = { id: string; url: string; type: string; sort: number };
