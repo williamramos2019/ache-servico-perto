@@ -9,22 +9,41 @@ export function useAdmin() {
 
   useEffect(() => {
     let mounted = true;
-    (async () => {
-      const { data } = await supabase.auth.getUser();
-      const uid = data.user?.id ?? null;
+
+    const evaluate = (uid: string | null) => {
       if (!mounted) return;
       setUserId(uid);
-      const ok = await checkIsAdmin(uid);
-      if (!mounted) return;
-      setIsAdmin(ok);
-      setLoading(false);
-    })();
-    const { data: sub } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      const uid = session?.user?.id ?? null;
-      setUserId(uid);
-      const ok = await checkIsAdmin(uid);
-      setIsAdmin(ok);
+      if (!uid) {
+        setIsAdmin(false);
+        setLoading(false);
+        return;
+      }
+      // fire-and-forget to avoid blocking auth callback
+      checkIsAdmin(uid)
+        .then((ok) => {
+          if (!mounted) return;
+          setIsAdmin(ok);
+        })
+        .catch(() => {
+          if (!mounted) return;
+          setIsAdmin(false);
+        })
+        .finally(() => {
+          if (!mounted) return;
+          setLoading(false);
+        });
+    };
+
+    // Subscribe FIRST so we don't miss the INITIAL_SESSION event
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+      evaluate(session?.user?.id ?? null);
     });
+
+    // Then restore session from storage
+    supabase.auth.getSession().then(({ data }) => {
+      evaluate(data.session?.user?.id ?? null);
+    });
+
     return () => {
       mounted = false;
       sub.subscription.unsubscribe();
