@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Heart, LogOut, MapPin, Menu, Search, ShieldCheck, X } from "lucide-react";
+import { Heart, LayoutDashboard, LogOut, MapPin, Menu, Search, ShieldCheck, X } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { useAdmin } from "@/hooks/use-admin";
@@ -76,6 +76,11 @@ export function Header() {
           {isAdmin ? (
             <Link to="/admin" className="hidden lg:inline-flex" aria-label="Admin">
               <Button variant="ghost" size="sm" className="gap-1"><ShieldCheck className="h-4 w-4" /> Admin</Button>
+            </Link>
+          ) : null}
+          {isAuthed ? (
+            <Link to="/painel" className="hidden lg:inline-flex" aria-label="Meu painel">
+              <Button variant="ghost" size="sm" className="gap-1"><LayoutDashboard className="h-4 w-4" /> Painel</Button>
             </Link>
           ) : null}
           <Link to="/favoritos" aria-label="Favoritos" className="hidden sm:inline-flex">
