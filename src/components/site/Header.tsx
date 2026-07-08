@@ -84,9 +84,15 @@ export function Header() {
           <Link to="/buscar" className="lg:hidden">
             <Button variant="ghost" size="icon" aria-label="Buscar" className="rounded-full"><Search className="h-5 w-5" /></Button>
           </Link>
-          <Link to="/auth" className="hidden lg:inline-flex">
-            <Button variant="ghost" size="sm">Entrar</Button>
-          </Link>
+          {isAuthed ? (
+            <Button variant="ghost" size="sm" className="hidden lg:inline-flex gap-1" onClick={handleSignOut} aria-label="Sair">
+              <LogOut className="h-4 w-4" /> Sair
+            </Button>
+          ) : (
+            <Link to="/auth" className="hidden lg:inline-flex">
+              <Button variant="ghost" size="sm">Entrar</Button>
+            </Link>
+          )}
           <Link to="/planos">
             <Button size="sm" className="rounded-full bg-accent px-4 text-accent-foreground shadow-sm hover:bg-accent/90 hover:shadow-md">
               Anunciar
