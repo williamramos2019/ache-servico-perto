@@ -207,9 +207,9 @@ function Home() {
             </div>
             <Link
               to="/auth"
-              className="group inline-flex items-center gap-2 rounded-full bg-white px-6 py-3.5 font-semibold text-accent shadow-lg transition-all hover:-translate-y-0.5 hover:shadow-xl"
+              className="group btn-shine focus-ring inline-flex items-center gap-2 rounded-full bg-white px-6 py-3.5 font-semibold text-accent shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0"
             >
-              Anunciar grátis <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+              Anunciar grátis <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
             </Link>
           </div>
         </div>
