@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ReviewsSection } from "@/components/site/ReviewsSection";
 import { QuoteDialog } from "@/components/site/QuoteDialog";
-import { CompanyCard } from "@/components/site/CompanyCard";
+import { CompanyCard, toCompanyCardData } from "@/components/site/CompanyCard";
 import { fetchCompanyBySlug, fetchCompanyReviews, fetchSimilarCompanies } from "@/lib/queries";
 import { FavoriteButton } from "@/components/site/FavoriteButton";
 import { telUrl, waUrl } from "@/lib/format";
@@ -419,12 +419,7 @@ function CompanyPage() {
                 </div>
                 <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                   {similar.data.slice(0, 6).map((c) => (
-                    <CompanyCard key={c.id} company={{
-                      id: c.id, slug: c.slug, name: c.name, tagline: c.tagline,
-                      banner_url: c.banner_url, logo_url: c.logo_url, plan: c.plan,
-                      featured: c.featured, city_name: c.city?.name,
-                      rating: c.rating, review_count: c.review_count,
-                    }} />
+                    <CompanyCard key={c.id} company={toCompanyCardData(c)} />
                   ))}
                 </div>
               </section>

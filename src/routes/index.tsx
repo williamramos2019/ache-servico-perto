@@ -4,7 +4,7 @@ import { ArrowRight, Siren, Sparkles } from "lucide-react";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { SearchBar } from "@/components/site/SearchBar";
 import { CategoryIcon } from "@/components/site/CategoryIcon";
-import { CompanyCard } from "@/components/site/CompanyCard";
+import { CompanyCard, toCompanyCardData } from "@/components/site/CompanyCard";
 import { CitySwitch } from "@/components/site/CitySwitch";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import { fetchCategories, fetchFeaturedCompanies } from "@/lib/queries";
@@ -173,22 +173,7 @@ function Home() {
         </div>
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {(featured.data ?? []).map((co) => (
-            <CompanyCard
-              key={co.id}
-              company={{
-                id: co.id,
-                slug: co.slug,
-                name: co.name,
-                tagline: co.tagline,
-                banner_url: co.banner_url,
-                logo_url: co.logo_url,
-                plan: co.plan,
-                featured: co.featured,
-                city_name: co.city?.name,
-                rating: co.rating,
-                review_count: co.review_count,
-              }}
-            />
+            <CompanyCard key={co.id} company={toCompanyCardData(co)} />
           ))}
         </div>
       </section>
