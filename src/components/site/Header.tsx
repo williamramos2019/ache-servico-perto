@@ -103,7 +103,7 @@ export function Header() {
                 <Link
                   key={n.to}
                   to={n.to as any}
-                  {...(n.to === "/servicos-publicos" ? { search: {} } : {})}
+                  search={n.to === "/servicos-publicos" ? ({} as any) : undefined}
                   onClick={() => setOpen(false)}
                   className={[
                     "rounded-lg px-3 py-2.5 text-sm font-medium",
