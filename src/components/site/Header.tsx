@@ -17,11 +17,20 @@ const NAV: NavItem[] = [
 ];
 
 export function Header() {
-  const { isAdmin } = useAdmin();
+  const { isAdmin, userId } = useAdmin();
   const [open, setOpen] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isAuthed = !!userId;
 
   const isActive = (to: string) => (to === "/" ? pathname === "/" : pathname.startsWith(to));
+
+  async function handleSignOut() {
+    const { error } = await supabase.auth.signOut();
+    if (error) toast.error("Erro ao sair");
+    else toast.success("Você saiu da conta");
+    setOpen(false);
+  }
+
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-border/70 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/70">
