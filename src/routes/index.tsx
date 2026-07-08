@@ -177,7 +177,7 @@ function Home() {
             Ver tudo <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="reveal-grid grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {(featured.data ?? []).map((co) => (
             <CompanyCard key={co.id} company={toCompanyCardData(co)} />
           ))}
