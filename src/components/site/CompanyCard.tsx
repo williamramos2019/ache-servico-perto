@@ -84,6 +84,7 @@ export function CompanyCard({ company }: { company: CompanyCardData }) {
               alt=""
               className="h-12 w-12 shrink-0 rounded-lg border border-border object-cover"
               loading="lazy"
+              decoding="async"
             />
           ) : (
             <div className="h-12 w-12 shrink-0 rounded-lg bg-primary/10" />
