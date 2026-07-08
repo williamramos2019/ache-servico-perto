@@ -96,10 +96,10 @@ function Home() {
       <section className="container mx-auto -mt-7 px-4 md:-mt-9">
         <Link
           to="/emergencia"
-          className="group flex items-center justify-between gap-4 rounded-2xl border border-destructive/30 bg-gradient-to-r from-destructive to-red-600 text-destructive-foreground px-5 py-4 shadow-[0_16px_40px_-16px_rgb(220_38_38/0.55)] transition-all hover:-translate-y-0.5 hover:shadow-[0_20px_48px_-16px_rgb(220_38_38/0.6)]"
+          className="group btn-shine focus-ring flex items-center justify-between gap-4 rounded-2xl border border-destructive/30 bg-gradient-to-r from-destructive to-red-600 text-destructive-foreground px-5 py-4 shadow-[0_16px_40px_-16px_rgb(220_38_38/0.55)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_20px_48px_-16px_rgb(220_38_38/0.65)] active:translate-y-0"
         >
           <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/20 ring-1 ring-white/25">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/20 ring-1 ring-white/25 transition-transform duration-300 group-hover:scale-105">
               <Siren className="h-6 w-6" />
             </div>
             <div>
@@ -107,7 +107,7 @@ function Home() {
               <div className="text-xs text-destructive-foreground/90">SAMU, Bombeiros, Polícia e serviços de urgência</div>
             </div>
           </div>
-          <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+          <ArrowRight className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
         </Link>
       </section>
 
