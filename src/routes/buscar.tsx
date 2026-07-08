@@ -39,8 +39,8 @@ function BuscarPage() {
   const { q, city, category, sort = "relevance", minRating = 0, premium = false, plan = "all" } = search;
   const navigate = Route.useNavigate();
 
-  const cats = useQuery({ queryKey: ["categories"], queryFn: fetchCategories });
-  const cities = useQuery({ queryKey: ["cities"], queryFn: fetchCities });
+  const cats = useQuery(categoriesQueryOptions);
+  const cities = useQuery(citiesQueryOptions);
   const results = useQuery({
     queryKey: ["search", q ?? "", city ?? "", category ?? "", sort, minRating, premium, plan],
     queryFn: () => searchCompanies({ q, city, category, sort, minRating, premiumOnly: premium, plan }),
