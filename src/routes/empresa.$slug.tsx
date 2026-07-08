@@ -355,7 +355,7 @@ function CompanyPage() {
                 <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-3">
                   {company.company_media.sort((a, b) => a.sort - b.sort).map((m) => (
                     <a key={m.id} href={m.url} target="_blank" rel="noreferrer">
-                      <img src={m.url} alt="" loading="lazy"
+                      <img src={m.url} alt="" loading="lazy" decoding="async"
                         className="aspect-square w-full rounded-lg object-cover transition-transform hover:scale-105" />
                     </a>
                   ))}
@@ -526,7 +526,7 @@ function CompanyPage() {
             {mapSrc && (
               <section className="overflow-hidden rounded-xl border border-border bg-card">
                 <h3 className="border-b border-border px-6 py-4 font-display text-lg font-bold">Localização</h3>
-                <iframe title="Mapa" src={mapSrc} className="h-64 w-full" loading="lazy"
+                <iframe title="Mapa" src={mapSrc} className="h-64 w-full" loading="lazy" decoding="async"
                   referrerPolicy="no-referrer-when-downgrade" />
                 {directionsUrl && (
                   <a href={directionsUrl} target="_blank" rel="noreferrer" className="block">
