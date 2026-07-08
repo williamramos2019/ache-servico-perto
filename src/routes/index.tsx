@@ -69,8 +69,8 @@ function PublicServiceCard({ slug, label, icon, description }: { slug: string; l
 function Home() {
   const { city } = useSelectedCity();
   const cityName = CITY_OPTIONS.find((c) => c.slug === city)?.name ?? "sua cidade";
-  const cats = useQuery({ queryKey: ["categories"], queryFn: fetchCategories });
-  const featured = useQuery({ queryKey: ["featured"], queryFn: () => fetchFeaturedCompanies(8) });
+  const cats = useQuery(categoriesQueryOptions);
+  const featured = useQuery(featuredCompaniesQueryOptions(8));
 
   return (
     <SiteLayout>
