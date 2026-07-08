@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { CompanyCard, toCompanyCardData } from "@/components/site/CompanyCard";
 import { CategoryIcon } from "@/components/site/CategoryIcon";
-import { fetchCategories, searchCompanies } from "@/lib/queries";
+import { categoriesQueryOptions, searchCompanies } from "@/lib/queries";
 
 export const Route = createFileRoute("/categoria/$slug")({
   head: ({ params }) => ({
@@ -15,11 +15,14 @@ export const Route = createFileRoute("/categoria/$slug")({
     links: [{ rel: "canonical", href: `/categoria/${params.slug}` }],
   }),
   component: CategoryPage,
+  loader: ({ context }) => {
+    void context.queryClient.prefetchQuery(categoriesQueryOptions);
+  },
 });
 
 function CategoryPage() {
   const { slug } = Route.useParams();
-  const cats = useQuery({ queryKey: ["categories"], queryFn: fetchCategories });
+  const cats = useQuery(categoriesQueryOptions);
   const cat = cats.data?.find((c) => c.slug === slug);
   const results = useQuery({
     queryKey: ["search", "", "", slug],
