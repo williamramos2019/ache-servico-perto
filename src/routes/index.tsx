@@ -7,7 +7,7 @@ import { CategoryIcon } from "@/components/site/CategoryIcon";
 import { CompanyCard, toCompanyCardData } from "@/components/site/CompanyCard";
 import { CitySwitch } from "@/components/site/CitySwitch";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
-import { fetchCategories, fetchFeaturedCompanies } from "@/lib/queries";
+import { categoriesQueryOptions, featuredCompaniesQueryOptions } from "@/lib/queries";
 import { PUBLIC_SERVICE_CATEGORIES } from "@/lib/publicServices";
 import { useSelectedCity, CITY_OPTIONS } from "@/hooks/useSelectedCity";
 
@@ -23,6 +23,12 @@ export const Route = createFileRoute("/")({
     links: [{ rel: "canonical", href: "/" }],
   }),
   component: Home,
+  loader: ({ context }) => {
+    // Prime cache in parallel so first paint has data (also warms on hover
+    // preload since defaultPreload: "intent").
+    void context.queryClient.prefetchQuery(categoriesQueryOptions);
+    void context.queryClient.prefetchQuery(featuredCompaniesQueryOptions(8));
+  },
 });
 
 type Category = { id: string; slug: string; name: string; icon?: string | null };
@@ -63,8 +69,8 @@ function PublicServiceCard({ slug, label, icon, description }: { slug: string; l
 function Home() {
   const { city } = useSelectedCity();
   const cityName = CITY_OPTIONS.find((c) => c.slug === city)?.name ?? "sua cidade";
-  const cats = useQuery({ queryKey: ["categories"], queryFn: fetchCategories });
-  const featured = useQuery({ queryKey: ["featured"], queryFn: () => fetchFeaturedCompanies(8) });
+  const cats = useQuery(categoriesQueryOptions);
+  const featured = useQuery(featuredCompaniesQueryOptions(8));
 
   return (
     <SiteLayout>

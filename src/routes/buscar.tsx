@@ -9,7 +9,7 @@ import { CategoryIcon } from "@/components/site/CategoryIcon";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { fetchCategories, fetchCities, searchCompanies } from "@/lib/queries";
+import { categoriesQueryOptions, citiesQueryOptions, searchCompanies } from "@/lib/queries";
 
 const searchSchema = z.object({
   q: z.string().optional(),
@@ -32,6 +32,10 @@ export const Route = createFileRoute("/buscar")({
     links: [{ rel: "canonical", href: "/buscar" }],
   }),
   component: BuscarPage,
+  loader: ({ context }) => {
+    void context.queryClient.prefetchQuery(categoriesQueryOptions);
+    void context.queryClient.prefetchQuery(citiesQueryOptions);
+  },
 });
 
 function BuscarPage() {
@@ -39,8 +43,8 @@ function BuscarPage() {
   const { q, city, category, sort = "relevance", minRating = 0, premium = false, plan = "all" } = search;
   const navigate = Route.useNavigate();
 
-  const cats = useQuery({ queryKey: ["categories"], queryFn: fetchCategories });
-  const cities = useQuery({ queryKey: ["cities"], queryFn: fetchCities });
+  const cats = useQuery(categoriesQueryOptions);
+  const cities = useQuery(citiesQueryOptions);
   const results = useQuery({
     queryKey: ["search", q ?? "", city ?? "", category ?? "", sort, minRating, premium, plan],
     queryFn: () => searchCompanies({ q, city, category, sort, minRating, premiumOnly: premium, plan }),
