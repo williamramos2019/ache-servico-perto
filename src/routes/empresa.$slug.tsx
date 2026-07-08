@@ -89,7 +89,7 @@ function copyToClipboard(text: string, label: string) {
 
 function CompanyPage() {
   const { slug } = Route.useParams();
-  const q = useQuery({ queryKey: ["company", slug], queryFn: () => fetchCompanyBySlug(slug) });
+  const q = useQuery(companyBySlugQueryOptions(slug));
   const company = q.data as Company | null | undefined;
   const reviews = useQuery({
     queryKey: ["reviews", company?.id ?? ""],
