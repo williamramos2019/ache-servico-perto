@@ -43,7 +43,7 @@ function PanelFavoritos() {
         </div>
       ) : (
         <div className="mt-6 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-          {items.map((c) => <CompanyCard key={c.id} company={c} />)}
+          {items.map((f) => <CompanyCard key={f.companies.id} company={f.companies} />)}
         </div>
       )}
     </div>

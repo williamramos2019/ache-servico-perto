@@ -141,12 +141,19 @@ export async function listMyLeads(userId: string) {
 export async function listMyReviews(userId: string) {
   const { data, error } = await supabase
     .from("reviews")
-    .select("id, rating, comment, created_at, user_id, company_id, companies!inner(id, name, slug, owner_id), profiles(name, avatar_url)")
+    .select("id, rating, comment, created_at, user_id, company_id, companies!inner(id, name, slug, owner_id)")
     .eq("companies.owner_id", userId)
     .order("created_at", { ascending: false })
     .limit(300);
   if (error) throw error;
-  return data ?? [];
+  const rows = data ?? [];
+  const uids = Array.from(new Set(rows.map((r) => r.user_id).filter(Boolean)));
+  let profileMap = new Map<string, { name: string | null; avatar_url: string | null }>();
+  if (uids.length) {
+    const { data: profs } = await supabase.from("profiles").select("id, name, avatar_url").in("id", uids);
+    profileMap = new Map((profs ?? []).map((p) => [p.id, { name: p.name, avatar_url: p.avatar_url }]));
+  }
+  return rows.map((r) => ({ ...r, profile: profileMap.get(r.user_id) ?? null }));
 }
 
 export async function listCities() {

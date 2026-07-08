@@ -28,7 +28,7 @@ function PanelAvaliacoes() {
           </div>
         ) : items.map((r) => {
           const company = (r as { companies: { name: string; slug: string } }).companies;
-          const profile = (r as { profiles: { name: string | null; avatar_url: string | null } | null }).profiles;
+          const profile = (r as { profile: { name: string | null; avatar_url: string | null } | null }).profile;
           return (
             <div key={r.id} className="rounded-xl border border-border bg-card p-4">
               <div className="flex flex-wrap items-center justify-between gap-2">
