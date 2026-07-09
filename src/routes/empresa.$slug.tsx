@@ -380,6 +380,61 @@ function CompanyPage() {
               </div>
             </section>
 
+            {/* Diferenciais (grid de ícones) */}
+            <DifferentialsGrid differentials={company.differentials} />
+
+            {/* Indicadores de qualidade estilo Booking */}
+            <QualityBars scores={company.quality_scores} fallbackAvg={avg} />
+
+            {/* Certificações e selos */}
+            <CertificationsGrid
+              certifications={company.certifications}
+              badges={company.badges}
+              isVerified={isVerified}
+            />
+
+            {/* Área de cobertura */}
+            {coverage.data && coverage.data.length > 0 && (
+              <CoverageArea cities={coverage.data} primaryCity={company.cities?.name ?? null} />
+            )}
+
+            {/* Downloads (catálogo, portfólio) */}
+            {(company.catalog_url || company.pricebook_url || company.portfolio_pdf_url) && (
+              <section className="rounded-xl border border-border bg-card p-6">
+                <div className="flex items-center gap-2">
+                  <Download className="h-5 w-5 text-primary" />
+                  <h2 className="font-display text-xl font-bold">Downloads</h2>
+                </div>
+                <div className="mt-4 grid gap-3 sm:grid-cols-3">
+                  {company.catalog_url && (
+                    <a href={company.catalog_url} target="_blank" rel="noreferrer" className="flex items-center gap-2 rounded-lg border border-border bg-background p-3 text-sm font-medium hover:border-primary">
+                      <FileText className="h-4 w-4 text-primary" /> Catálogo
+                    </a>
+                  )}
+                  {company.pricebook_url && (
+                    <a href={company.pricebook_url} target="_blank" rel="noreferrer" className="flex items-center gap-2 rounded-lg border border-border bg-background p-3 text-sm font-medium hover:border-primary">
+                      <FileText className="h-4 w-4 text-primary" /> Tabela de preços
+                    </a>
+                  )}
+                  {company.portfolio_pdf_url && (
+                    <a href={company.portfolio_pdf_url} target="_blank" rel="noreferrer" className="flex items-center gap-2 rounded-lg border border-border bg-background p-3 text-sm font-medium hover:border-primary">
+                      <FileText className="h-4 w-4 text-primary" /> Portfólio (PDF)
+                    </a>
+                  )}
+                </div>
+              </section>
+            )}
+
+            {/* Tour 360° */}
+            {company.tour_360_url && (
+              <section className="rounded-xl border border-border bg-card p-6">
+                <h2 className="font-display text-xl font-bold">Tour 360°</h2>
+                <div className="mt-4 aspect-video overflow-hidden rounded-lg border border-border">
+                  <iframe src={company.tour_360_url} className="h-full w-full" title="Tour 360°" allowFullScreen />
+                </div>
+              </section>
+            )}
+
             {/* Services offered */}
             {services.length > 0 && (
               <section className="rounded-xl border border-border bg-card p-6">
