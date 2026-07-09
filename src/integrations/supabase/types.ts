@@ -734,7 +734,14 @@ export type Database = {
       show_trgm: { Args: { "": string }; Returns: string[] }
     }
     Enums: {
-      app_role: "admin" | "company_owner" | "user"
+      app_role: "admin" | "company_owner" | "user" | "editor" | "publisher"
+      appointment_status:
+        | "pending"
+        | "confirmed"
+        | "cancelled"
+        | "completed"
+        | "no_show"
+      post_type: "article" | "news" | "blog" | "promo" | "event"
       public_service_category:
         | "saude"
         | "educacao"
@@ -744,6 +751,7 @@ export type Database = {
         | "assistencia_social"
         | "emergencia"
         | "outros"
+      publish_status: "draft" | "scheduled" | "published" | "archived"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -871,7 +879,15 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "company_owner", "user"],
+      app_role: ["admin", "company_owner", "user", "editor", "publisher"],
+      appointment_status: [
+        "pending",
+        "confirmed",
+        "cancelled",
+        "completed",
+        "no_show",
+      ],
+      post_type: ["article", "news", "blog", "promo", "event"],
       public_service_category: [
         "saude",
         "educacao",
@@ -882,6 +898,7 @@ export const Constants = {
         "emergencia",
         "outros",
       ],
+      publish_status: ["draft", "scheduled", "published", "archived"],
     },
   },
 } as const
