@@ -135,6 +135,7 @@ function PlanosPage() {
                   <Icon className={`h-7 w-7 ${p.accent ? "text-accent" : "text-primary"}`} />
                   <h3 className="font-display text-xl font-bold">{p.name}</h3>
                 </div>
+                <p className="mt-1 text-sm text-muted-foreground">{p.subtitle}</p>
                 <div className="mt-4 text-3xl font-extrabold">{p.price}</div>
                 <ul className="mt-6 flex-1 space-y-2 text-sm">
                   {p.features.map((f) => (
@@ -148,7 +149,7 @@ function PlanosPage() {
                   variant={p.accent ? "default" : "outline"}
                   onClick={() => setOpen(p.id)}
                 >
-                  Quero este plano
+                  {p.cta}
                 </Button>
               </div>
             );
@@ -156,7 +157,7 @@ function PlanosPage() {
         </div>
 
         <p className="mt-8 text-center text-sm text-muted-foreground">
-          Dúvidas? Fale com nossa equipe pela página de contato.
+          Sem multa, sem fidelidade. Cancele quando quiser direto no painel.
         </p>
       </section>
 
