@@ -111,8 +111,8 @@ function Home() {
               <Siren className="h-6 w-6" />
             </div>
             <div>
-              <div className="font-display text-lg font-bold">Emergência 24h</div>
-              <div className="text-xs text-destructive-foreground/90">SAMU, Bombeiros, Polícia e serviços de urgência</div>
+              <div className="font-display text-lg font-bold">Emergência — 24 horas</div>
+              <div className="text-xs text-destructive-foreground/90">Um toque liga direto para SAMU, Bombeiros, Polícia e serviços urgentes</div>
             </div>
           </div>
           <ArrowRight className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
