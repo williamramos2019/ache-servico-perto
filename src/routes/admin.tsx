@@ -1,19 +1,20 @@
 import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { useAdmin } from "@/hooks/use-admin";
 import { SiteLayout } from "@/components/site/SiteLayout";
-import { LayoutDashboard, Building2, BadgePercent, Settings, Mail, Landmark, Siren, MapPin, Newspaper } from "lucide-react";
+import { LayoutDashboard, Building2, BadgePercent, Settings, Mail, Landmark, Siren, MapPin, Newspaper, CalendarDays } from "lucide-react";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({ meta: [{ title: "Painel Admin — AgendaAqui" }, { name: "robots", content: "noindex" }] }),
   component: AdminLayout,
 });
 
-const NAV: { to: "/admin" | "/admin/empresas" | "/admin/servicos-publicos" | "/admin/emergencia" | "/admin/cidades" | "/admin/planos" | "/admin/leads" | "/admin/blog" | "/admin/configuracoes"; label: string; icon: typeof LayoutDashboard; exact?: boolean }[] = [
+const NAV: { to: "/admin" | "/admin/empresas" | "/admin/servicos-publicos" | "/admin/emergencia" | "/admin/cidades" | "/admin/planos" | "/admin/leads" | "/admin/blog" | "/admin/eventos" | "/admin/configuracoes"; label: string; icon: typeof LayoutDashboard; exact?: boolean }[] = [
   { to: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { to: "/admin/cidades", label: "Cidades", icon: MapPin },
   { to: "/admin/servicos-publicos", label: "Serviços Públicos", icon: Landmark },
   { to: "/admin/emergencia", label: "Emergência", icon: Siren },
   { to: "/admin/empresas", label: "Empresas", icon: Building2 },
+  { to: "/admin/eventos", label: "Eventos", icon: CalendarDays },
   { to: "/admin/blog", label: "Blog", icon: Newspaper },
   { to: "/admin/planos", label: "Planos", icon: BadgePercent },
   { to: "/admin/leads", label: "Leads", icon: Mail },
