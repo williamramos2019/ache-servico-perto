@@ -40,6 +40,7 @@ import { Route as AdminEmpresasRouteImport } from './routes/admin.empresas'
 import { Route as AdminEmergenciaRouteImport } from './routes/admin.emergencia'
 import { Route as AdminConfiguracoesRouteImport } from './routes/admin.configuracoes'
 import { Route as AdminCidadesRouteImport } from './routes/admin.cidades'
+import { Route as AdminBlogRouteImport } from './routes/admin.blog'
 import { Route as PainelEmpresasNovaRouteImport } from './routes/painel.empresas.nova'
 import { Route as PainelEmpresasIdRouteImport } from './routes/painel.empresas.$id'
 
@@ -198,6 +199,11 @@ const AdminCidadesRoute = AdminCidadesRouteImport.update({
   path: '/cidades',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminBlogRoute = AdminBlogRouteImport.update({
+  id: '/blog',
+  path: '/blog',
+  getParentRoute: () => AdminRoute,
+} as any)
 const PainelEmpresasNovaRoute = PainelEmpresasNovaRouteImport.update({
   id: '/nova',
   path: '/nova',
@@ -223,6 +229,7 @@ export interface FileRoutesByFullPath {
   '/servicos-publicos': typeof ServicosPublicosRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
+  '/admin/blog': typeof AdminBlogRoute
   '/admin/cidades': typeof AdminCidadesRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
   '/admin/emergencia': typeof AdminEmergenciaRoute
@@ -256,6 +263,7 @@ export interface FileRoutesByTo {
   '/servicos-publicos': typeof ServicosPublicosRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
+  '/admin/blog': typeof AdminBlogRoute
   '/admin/cidades': typeof AdminCidadesRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
   '/admin/emergencia': typeof AdminEmergenciaRoute
@@ -292,6 +300,7 @@ export interface FileRoutesById {
   '/servicos-publicos': typeof ServicosPublicosRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
+  '/admin/blog': typeof AdminBlogRoute
   '/admin/cidades': typeof AdminCidadesRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
   '/admin/emergencia': typeof AdminEmergenciaRoute
@@ -329,6 +338,7 @@ export interface FileRouteTypes {
     | '/servicos-publicos'
     | '/sitemap.xml'
     | '/sobre'
+    | '/admin/blog'
     | '/admin/cidades'
     | '/admin/configuracoes'
     | '/admin/emergencia'
@@ -362,6 +372,7 @@ export interface FileRouteTypes {
     | '/servicos-publicos'
     | '/sitemap.xml'
     | '/sobre'
+    | '/admin/blog'
     | '/admin/cidades'
     | '/admin/configuracoes'
     | '/admin/emergencia'
@@ -397,6 +408,7 @@ export interface FileRouteTypes {
     | '/servicos-publicos'
     | '/sitemap.xml'
     | '/sobre'
+    | '/admin/blog'
     | '/admin/cidades'
     | '/admin/configuracoes'
     | '/admin/emergencia'
@@ -657,6 +669,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminCidadesRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/blog': {
+      id: '/admin/blog'
+      path: '/blog'
+      fullPath: '/admin/blog'
+      preLoaderRoute: typeof AdminBlogRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/painel/empresas/nova': {
       id: '/painel/empresas/nova'
       path: '/nova'
@@ -675,6 +694,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AdminRouteChildren {
+  AdminBlogRoute: typeof AdminBlogRoute
   AdminCidadesRoute: typeof AdminCidadesRoute
   AdminConfiguracoesRoute: typeof AdminConfiguracoesRoute
   AdminEmergenciaRoute: typeof AdminEmergenciaRoute
@@ -686,6 +706,7 @@ interface AdminRouteChildren {
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminBlogRoute: AdminBlogRoute,
   AdminCidadesRoute: AdminCidadesRoute,
   AdminConfiguracoesRoute: AdminConfiguracoesRoute,
   AdminEmergenciaRoute: AdminEmergenciaRoute,
