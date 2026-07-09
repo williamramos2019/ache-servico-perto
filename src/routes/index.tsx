@@ -123,8 +123,8 @@ function Home() {
       <section className="container mx-auto px-4 py-14">
         <div className="mb-6 flex items-end justify-between gap-4">
           <div>
-            <h2 className="font-display text-2xl font-bold md:text-3xl">Serviços Públicos</h2>
-            <p className="mt-1 text-muted-foreground">Saúde, educação, segurança e serviços da prefeitura.</p>
+            <h2 className="font-display text-2xl font-bold md:text-3xl">Serviços da cidade</h2>
+            <p className="mt-1 text-muted-foreground">Saúde, educação, segurança e prefeitura. Endereço, telefone e horário em segundos.</p>
           </div>
           <Link to="/servicos-publicos" search={{}} className="hidden text-sm font-medium text-primary hover:underline md:inline-flex">
             Ver todos
