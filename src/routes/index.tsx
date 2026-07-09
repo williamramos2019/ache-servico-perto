@@ -142,8 +142,8 @@ function Home() {
         <div className="container mx-auto px-4">
           <div className="mb-8 flex items-end justify-between gap-4">
             <div>
-              <h2 className="font-display text-2xl font-bold md:text-3xl">Guia de empresas</h2>
-              <p className="mt-1 text-muted-foreground">{(cats.data ?? []).length} categorias de serviços na sua cidade.</p>
+              <h2 className="font-display text-2xl font-bold md:text-3xl">Empresas de confiança</h2>
+              <p className="mt-1 text-muted-foreground">{(cats.data ?? []).length} categorias com quem atende de verdade em {cityName}.</p>
             </div>
             <Link to="/buscar" className="hidden text-sm font-medium text-primary hover:underline md:inline-flex">
               Ver todas
