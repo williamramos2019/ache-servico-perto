@@ -46,11 +46,32 @@ type Company = {
   phone: string | null; whatsapp: string | null; email: string | null;
   address: string | null; zip: string | null; lat: number | null; lng: number | null;
   website: string | null; instagram: string | null; facebook: string | null;
+  tiktok: string | null; youtube: string | null;
   hours: Record<string, string> | null; logo_url: string | null; banner_url: string | null;
   plan: string | null; featured: boolean | null; created_at: string; city_id: string | null;
   cities: { name: string; slug: string; state: string } | null;
   company_categories: CatLink[];
   company_media: Media[];
+  // New Fase 1 fields
+  founded_year: number | null;
+  response_time_minutes: number | null;
+  response_rate: number | null;
+  services_completed: number | null;
+  clients_served: number | null;
+  price_range: number | null;
+  tour_360_url: string | null;
+  catalog_url: string | null;
+  pricebook_url: string | null;
+  portfolio_pdf_url: string | null;
+  video_url: string | null;
+  coverage_cities: string[] | null;
+  differentials: string[] | null;
+  badges: string[] | null;
+  certifications: Certifications | null;
+  quality_scores: QualityScores | null;
+  promotions: Array<{ title?: string; description?: string }> | null;
+  financing_info: { installments?: number; label?: string } | null;
+  is_verified: boolean | null;
 };
 
 const WEEK_ORDER = ["seg", "ter", "qua", "qui", "sex", "sab", "dom"];
