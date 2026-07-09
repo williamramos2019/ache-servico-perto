@@ -152,6 +152,20 @@ export function Header() {
                 </Link>
               );
             })}
+            {(isAuthed || isAdmin) ? (
+              <div className="mt-2 grid grid-cols-2 gap-2 border-t border-border pt-3">
+                {isAuthed ? (
+                  <Link to="/painel" className="col-span-1" onClick={() => setOpen(false)}>
+                    <Button variant="outline" size="sm" className="w-full gap-2"><LayoutDashboard className="h-4 w-4" /> Meu painel</Button>
+                  </Link>
+                ) : null}
+                {isAdmin ? (
+                  <Link to="/admin" className="col-span-1" onClick={() => setOpen(false)}>
+                    <Button variant="outline" size="sm" className="w-full gap-2"><ShieldCheck className="h-4 w-4" /> Admin</Button>
+                  </Link>
+                ) : null}
+              </div>
+            ) : null}
             <div className="mt-2 flex gap-2 border-t border-border pt-3">
               <Link to="/favoritos" className="flex-1" onClick={() => setOpen(false)}>
                 <Button variant="outline" size="sm" className="w-full gap-2"><Heart className="h-4 w-4" /> Favoritos</Button>
