@@ -10,6 +10,11 @@ import { CityPickerDialog } from "./CityPickerDialog";
 import { DEFAULT_NAV_ITEMS, fetchNavItems } from "@/lib/navItems";
 
 export function Header() {
+  const { data: NAV = DEFAULT_NAV_ITEMS } = useQuery({
+    queryKey: ["nav-items"],
+    queryFn: fetchNavItems,
+    staleTime: 5 * 60_000,
+  });
   const { isAdmin, userId } = useAdmin();
   const [open, setOpen] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
