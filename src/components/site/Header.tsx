@@ -8,6 +8,7 @@ import { useAdmin } from "@/hooks/use-admin";
 import { supabase } from "@/integrations/supabase/client";
 import { CityPickerDialog } from "./CityPickerDialog";
 import { DEFAULT_NAV_ITEMS, fetchNavItems } from "@/lib/navItems";
+import { useSiteContent } from "@/lib/siteContent";
 
 export function Header() {
   const { data: NAV = DEFAULT_NAV_ITEMS } = useQuery({
