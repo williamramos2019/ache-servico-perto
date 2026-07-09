@@ -26,6 +26,7 @@ import { Route as EventosIndexRouteImport } from './routes/eventos.index'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as PainelPerfilRouteImport } from './routes/painel.perfil'
+import { Route as PainelNotificacoesRouteImport } from './routes/painel.notificacoes'
 import { Route as PainelLeadsRouteImport } from './routes/painel.leads'
 import { Route as PainelFavoritosRouteImport } from './routes/painel.favoritos'
 import { Route as PainelEmpresasRouteImport } from './routes/painel.empresas'
@@ -133,6 +134,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
 const PainelPerfilRoute = PainelPerfilRouteImport.update({
   id: '/perfil',
   path: '/perfil',
+  getParentRoute: () => PainelRoute,
+} as any)
+const PainelNotificacoesRoute = PainelNotificacoesRouteImport.update({
+  id: '/notificacoes',
+  path: '/notificacoes',
   getParentRoute: () => PainelRoute,
 } as any)
 const PainelLeadsRoute = PainelLeadsRouteImport.update({
@@ -284,6 +290,7 @@ export interface FileRoutesByFullPath {
   '/painel/empresas': typeof PainelEmpresasRouteWithChildren
   '/painel/favoritos': typeof PainelFavoritosRoute
   '/painel/leads': typeof PainelLeadsRoute
+  '/painel/notificacoes': typeof PainelNotificacoesRoute
   '/painel/perfil': typeof PainelPerfilRoute
   '/admin/': typeof AdminIndexRoute
   '/blog/': typeof BlogIndexRoute
@@ -324,6 +331,7 @@ export interface FileRoutesByTo {
   '/painel/empresas': typeof PainelEmpresasRouteWithChildren
   '/painel/favoritos': typeof PainelFavoritosRoute
   '/painel/leads': typeof PainelLeadsRoute
+  '/painel/notificacoes': typeof PainelNotificacoesRoute
   '/painel/perfil': typeof PainelPerfilRoute
   '/admin': typeof AdminIndexRoute
   '/blog': typeof BlogIndexRoute
@@ -367,6 +375,7 @@ export interface FileRoutesById {
   '/painel/empresas': typeof PainelEmpresasRouteWithChildren
   '/painel/favoritos': typeof PainelFavoritosRoute
   '/painel/leads': typeof PainelLeadsRoute
+  '/painel/notificacoes': typeof PainelNotificacoesRoute
   '/painel/perfil': typeof PainelPerfilRoute
   '/admin/': typeof AdminIndexRoute
   '/blog/': typeof BlogIndexRoute
@@ -411,6 +420,7 @@ export interface FileRouteTypes {
     | '/painel/empresas'
     | '/painel/favoritos'
     | '/painel/leads'
+    | '/painel/notificacoes'
     | '/painel/perfil'
     | '/admin/'
     | '/blog/'
@@ -451,6 +461,7 @@ export interface FileRouteTypes {
     | '/painel/empresas'
     | '/painel/favoritos'
     | '/painel/leads'
+    | '/painel/notificacoes'
     | '/painel/perfil'
     | '/admin'
     | '/blog'
@@ -493,6 +504,7 @@ export interface FileRouteTypes {
     | '/painel/empresas'
     | '/painel/favoritos'
     | '/painel/leads'
+    | '/painel/notificacoes'
     | '/painel/perfil'
     | '/admin/'
     | '/blog/'
@@ -645,6 +657,13 @@ declare module '@tanstack/react-router' {
       path: '/perfil'
       fullPath: '/painel/perfil'
       preLoaderRoute: typeof PainelPerfilRouteImport
+      parentRoute: typeof PainelRoute
+    }
+    '/painel/notificacoes': {
+      id: '/painel/notificacoes'
+      path: '/notificacoes'
+      fullPath: '/painel/notificacoes'
+      preLoaderRoute: typeof PainelNotificacoesRouteImport
       parentRoute: typeof PainelRoute
     }
     '/painel/leads': {
@@ -862,6 +881,7 @@ interface PainelRouteChildren {
   PainelEmpresasRoute: typeof PainelEmpresasRouteWithChildren
   PainelFavoritosRoute: typeof PainelFavoritosRoute
   PainelLeadsRoute: typeof PainelLeadsRoute
+  PainelNotificacoesRoute: typeof PainelNotificacoesRoute
   PainelPerfilRoute: typeof PainelPerfilRoute
   PainelIndexRoute: typeof PainelIndexRoute
 }
@@ -871,6 +891,7 @@ const PainelRouteChildren: PainelRouteChildren = {
   PainelEmpresasRoute: PainelEmpresasRouteWithChildren,
   PainelFavoritosRoute: PainelFavoritosRoute,
   PainelLeadsRoute: PainelLeadsRoute,
+  PainelNotificacoesRoute: PainelNotificacoesRoute,
   PainelPerfilRoute: PainelPerfilRoute,
   PainelIndexRoute: PainelIndexRoute,
 }
