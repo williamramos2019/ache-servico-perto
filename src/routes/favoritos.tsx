@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { CompanyCard } from "@/components/site/CompanyCard";
 import { Button } from "@/components/ui/button";
-import { useFavorites, useCurrentUserId } from "@/lib/favorites";
+import { useFavorites, useCurrentUserId, useAuthReady } from "@/lib/favorites";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -21,8 +21,17 @@ export const Route = createFileRoute("/favoritos")({
 
 function FavoritosPage() {
   const userId = useCurrentUserId();
+  const authReady = useAuthReady();
   const fav = useFavorites();
   const qc = useQueryClient();
+
+  if (!authReady) {
+    return (
+      <SiteLayout>
+        <div className="container mx-auto px-4 py-20 text-center text-muted-foreground">Carregando…</div>
+      </SiteLayout>
+    );
+  }
 
   if (userId === null) {
     return (
