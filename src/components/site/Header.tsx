@@ -28,6 +28,15 @@ export function Header() {
 
   const isActive = (to: string) => (to === "/" ? pathname === "/" : pathname.startsWith(to));
 
+  const fetchUnread = useServerFn(unreadInboxCount);
+  const { data: unread } = useQuery({
+    queryKey: ["push-unread"],
+    queryFn: () => fetchUnread({}),
+    enabled: isAuthed,
+    refetchInterval: 60_000,
+  });
+  const unreadCount = unread?.count ?? 0;
+
   async function handleSignOut() {
     // Sign-out hygiene: cancel in-flight protected queries, clear cache,
     // then sign out and send the user to a public route.
