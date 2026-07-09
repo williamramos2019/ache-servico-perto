@@ -21,6 +21,9 @@ import {
   ResponseStatsRow, PromotionBanner, StatusPills,
   type QualityScores, type Certifications,
 } from "@/components/site/CompanyProfileSections";
+import {
+  ReputationRing, SatisfactionStats, CompanyTimeline, TrustSeals, SocialProofBar,
+} from "@/components/site/CompanyReputationSections";
 
 export const Route = createFileRoute("/empresa/$slug")({
   head: ({ params }) => ({
