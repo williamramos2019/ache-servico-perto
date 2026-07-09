@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Star } from "lucide-react";
@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import { fetchCompanyReviews } from "@/lib/queries";
+import { useCurrentUserId } from "@/lib/favorites";
 
 type ReviewRow = Awaited<ReturnType<typeof fetchCompanyReviews>>[number];
 
@@ -16,10 +17,7 @@ export function ReviewsSection({ companyId }: { companyId: string }) {
     queryFn: () => fetchCompanyReviews(companyId),
   });
 
-  const [userId, setUserId] = useState<string | null>(null);
-  useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id ?? null));
-  }, []);
+  const userId = useCurrentUserId();
 
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState("");
