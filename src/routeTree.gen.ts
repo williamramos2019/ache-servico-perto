@@ -35,6 +35,7 @@ import { Route as EmpresaSlugRouteImport } from './routes/empresa.$slug'
 import { Route as CidadesSlugRouteImport } from './routes/cidades.$slug'
 import { Route as CategoriaSlugRouteImport } from './routes/categoria.$slug'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
+import { Route as AdminTextosRouteImport } from './routes/admin.textos'
 import { Route as AdminServicosPublicosRouteImport } from './routes/admin.servicos-publicos'
 import { Route as AdminPlanosRouteImport } from './routes/admin.planos'
 import { Route as AdminMenuRouteImport } from './routes/admin.menu'
@@ -178,6 +179,11 @@ const BlogSlugRoute = BlogSlugRouteImport.update({
   path: '/blog/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminTextosRoute = AdminTextosRouteImport.update({
+  id: '/textos',
+  path: '/textos',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminServicosPublicosRoute = AdminServicosPublicosRouteImport.update({
   id: '/servicos-publicos',
   path: '/servicos-publicos',
@@ -262,6 +268,7 @@ export interface FileRoutesByFullPath {
   '/admin/menu': typeof AdminMenuRoute
   '/admin/planos': typeof AdminPlanosRoute
   '/admin/servicos-publicos': typeof AdminServicosPublicosRoute
+  '/admin/textos': typeof AdminTextosRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/categoria/$slug': typeof CategoriaSlugRoute
   '/cidades/$slug': typeof CidadesSlugRoute
@@ -300,6 +307,7 @@ export interface FileRoutesByTo {
   '/admin/menu': typeof AdminMenuRoute
   '/admin/planos': typeof AdminPlanosRoute
   '/admin/servicos-publicos': typeof AdminServicosPublicosRoute
+  '/admin/textos': typeof AdminTextosRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/categoria/$slug': typeof CategoriaSlugRoute
   '/cidades/$slug': typeof CidadesSlugRoute
@@ -341,6 +349,7 @@ export interface FileRoutesById {
   '/admin/menu': typeof AdminMenuRoute
   '/admin/planos': typeof AdminPlanosRoute
   '/admin/servicos-publicos': typeof AdminServicosPublicosRoute
+  '/admin/textos': typeof AdminTextosRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/categoria/$slug': typeof CategoriaSlugRoute
   '/cidades/$slug': typeof CidadesSlugRoute
@@ -383,6 +392,7 @@ export interface FileRouteTypes {
     | '/admin/menu'
     | '/admin/planos'
     | '/admin/servicos-publicos'
+    | '/admin/textos'
     | '/blog/$slug'
     | '/categoria/$slug'
     | '/cidades/$slug'
@@ -421,6 +431,7 @@ export interface FileRouteTypes {
     | '/admin/menu'
     | '/admin/planos'
     | '/admin/servicos-publicos'
+    | '/admin/textos'
     | '/blog/$slug'
     | '/categoria/$slug'
     | '/cidades/$slug'
@@ -461,6 +472,7 @@ export interface FileRouteTypes {
     | '/admin/menu'
     | '/admin/planos'
     | '/admin/servicos-publicos'
+    | '/admin/textos'
     | '/blog/$slug'
     | '/categoria/$slug'
     | '/cidades/$slug'
@@ -685,6 +697,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/textos': {
+      id: '/admin/textos'
+      path: '/textos'
+      fullPath: '/admin/textos'
+      preLoaderRoute: typeof AdminTextosRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/servicos-publicos': {
       id: '/admin/servicos-publicos'
       path: '/servicos-publicos'
@@ -783,6 +802,7 @@ interface AdminRouteChildren {
   AdminMenuRoute: typeof AdminMenuRoute
   AdminPlanosRoute: typeof AdminPlanosRoute
   AdminServicosPublicosRoute: typeof AdminServicosPublicosRoute
+  AdminTextosRoute: typeof AdminTextosRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
@@ -797,6 +817,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminMenuRoute: AdminMenuRoute,
   AdminPlanosRoute: AdminPlanosRoute,
   AdminServicosPublicosRoute: AdminServicosPublicosRoute,
+  AdminTextosRoute: AdminTextosRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 

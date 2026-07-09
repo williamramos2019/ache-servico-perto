@@ -10,6 +10,7 @@ import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carouse
 import { categoriesQueryOptions, featuredCompaniesQueryOptions } from "@/lib/queries";
 import { PUBLIC_SERVICE_CATEGORIES } from "@/lib/publicServices";
 import { useSelectedCity, CITY_OPTIONS } from "@/hooks/useSelectedCity";
+import { useSiteContent } from "@/lib/siteContent";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -69,6 +70,7 @@ function PublicServiceCard({ slug, label, icon, description }: { slug: string; l
 function Home() {
   const { city } = useSelectedCity();
   const cityName = CITY_OPTIONS.find((c) => c.slug === city)?.name ?? "sua cidade";
+  const site = useSiteContent();
   const cats = useQuery(categoriesQueryOptions);
   const featured = useQuery(featuredCompaniesQueryOptions(8));
 
@@ -82,13 +84,13 @@ function Home() {
         <div className="container relative mx-auto px-4 py-16 md:py-24">
           <div className="mx-auto max-w-3xl text-center animate-fade-up">
             <span className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] ring-1 ring-white/20 backdrop-blur">
-              <Sparkles className="h-3.5 w-3.5" /> App da Cidade
+              <Sparkles className="h-3.5 w-3.5" /> {site.home.hero_overline}
             </span>
             <h1 className="mt-6 font-display text-4xl font-extrabold leading-[1.05] md:text-6xl lg:text-7xl">
-              Tudo sobre <span className="md:whitespace-nowrap bg-gradient-to-r from-white to-accent bg-clip-text text-transparent">{cityName}</span><br className="hidden md:block" /> num só app
+              {site.home.hero_title.replace(/\{city\}|sua cidade/i, "").trim() || "Tudo sobre"} <span className="md:whitespace-nowrap bg-gradient-to-r from-white to-accent bg-clip-text text-transparent">{cityName}</span>
             </h1>
             <p className="mx-auto mt-5 max-w-2xl text-base text-white/85 md:text-lg">
-              Serviços públicos, telefones de emergência e o guia de empresas locais de Vespasiano e São José da Lapa.
+              {site.home.hero_subtitle}
             </p>
             <div className="mt-7 flex justify-center"><CitySwitch onDark /></div>
           </div>
