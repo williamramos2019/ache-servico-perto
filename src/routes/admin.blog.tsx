@@ -54,13 +54,13 @@ function AdminBlog() {
   async function save(p: Partial<Post>) {
     const payload = {
       slug: p.slug || slugify(p.title || ""),
-      title: p.title,
+      title: p.title || "",
       excerpt: p.excerpt || null,
-      content: p.content || null,
+      content: p.content || "",
       cover_url: p.cover_url || null,
       author_name: p.author_name || "Equipe AgendaAqui",
       published: !!p.published,
-      published_at: p.published ? (p.published_at ?? new Date().toISOString()) : null,
+      published_at: (p.published ? (p.published_at ?? new Date().toISOString()) : new Date().toISOString()) as string,
     };
     if (!payload.title || !payload.slug) return toast.error("Título e slug são obrigatórios");
     const q = p.id
