@@ -38,6 +38,7 @@ import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as AdminServicosPublicosRouteImport } from './routes/admin.servicos-publicos'
 import { Route as AdminPlanosRouteImport } from './routes/admin.planos'
 import { Route as AdminLeadsRouteImport } from './routes/admin.leads'
+import { Route as AdminEventosRouteImport } from './routes/admin.eventos'
 import { Route as AdminEmpresasRouteImport } from './routes/admin.empresas'
 import { Route as AdminEmergenciaRouteImport } from './routes/admin.emergencia'
 import { Route as AdminConfiguracoesRouteImport } from './routes/admin.configuracoes'
@@ -191,6 +192,11 @@ const AdminLeadsRoute = AdminLeadsRouteImport.update({
   path: '/leads',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminEventosRoute = AdminEventosRouteImport.update({
+  id: '/eventos',
+  path: '/eventos',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminEmpresasRoute = AdminEmpresasRouteImport.update({
   id: '/empresas',
   path: '/empresas',
@@ -245,6 +251,7 @@ export interface FileRoutesByFullPath {
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
   '/admin/emergencia': typeof AdminEmergenciaRoute
   '/admin/empresas': typeof AdminEmpresasRoute
+  '/admin/eventos': typeof AdminEventosRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/planos': typeof AdminPlanosRoute
   '/admin/servicos-publicos': typeof AdminServicosPublicosRoute
@@ -281,6 +288,7 @@ export interface FileRoutesByTo {
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
   '/admin/emergencia': typeof AdminEmergenciaRoute
   '/admin/empresas': typeof AdminEmpresasRoute
+  '/admin/eventos': typeof AdminEventosRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/planos': typeof AdminPlanosRoute
   '/admin/servicos-publicos': typeof AdminServicosPublicosRoute
@@ -320,6 +328,7 @@ export interface FileRoutesById {
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
   '/admin/emergencia': typeof AdminEmergenciaRoute
   '/admin/empresas': typeof AdminEmpresasRoute
+  '/admin/eventos': typeof AdminEventosRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/planos': typeof AdminPlanosRoute
   '/admin/servicos-publicos': typeof AdminServicosPublicosRoute
@@ -360,6 +369,7 @@ export interface FileRouteTypes {
     | '/admin/configuracoes'
     | '/admin/emergencia'
     | '/admin/empresas'
+    | '/admin/eventos'
     | '/admin/leads'
     | '/admin/planos'
     | '/admin/servicos-publicos'
@@ -396,6 +406,7 @@ export interface FileRouteTypes {
     | '/admin/configuracoes'
     | '/admin/emergencia'
     | '/admin/empresas'
+    | '/admin/eventos'
     | '/admin/leads'
     | '/admin/planos'
     | '/admin/servicos-publicos'
@@ -434,6 +445,7 @@ export interface FileRouteTypes {
     | '/admin/configuracoes'
     | '/admin/emergencia'
     | '/admin/empresas'
+    | '/admin/eventos'
     | '/admin/leads'
     | '/admin/planos'
     | '/admin/servicos-publicos'
@@ -682,6 +694,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminLeadsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/eventos': {
+      id: '/admin/eventos'
+      path: '/eventos'
+      fullPath: '/admin/eventos'
+      preLoaderRoute: typeof AdminEventosRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/empresas': {
       id: '/admin/empresas'
       path: '/empresas'
@@ -740,6 +759,7 @@ interface AdminRouteChildren {
   AdminConfiguracoesRoute: typeof AdminConfiguracoesRoute
   AdminEmergenciaRoute: typeof AdminEmergenciaRoute
   AdminEmpresasRoute: typeof AdminEmpresasRoute
+  AdminEventosRoute: typeof AdminEventosRoute
   AdminLeadsRoute: typeof AdminLeadsRoute
   AdminPlanosRoute: typeof AdminPlanosRoute
   AdminServicosPublicosRoute: typeof AdminServicosPublicosRoute
@@ -752,6 +772,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminConfiguracoesRoute: AdminConfiguracoesRoute,
   AdminEmergenciaRoute: AdminEmergenciaRoute,
   AdminEmpresasRoute: AdminEmpresasRoute,
+  AdminEventosRoute: AdminEventosRoute,
   AdminLeadsRoute: AdminLeadsRoute,
   AdminPlanosRoute: AdminPlanosRoute,
   AdminServicosPublicosRoute: AdminServicosPublicosRoute,
