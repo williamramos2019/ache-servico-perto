@@ -53,6 +53,7 @@ import { Route as PainelNotificacoesPreferenciasRouteImport } from './routes/pai
 import { Route as PainelEmpresasNovaRouteImport } from './routes/painel.empresas.nova'
 import { Route as PainelEmpresasIdRouteImport } from './routes/painel.empresas.$id'
 import { Route as AdminPushNovoRouteImport } from './routes/admin.push.novo'
+import { Route as AdminPushHistoricoRouteImport } from './routes/admin.push.historico'
 import { Route as ApiPublicPushTrackRouteImport } from './routes/api/public/push/track'
 
 const SobreRoute = SobreRouteImport.update({
@@ -276,6 +277,11 @@ const AdminPushNovoRoute = AdminPushNovoRouteImport.update({
   path: '/novo',
   getParentRoute: () => AdminPushRoute,
 } as any)
+const AdminPushHistoricoRoute = AdminPushHistoricoRouteImport.update({
+  id: '/historico',
+  path: '/historico',
+  getParentRoute: () => AdminPushRoute,
+} as any)
 const ApiPublicPushTrackRoute = ApiPublicPushTrackRouteImport.update({
   id: '/api/public/push/track',
   path: '/api/public/push/track',
@@ -322,6 +328,7 @@ export interface FileRoutesByFullPath {
   '/blog/': typeof BlogIndexRoute
   '/eventos/': typeof EventosIndexRoute
   '/painel/': typeof PainelIndexRoute
+  '/admin/push/historico': typeof AdminPushHistoricoRoute
   '/admin/push/novo': typeof AdminPushNovoRoute
   '/painel/empresas/$id': typeof PainelEmpresasIdRoute
   '/painel/empresas/nova': typeof PainelEmpresasNovaRoute
@@ -366,6 +373,7 @@ export interface FileRoutesByTo {
   '/blog': typeof BlogIndexRoute
   '/eventos': typeof EventosIndexRoute
   '/painel': typeof PainelIndexRoute
+  '/admin/push/historico': typeof AdminPushHistoricoRoute
   '/admin/push/novo': typeof AdminPushNovoRoute
   '/painel/empresas/$id': typeof PainelEmpresasIdRoute
   '/painel/empresas/nova': typeof PainelEmpresasNovaRoute
@@ -414,6 +422,7 @@ export interface FileRoutesById {
   '/blog/': typeof BlogIndexRoute
   '/eventos/': typeof EventosIndexRoute
   '/painel/': typeof PainelIndexRoute
+  '/admin/push/historico': typeof AdminPushHistoricoRoute
   '/admin/push/novo': typeof AdminPushNovoRoute
   '/painel/empresas/$id': typeof PainelEmpresasIdRoute
   '/painel/empresas/nova': typeof PainelEmpresasNovaRoute
@@ -463,6 +472,7 @@ export interface FileRouteTypes {
     | '/blog/'
     | '/eventos/'
     | '/painel/'
+    | '/admin/push/historico'
     | '/admin/push/novo'
     | '/painel/empresas/$id'
     | '/painel/empresas/nova'
@@ -507,6 +517,7 @@ export interface FileRouteTypes {
     | '/blog'
     | '/eventos'
     | '/painel'
+    | '/admin/push/historico'
     | '/admin/push/novo'
     | '/painel/empresas/$id'
     | '/painel/empresas/nova'
@@ -554,6 +565,7 @@ export interface FileRouteTypes {
     | '/blog/'
     | '/eventos/'
     | '/painel/'
+    | '/admin/push/historico'
     | '/admin/push/novo'
     | '/painel/empresas/$id'
     | '/painel/empresas/nova'
@@ -895,6 +907,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminPushNovoRouteImport
       parentRoute: typeof AdminPushRoute
     }
+    '/admin/push/historico': {
+      id: '/admin/push/historico'
+      path: '/historico'
+      fullPath: '/admin/push/historico'
+      preLoaderRoute: typeof AdminPushHistoricoRouteImport
+      parentRoute: typeof AdminPushRoute
+    }
     '/api/public/push/track': {
       id: '/api/public/push/track'
       path: '/api/public/push/track'
@@ -906,11 +925,13 @@ declare module '@tanstack/react-router' {
 }
 
 interface AdminPushRouteChildren {
+  AdminPushHistoricoRoute: typeof AdminPushHistoricoRoute
   AdminPushNovoRoute: typeof AdminPushNovoRoute
   AdminPushIndexRoute: typeof AdminPushIndexRoute
 }
 
 const AdminPushRouteChildren: AdminPushRouteChildren = {
+  AdminPushHistoricoRoute: AdminPushHistoricoRoute,
   AdminPushNovoRoute: AdminPushNovoRoute,
   AdminPushIndexRoute: AdminPushIndexRoute,
 }
