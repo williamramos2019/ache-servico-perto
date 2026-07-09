@@ -132,6 +132,12 @@ function CompanyPage() {
     }),
     enabled: !!company?.id,
   });
+  const coverageIds = company?.coverage_cities ?? [];
+  const coverage = useQuery({
+    queryKey: ["coverage", company?.id ?? "", coverageIds.join(",")],
+    queryFn: () => fetchCitiesByIds(coverageIds),
+    enabled: !!company?.id && coverageIds.length > 0,
+  });
 
   if (q.isSuccess && !company) throw notFound();
   if (!company) {
