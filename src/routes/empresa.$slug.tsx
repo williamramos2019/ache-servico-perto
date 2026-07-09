@@ -1,5 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import {
   Phone, MessageCircle, Share2, MapPin, Globe, Instagram, Facebook, Star, BadgeCheck,
   Clock, CheckCircle2, Copy, Navigation, Mail, CalendarDays, ShieldCheck, Award,
