@@ -172,8 +172,8 @@ function Home() {
       <section className="container mx-auto px-4 py-14">
         <div className="mb-8 flex items-end justify-between gap-4">
           <div>
-            <h2 className="font-display text-2xl font-bold md:text-3xl">Empresas em destaque</h2>
-            <p className="mt-1 text-muted-foreground">Selecionadas pela comunidade.</p>
+            <h2 className="font-display text-2xl font-bold md:text-3xl">As preferidas da vizinhança</h2>
+            <p className="mt-1 text-muted-foreground">Escolhidas pelos moradores nas melhores avaliações.</p>
           </div>
           <Link to="/buscar" className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline">
             Ver tudo <ArrowRight className="h-4 w-4" />
