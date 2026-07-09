@@ -40,14 +40,15 @@ function BlogPage() {
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {(posts.data ?? []).map((p) => (
               <Link
-                key={p.id}
+                key={p.id ?? p.slug ?? ""}
                 to="/blog/$slug"
-                params={{ slug: p.slug }}
+                params={{ slug: p.slug ?? "" }}
                 className="group flex flex-col overflow-hidden rounded-xl border border-border bg-card transition-shadow hover:shadow-lg"
               >
                 <div className="aspect-[16/10] overflow-hidden bg-muted">
                   {p.cover_url && (
-                    <img src={p.cover_url ?? undefined} alt={p.title} loading="lazy" decoding="async"
+                    <img src={p.cover_url} alt={p.title ?? ""} loading="lazy" decoding="async"
+
                       className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
                   )}
                 </div>
