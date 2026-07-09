@@ -49,52 +49,52 @@ export type SiteContent = {
 };
 
 export const DEFAULT_SITE_CONTENT: SiteContent = {
-  brand: { name: "AgendaAqui", tagline: "Vespasiano · S. J. da Lapa" },
+  brand: { name: "AgendaAqui", tagline: "O app da sua cidade" },
   header: {
-    cta_label: "Anunciar",
-    panel_label: "Painel",
+    cta_label: "Anunciar minha empresa",
+    panel_label: "Meu painel",
     admin_label: "Admin",
     login_label: "Entrar",
     logout_label: "Sair",
   },
   footer: {
     about_text:
-      "Tudo sobre sua cidade num só app. Serviços públicos, emergência e o guia de empresas de Vespasiano e São José da Lapa.",
-    nav_title: "Navegação",
-    biz_title: "Para empresas",
-    copyright: "AgendaAqui. Todos os direitos reservados.",
-    location: "Minas Gerais, Brasil",
+      "O guia local de Vespasiano e São José da Lapa. Serviços públicos, telefones de emergência e empresas de confiança — tudo num só app, sempre à mão.",
+    nav_title: "Navegue pelo app",
+    biz_title: "Para donos de empresa",
+    copyright: "AgendaAqui — feito na cidade, para a cidade.",
+    location: "Vespasiano · São José da Lapa · MG",
   },
   newsletter: {
-    title: "Newsletter",
-    description: "Receba dicas e novidades sobre serviços em MG.",
-    email_placeholder: "seu@email.com",
+    title: "Fique por dentro da cidade",
+    description: "Novidades, dicas e alertas úteis toda semana. Sem spam, cancele quando quiser.",
+    email_placeholder: "seu melhor e-mail",
     name_placeholder: "Seu nome (opcional)",
-    button_label: "Assinar",
+    button_label: "Quero receber",
   },
   home: {
-    hero_overline: "App da Cidade",
-    hero_title: "Tudo sobre sua cidade num só app",
+    hero_overline: "O app da cidade",
+    hero_title: "Tudo o que sua cidade oferece, num só app",
     hero_subtitle:
-      "Serviços públicos, telefones de emergência e o guia de empresas locais de Vespasiano e São José da Lapa.",
-    cta_title: "Tem uma empresa na cidade?",
+      "Encontre em segundos: hospital, escola, delegacia, prefeitura e as empresas mais bem avaliadas de Vespasiano e São José da Lapa.",
+    cta_title: "Coloque sua empresa no mapa da cidade",
     cta_subtitle:
-      "Cadastre-se grátis e apareça para quem mora em Vespasiano e São José da Lapa.",
-    cta_button: "Anunciar grátis",
+      "Cadastro grátis em 2 minutos. Apareça para vizinhos que já procuram seu serviço e receba contatos direto no WhatsApp.",
+    cta_button: "Anunciar grátis agora",
   },
   about: {
-    title: "Sobre o AgendaAqui",
-    subtitle: "Seu serviço certo, na hora certa.",
-    p1: "O AgendaAqui nasceu para conectar pessoas a empresas e profissionais de confiança em Vespasiano e São José da Lapa.",
-    p2: "Aqui você encontra prestadores de serviços de construção civil, higienização, eventos e muito mais.",
-    p3: "É grátis para usuários e grátis para começar a anunciar. Cadastre sua empresa em minutos.",
+    title: "O que é o AgendaAqui",
+    subtitle: "O jeito mais fácil de resolver o dia a dia na sua cidade.",
+    p1: "Nasceu para acabar com aquela pergunta chata: \u201Ca quem eu ligo?\u201D. Em um único app, você tem serviços públicos, telefones de emergência e um guia com as melhores empresas de Vespasiano e São José da Lapa.",
+    p2: "Cada indicação passa por avaliações reais de moradores. Você contrata com segurança, e negócios locais ganham visibilidade justa — sem intermediários e sem taxas escondidas.",
+    p3: "Grátis para usar. Grátis para anunciar. Se você mora aqui ou empreende aqui, este app foi feito para você.",
   },
   contact: {
     title: "Fale com a gente",
-    subtitle: "Sugestões, parcerias ou dúvidas? Estamos por aqui.",
+    subtitle: "Sugestões, parcerias ou algo travando? Respondemos em até 24h.",
     email: "contato@agendaaqui.online",
     whatsapp_url: "https://wa.me/5531999999999",
-    whatsapp_label: "Atendimento em horário comercial",
+    whatsapp_label: "WhatsApp em horário comercial",
   },
 };
 
