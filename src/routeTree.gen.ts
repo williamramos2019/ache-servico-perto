@@ -30,6 +30,7 @@ import { Route as PainelLeadsRouteImport } from './routes/painel.leads'
 import { Route as PainelFavoritosRouteImport } from './routes/painel.favoritos'
 import { Route as PainelEmpresasRouteImport } from './routes/painel.empresas'
 import { Route as PainelAvaliacoesRouteImport } from './routes/painel.avaliacoes'
+import { Route as EventosSlugRouteImport } from './routes/eventos.$slug'
 import { Route as EmpresaSlugRouteImport } from './routes/empresa.$slug'
 import { Route as CidadesSlugRouteImport } from './routes/cidades.$slug'
 import { Route as CategoriaSlugRouteImport } from './routes/categoria.$slug'
@@ -150,6 +151,11 @@ const PainelAvaliacoesRoute = PainelAvaliacoesRouteImport.update({
   path: '/avaliacoes',
   getParentRoute: () => PainelRoute,
 } as any)
+const EventosSlugRoute = EventosSlugRouteImport.update({
+  id: '/eventos/$slug',
+  path: '/eventos/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EmpresaSlugRoute = EmpresaSlugRouteImport.update({
   id: '/empresa/$slug',
   path: '/empresa/$slug',
@@ -246,6 +252,7 @@ export interface FileRoutesByFullPath {
   '/categoria/$slug': typeof CategoriaSlugRoute
   '/cidades/$slug': typeof CidadesSlugRoute
   '/empresa/$slug': typeof EmpresaSlugRoute
+  '/eventos/$slug': typeof EventosSlugRoute
   '/painel/avaliacoes': typeof PainelAvaliacoesRoute
   '/painel/empresas': typeof PainelEmpresasRouteWithChildren
   '/painel/favoritos': typeof PainelFavoritosRoute
@@ -281,6 +288,7 @@ export interface FileRoutesByTo {
   '/categoria/$slug': typeof CategoriaSlugRoute
   '/cidades/$slug': typeof CidadesSlugRoute
   '/empresa/$slug': typeof EmpresaSlugRoute
+  '/eventos/$slug': typeof EventosSlugRoute
   '/painel/avaliacoes': typeof PainelAvaliacoesRoute
   '/painel/empresas': typeof PainelEmpresasRouteWithChildren
   '/painel/favoritos': typeof PainelFavoritosRoute
@@ -319,6 +327,7 @@ export interface FileRoutesById {
   '/categoria/$slug': typeof CategoriaSlugRoute
   '/cidades/$slug': typeof CidadesSlugRoute
   '/empresa/$slug': typeof EmpresaSlugRoute
+  '/eventos/$slug': typeof EventosSlugRoute
   '/painel/avaliacoes': typeof PainelAvaliacoesRoute
   '/painel/empresas': typeof PainelEmpresasRouteWithChildren
   '/painel/favoritos': typeof PainelFavoritosRoute
@@ -358,6 +367,7 @@ export interface FileRouteTypes {
     | '/categoria/$slug'
     | '/cidades/$slug'
     | '/empresa/$slug'
+    | '/eventos/$slug'
     | '/painel/avaliacoes'
     | '/painel/empresas'
     | '/painel/favoritos'
@@ -393,6 +403,7 @@ export interface FileRouteTypes {
     | '/categoria/$slug'
     | '/cidades/$slug'
     | '/empresa/$slug'
+    | '/eventos/$slug'
     | '/painel/avaliacoes'
     | '/painel/empresas'
     | '/painel/favoritos'
@@ -430,6 +441,7 @@ export interface FileRouteTypes {
     | '/categoria/$slug'
     | '/cidades/$slug'
     | '/empresa/$slug'
+    | '/eventos/$slug'
     | '/painel/avaliacoes'
     | '/painel/empresas'
     | '/painel/favoritos'
@@ -460,6 +472,7 @@ export interface RootRouteChildren {
   CategoriaSlugRoute: typeof CategoriaSlugRoute
   CidadesSlugRoute: typeof CidadesSlugRoute
   EmpresaSlugRoute: typeof EmpresaSlugRoute
+  EventosSlugRoute: typeof EventosSlugRoute
   BlogIndexRoute: typeof BlogIndexRoute
   EventosIndexRoute: typeof EventosIndexRoute
 }
@@ -612,6 +625,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/painel/avaliacoes'
       preLoaderRoute: typeof PainelAvaliacoesRouteImport
       parentRoute: typeof PainelRoute
+    }
+    '/eventos/$slug': {
+      id: '/eventos/$slug'
+      path: '/eventos/$slug'
+      fullPath: '/eventos/$slug'
+      preLoaderRoute: typeof EventosSlugRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/empresa/$slug': {
       id: '/empresa/$slug'
@@ -792,6 +812,7 @@ const rootRouteChildren: RootRouteChildren = {
   CategoriaSlugRoute: CategoriaSlugRoute,
   CidadesSlugRoute: CidadesSlugRoute,
   EmpresaSlugRoute: EmpresaSlugRoute,
+  EventosSlugRoute: EventosSlugRoute,
   BlogIndexRoute: BlogIndexRoute,
   EventosIndexRoute: EventosIndexRoute,
 }
