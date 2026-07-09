@@ -3,14 +3,14 @@ import { supabase } from "@/integrations/supabase/client";
 export type NavItem = { to: string; label: string; danger?: boolean };
 
 export const DEFAULT_NAV_ITEMS: NavItem[] = [
-  { to: "/", label: "🏠 Home" },
-  { to: "/blog", label: "📰 Notícias" },
-  { to: "/buscar", label: "🏢 Empresas" },
-  { to: "/eventos", label: "📅 Eventos" },
-  { to: "/marketplace", label: "🛍 Marketplace" },
-  { to: "/transporte", label: "🚌 Transporte Público" },
-  { to: "/empregos", label: "💼 Empregos" },
-  { to: "/promocoes", label: "📢 Promoções" },
+  { to: "/", label: "Home" },
+  { to: "/blog", label: "Notícias" },
+  { to: "/buscar", label: "Empresas" },
+  { to: "/eventos", label: "Eventos" },
+  { to: "/marketplace", label: "Marketplace" },
+  { to: "/transporte", label: "Transporte" },
+  { to: "/empregos", label: "Empregos" },
+  { to: "/promocoes", label: "Promoções" },
 ];
 
 export async function fetchNavItems(): Promise<NavItem[]> {
