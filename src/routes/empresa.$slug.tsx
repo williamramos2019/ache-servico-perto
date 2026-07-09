@@ -441,6 +441,14 @@ function CompanyPage() {
               isVerified={isVerified}
             />
 
+            {/* Fase 2 — Linha do tempo */}
+            <CompanyTimeline
+              foundedYear={company.founded_year}
+              createdAt={company.created_at}
+              isVerified={!!isVerified}
+              servicesCompleted={company.services_completed}
+            />
+
             {/* Área de cobertura */}
             {coverage.data && coverage.data.length > 0 && (
               <CoverageArea cities={coverage.data} primaryCity={company.cities?.name ?? null} />
