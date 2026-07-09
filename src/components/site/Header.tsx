@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Heart, LayoutDashboard, LogOut, MapPin, Menu, Search, ShieldCheck, X } from "lucide-react";
+import { Bell, Heart, LayoutDashboard, LogOut, MapPin, Menu, Search, ShieldCheck, X } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
+import { unreadInboxCount } from "@/lib/push.functions";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { useAdmin } from "@/hooks/use-admin";
@@ -25,6 +27,15 @@ export function Header() {
   const isAuthed = !!userId;
 
   const isActive = (to: string) => (to === "/" ? pathname === "/" : pathname.startsWith(to));
+
+  const fetchUnread = useServerFn(unreadInboxCount);
+  const { data: unread } = useQuery({
+    queryKey: ["push-unread"],
+    queryFn: () => fetchUnread({}),
+    enabled: isAuthed,
+    refetchInterval: 60_000,
+  });
+  const unreadCount = unread?.count ?? 0;
 
   async function handleSignOut() {
     // Sign-out hygiene: cancel in-flight protected queries, clear cache,
@@ -95,6 +106,18 @@ export function Header() {
           <Link to="/favoritos" aria-label="Favoritos" className="hidden sm:inline-flex">
             <Button variant="ghost" size="icon" className="rounded-full"><Heart className="h-5 w-5" /></Button>
           </Link>
+          {isAuthed ? (
+            <Link to="/painel/notificacoes" aria-label="Notificações" className="relative">
+              <Button variant="ghost" size="icon" className="rounded-full">
+                <Bell className="h-5 w-5" />
+                {unreadCount > 0 && (
+                  <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-bold text-destructive-foreground">
+                    {unreadCount > 99 ? "99+" : unreadCount}
+                  </span>
+                )}
+              </Button>
+            </Link>
+          ) : null}
           <Link to="/buscar" className="lg:hidden">
             <Button variant="ghost" size="icon" aria-label="Buscar" className="rounded-full"><Search className="h-5 w-5" /></Button>
           </Link>

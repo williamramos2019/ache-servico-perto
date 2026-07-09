@@ -1,5 +1,5 @@
 /* AgendaAqui Service Worker — PWA offline + push notifications */
-const VERSION = 'v1.0.0';
+const VERSION = 'v1.1.0';
 const STATIC_CACHE = `static-${VERSION}`;
 const RUNTIME_CACHE = `runtime-${VERSION}`;
 const IMAGE_CACHE = `images-${VERSION}`;
@@ -43,98 +43,133 @@ self.addEventListener('fetch', (event) => {
 
   const url = new URL(req.url);
   if (url.origin !== self.location.origin && !/\.(png|jpg|jpeg|webp|svg|gif|ico|woff2?)$/i.test(url.pathname)) return;
+  // Never cache API/tracking calls
+  if (url.pathname.startsWith('/api/')) return;
 
-  // Navigation → network-first + offline fallback
   if (req.mode === 'navigate') {
-    event.respondWith(
-      (async () => {
-        try {
-          const preload = await event.preloadResponse;
-          if (preload) return preload;
-          const fresh = await fetch(req);
-          const cache = await caches.open(RUNTIME_CACHE);
-          cache.put(req, fresh.clone());
-          return fresh;
-        } catch {
-          const cached = await caches.match(req);
-          return cached || caches.match(OFFLINE_URL);
-        }
-      })()
-    );
+    event.respondWith((async () => {
+      try {
+        const preload = await event.preloadResponse;
+        if (preload) return preload;
+        const fresh = await fetch(req);
+        const cache = await caches.open(RUNTIME_CACHE);
+        cache.put(req, fresh.clone());
+        return fresh;
+      } catch {
+        const cached = await caches.match(req);
+        return cached || caches.match(OFFLINE_URL);
+      }
+    })());
     return;
   }
 
-  // Images → cache-first
   if (req.destination === 'image') {
-    event.respondWith(
-      caches.open(IMAGE_CACHE).then(async (cache) => {
-        const cached = await cache.match(req);
-        if (cached) return cached;
-        try {
-          const res = await fetch(req);
-          if (res.ok) cache.put(req, res.clone());
-          return res;
-        } catch {
-          return cached || new Response('', { status: 504 });
-        }
-      })
-    );
+    event.respondWith(caches.open(IMAGE_CACHE).then(async (cache) => {
+      const cached = await cache.match(req);
+      if (cached) return cached;
+      try {
+        const res = await fetch(req);
+        if (res.ok) cache.put(req, res.clone());
+        return res;
+      } catch { return cached || new Response('', { status: 504 }); }
+    }));
     return;
   }
 
-  // Static assets (JS/CSS/fonts) → stale-while-revalidate
   if (['style', 'script', 'font'].includes(req.destination)) {
-    event.respondWith(
-      caches.open(RUNTIME_CACHE).then(async (cache) => {
-        const cached = await cache.match(req);
-        const network = fetch(req).then((res) => {
-          if (res && res.ok) cache.put(req, res.clone());
-          return res;
-        }).catch(() => cached);
-        return cached || network;
-      })
-    );
+    event.respondWith(caches.open(RUNTIME_CACHE).then(async (cache) => {
+      const cached = await cache.match(req);
+      const network = fetch(req).then((res) => {
+        if (res && res.ok) cache.put(req, res.clone());
+        return res;
+      }).catch(() => cached);
+      return cached || network;
+    }));
     return;
   }
 });
 
 // ---------- Push notifications ----------
+function track(deliveryId, event) {
+  if (!deliveryId) return Promise.resolve();
+  return fetch('/api/public/push/track', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ delivery_id: deliveryId, event }),
+    keepalive: true,
+  }).catch(() => {});
+}
+
 self.addEventListener('push', (event) => {
   let data = {};
-  try { data = event.data ? event.data.json() : {}; } catch { data = { title: 'AgendaAqui', body: event.data ? event.data.text() : '' }; }
+  try { data = event.data ? event.data.json() : {}; }
+  catch { data = { title: 'AgendaAqui', body: event.data ? event.data.text() : '' }; }
+
   const title = data.title || 'AgendaAqui';
+  const actions = Array.isArray(data.buttons)
+    ? data.buttons.slice(0, 2).map((b, i) => ({ action: `btn_${i}`, title: b.label || `Ação ${i + 1}` }))
+    : [];
+
   const options = {
     body: data.body || '',
     icon: data.icon || '/icons/icon-192.png',
     badge: '/icons/icon-192.png',
     image: data.image,
-    tag: data.tag || 'agendaaqui',
-    data: { url: data.url || '/' },
-    vibrate: [100, 50, 100],
+    tag: data.tag || `agendaaqui-${data.notification_id || Date.now()}`,
+    data: {
+      url: data.url || '/',
+      notification_id: data.notification_id,
+      delivery_id: data.delivery_id,
+      buttons: Array.isArray(data.buttons) ? data.buttons : [],
+    },
+    vibrate: data.vibrate === false ? undefined : [120, 60, 120],
+    silent: data.silent === true,
     requireInteraction: !!data.requireInteraction,
+    actions,
   };
-  event.waitUntil(self.registration.showNotification(title, options));
+
+  event.waitUntil(Promise.all([
+    self.registration.showNotification(title, options),
+    track(data.delivery_id, 'delivered'),
+  ]));
 });
 
 self.addEventListener('notificationclick', (event) => {
+  const d = event.notification.data || {};
   event.notification.close();
-  const target = (event.notification.data && event.notification.data.url) || '/';
-  event.waitUntil(
-    (async () => {
-      const clients = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
-      for (const client of clients) {
-        if ('focus' in client) {
-          await client.focus();
-          if ('navigate' in client) await client.navigate(target);
-          return;
-        }
+  let target = d.url || '/';
+  if (event.action && event.action.startsWith('btn_')) {
+    const idx = Number(event.action.slice(4));
+    const b = (d.buttons || [])[idx];
+    if (b && b.url) target = b.url;
+  }
+  event.waitUntil((async () => {
+    await track(d.delivery_id, 'clicked');
+    const clients = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    for (const client of clients) {
+      if ('focus' in client) {
+        try { await client.focus(); } catch {}
+        if ('navigate' in client) { try { await client.navigate(target); } catch {} }
+        return;
       }
-      await self.clients.openWindow(target);
-    })()
-  );
+    }
+    await self.clients.openWindow(target);
+  })());
 });
 
-// ---------- Message from page (skipWaiting) ----------
+self.addEventListener('pushsubscriptionchange', (event) => {
+  event.waitUntil((async () => {
+    try {
+      const newSub = await self.registration.pushManager.subscribe(event.oldSubscription.options);
+      await fetch('/api/public/push/track', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ event: 'resubscribe', old_endpoint: event.oldSubscription?.endpoint, new_subscription: newSub }),
+      });
+    } catch {}
+  })());
+});
+
 self.addEventListener('message', (event) => {
   if (event.data === 'SKIP_WAITING') self.skipWaiting();
 });
