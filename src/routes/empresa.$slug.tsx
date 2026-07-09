@@ -4,7 +4,7 @@ import {
   Phone, MessageCircle, Share2, MapPin, Globe, Instagram, Facebook, Star, BadgeCheck,
   Clock, CheckCircle2, Copy, Navigation, Mail, CalendarDays, ShieldCheck, Award,
   CreditCard, Banknote, Users, TrendingUp, Sparkles, ThumbsUp, Building2, Languages,
-  Wallet, QrCode, ExternalLink, ChevronRight,
+  Wallet, QrCode, ExternalLink, ChevronRight, Download, FileText,
 } from "lucide-react";
 import { toast } from "sonner";
 import { SiteLayout } from "@/components/site/SiteLayout";
@@ -13,9 +13,14 @@ import { Badge } from "@/components/ui/badge";
 import { ReviewsSection } from "@/components/site/ReviewsSection";
 import { QuoteDialog } from "@/components/site/QuoteDialog";
 import { CompanyCard, toCompanyCardData } from "@/components/site/CompanyCard";
-import { companyBySlugQueryOptions, fetchCompanyReviews, fetchSimilarCompanies } from "@/lib/queries";
+import { companyBySlugQueryOptions, fetchCompanyReviews, fetchSimilarCompanies, fetchCitiesByIds } from "@/lib/queries";
 import { FavoriteButton } from "@/components/site/FavoriteButton";
 import { telUrl, waUrl } from "@/lib/format";
+import {
+  QualityBars, CertificationsGrid, DifferentialsGrid, CoverageArea, SocialLinksExtra,
+  ResponseStatsRow, PromotionBanner, StatusPills,
+  type QualityScores, type Certifications,
+} from "@/components/site/CompanyProfileSections";
 
 export const Route = createFileRoute("/empresa/$slug")({
   head: ({ params }) => ({
