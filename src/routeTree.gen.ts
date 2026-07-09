@@ -48,6 +48,7 @@ import { Route as AdminCidadesRouteImport } from './routes/admin.cidades'
 import { Route as AdminBlogRouteImport } from './routes/admin.blog'
 import { Route as PainelEmpresasNovaRouteImport } from './routes/painel.empresas.nova'
 import { Route as PainelEmpresasIdRouteImport } from './routes/painel.empresas.$id'
+import { Route as ApiPublicPushTrackRouteImport } from './routes/api/public/push/track'
 
 const SobreRoute = SobreRouteImport.update({
   id: '/sobre',
@@ -244,6 +245,11 @@ const PainelEmpresasIdRoute = PainelEmpresasIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => PainelEmpresasRoute,
 } as any)
+const ApiPublicPushTrackRoute = ApiPublicPushTrackRouteImport.update({
+  id: '/api/public/push/track',
+  path: '/api/public/push/track',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -285,6 +291,7 @@ export interface FileRoutesByFullPath {
   '/painel/': typeof PainelIndexRoute
   '/painel/empresas/$id': typeof PainelEmpresasIdRoute
   '/painel/empresas/nova': typeof PainelEmpresasNovaRoute
+  '/api/public/push/track': typeof ApiPublicPushTrackRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -324,6 +331,7 @@ export interface FileRoutesByTo {
   '/painel': typeof PainelIndexRoute
   '/painel/empresas/$id': typeof PainelEmpresasIdRoute
   '/painel/empresas/nova': typeof PainelEmpresasNovaRoute
+  '/api/public/push/track': typeof ApiPublicPushTrackRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -366,6 +374,7 @@ export interface FileRoutesById {
   '/painel/': typeof PainelIndexRoute
   '/painel/empresas/$id': typeof PainelEmpresasIdRoute
   '/painel/empresas/nova': typeof PainelEmpresasNovaRoute
+  '/api/public/push/track': typeof ApiPublicPushTrackRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -409,6 +418,7 @@ export interface FileRouteTypes {
     | '/painel/'
     | '/painel/empresas/$id'
     | '/painel/empresas/nova'
+    | '/api/public/push/track'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -448,6 +458,7 @@ export interface FileRouteTypes {
     | '/painel'
     | '/painel/empresas/$id'
     | '/painel/empresas/nova'
+    | '/api/public/push/track'
   id:
     | '__root__'
     | '/'
@@ -489,6 +500,7 @@ export interface FileRouteTypes {
     | '/painel/'
     | '/painel/empresas/$id'
     | '/painel/empresas/nova'
+    | '/api/public/push/track'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -511,6 +523,7 @@ export interface RootRouteChildren {
   EventosSlugRoute: typeof EventosSlugRoute
   BlogIndexRoute: typeof BlogIndexRoute
   EventosIndexRoute: typeof EventosIndexRoute
+  ApiPublicPushTrackRoute: typeof ApiPublicPushTrackRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -788,6 +801,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PainelEmpresasIdRouteImport
       parentRoute: typeof PainelEmpresasRoute
     }
+    '/api/public/push/track': {
+      id: '/api/public/push/track'
+      path: '/api/public/push/track'
+      fullPath: '/api/public/push/track'
+      preLoaderRoute: typeof ApiPublicPushTrackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -878,6 +898,7 @@ const rootRouteChildren: RootRouteChildren = {
   EventosSlugRoute: EventosSlugRoute,
   BlogIndexRoute: BlogIndexRoute,
   EventosIndexRoute: EventosIndexRoute,
+  ApiPublicPushTrackRoute: ApiPublicPushTrackRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

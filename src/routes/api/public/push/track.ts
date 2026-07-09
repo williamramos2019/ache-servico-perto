@@ -69,10 +69,12 @@ export const Route = createFileRoute("/api/public/push/track")({
         if (Object.keys(patch).length > 0) {
           await supabaseAdmin.from("push_deliveries").update(patch).eq("id", delivery_id);
           if (counter && deliv.notification_id) {
-            // increment counter
             const { data: n } = await supabaseAdmin.from("push_notifications").select(counter).eq("id", deliv.notification_id).maybeSingle();
             const current = (n as Record<string, number> | null)?.[counter] ?? 0;
-            await supabaseAdmin.from("push_notifications").update({ [counter]: current + 1 }).eq("id", deliv.notification_id);
+            const updatePatch = counter === "delivered_count" ? { delivered_count: current + 1 }
+              : counter === "opened_count" ? { opened_count: current + 1 }
+              : { clicked_count: current + 1 };
+            await supabaseAdmin.from("push_notifications").update(updatePatch).eq("id", deliv.notification_id);
           }
         }
 
