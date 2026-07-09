@@ -18,11 +18,11 @@ import { Route as FavoritosRouteImport } from './routes/favoritos'
 import { Route as EmergenciaRouteImport } from './routes/emergencia'
 import { Route as ContatoRouteImport } from './routes/contato'
 import { Route as BuscarRouteImport } from './routes/buscar'
-import { Route as BlogRouteImport } from './routes/blog'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PainelIndexRouteImport } from './routes/painel.index'
+import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as PainelPerfilRouteImport } from './routes/painel.perfil'
 import { Route as PainelLeadsRouteImport } from './routes/painel.leads'
@@ -89,11 +89,6 @@ const BuscarRoute = BuscarRouteImport.update({
   path: '/buscar',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BlogRoute = BlogRouteImport.update({
-  id: '/blog',
-  path: '/blog',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
@@ -113,6 +108,11 @@ const PainelIndexRoute = PainelIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => PainelRoute,
+} as any)
+const BlogIndexRoute = BlogIndexRouteImport.update({
+  id: '/blog/',
+  path: '/blog/',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
@@ -160,9 +160,9 @@ const CategoriaSlugRoute = CategoriaSlugRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const BlogSlugRoute = BlogSlugRouteImport.update({
-  id: '/$slug',
-  path: '/$slug',
-  getParentRoute: () => BlogRoute,
+  id: '/blog/$slug',
+  path: '/blog/$slug',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AdminServicosPublicosRoute = AdminServicosPublicosRouteImport.update({
   id: '/servicos-publicos',
@@ -219,7 +219,6 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
-  '/blog': typeof BlogRouteWithChildren
   '/buscar': typeof BuscarRoute
   '/contato': typeof ContatoRoute
   '/emergencia': typeof EmergenciaRoute
@@ -247,6 +246,7 @@ export interface FileRoutesByFullPath {
   '/painel/leads': typeof PainelLeadsRoute
   '/painel/perfil': typeof PainelPerfilRoute
   '/admin/': typeof AdminIndexRoute
+  '/blog/': typeof BlogIndexRoute
   '/painel/': typeof PainelIndexRoute
   '/painel/empresas/$id': typeof PainelEmpresasIdRoute
   '/painel/empresas/nova': typeof PainelEmpresasNovaRoute
@@ -254,7 +254,6 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
-  '/blog': typeof BlogRouteWithChildren
   '/buscar': typeof BuscarRoute
   '/contato': typeof ContatoRoute
   '/emergencia': typeof EmergenciaRoute
@@ -281,6 +280,7 @@ export interface FileRoutesByTo {
   '/painel/leads': typeof PainelLeadsRoute
   '/painel/perfil': typeof PainelPerfilRoute
   '/admin': typeof AdminIndexRoute
+  '/blog': typeof BlogIndexRoute
   '/painel': typeof PainelIndexRoute
   '/painel/empresas/$id': typeof PainelEmpresasIdRoute
   '/painel/empresas/nova': typeof PainelEmpresasNovaRoute
@@ -290,7 +290,6 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
-  '/blog': typeof BlogRouteWithChildren
   '/buscar': typeof BuscarRoute
   '/contato': typeof ContatoRoute
   '/emergencia': typeof EmergenciaRoute
@@ -318,6 +317,7 @@ export interface FileRoutesById {
   '/painel/leads': typeof PainelLeadsRoute
   '/painel/perfil': typeof PainelPerfilRoute
   '/admin/': typeof AdminIndexRoute
+  '/blog/': typeof BlogIndexRoute
   '/painel/': typeof PainelIndexRoute
   '/painel/empresas/$id': typeof PainelEmpresasIdRoute
   '/painel/empresas/nova': typeof PainelEmpresasNovaRoute
@@ -328,7 +328,6 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/auth'
-    | '/blog'
     | '/buscar'
     | '/contato'
     | '/emergencia'
@@ -356,6 +355,7 @@ export interface FileRouteTypes {
     | '/painel/leads'
     | '/painel/perfil'
     | '/admin/'
+    | '/blog/'
     | '/painel/'
     | '/painel/empresas/$id'
     | '/painel/empresas/nova'
@@ -363,7 +363,6 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
-    | '/blog'
     | '/buscar'
     | '/contato'
     | '/emergencia'
@@ -390,6 +389,7 @@ export interface FileRouteTypes {
     | '/painel/leads'
     | '/painel/perfil'
     | '/admin'
+    | '/blog'
     | '/painel'
     | '/painel/empresas/$id'
     | '/painel/empresas/nova'
@@ -398,7 +398,6 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/auth'
-    | '/blog'
     | '/buscar'
     | '/contato'
     | '/emergencia'
@@ -426,6 +425,7 @@ export interface FileRouteTypes {
     | '/painel/leads'
     | '/painel/perfil'
     | '/admin/'
+    | '/blog/'
     | '/painel/'
     | '/painel/empresas/$id'
     | '/painel/empresas/nova'
@@ -435,7 +435,6 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRouteWithChildren
   AuthRoute: typeof AuthRoute
-  BlogRoute: typeof BlogRouteWithChildren
   BuscarRoute: typeof BuscarRoute
   ContatoRoute: typeof ContatoRoute
   EmergenciaRoute: typeof EmergenciaRoute
@@ -445,9 +444,11 @@ export interface RootRouteChildren {
   ServicosPublicosRoute: typeof ServicosPublicosRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SobreRoute: typeof SobreRoute
+  BlogSlugRoute: typeof BlogSlugRoute
   CategoriaSlugRoute: typeof CategoriaSlugRoute
   CidadesSlugRoute: typeof CidadesSlugRoute
   EmpresaSlugRoute: typeof EmpresaSlugRoute
+  BlogIndexRoute: typeof BlogIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -515,13 +516,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BuscarRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/blog': {
-      id: '/blog'
-      path: '/blog'
-      fullPath: '/blog'
-      preLoaderRoute: typeof BlogRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/auth': {
       id: '/auth'
       path: '/auth'
@@ -549,6 +543,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/painel/'
       preLoaderRoute: typeof PainelIndexRouteImport
       parentRoute: typeof PainelRoute
+    }
+    '/blog/': {
+      id: '/blog/'
+      path: '/blog'
+      fullPath: '/blog/'
+      preLoaderRoute: typeof BlogIndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/admin/': {
       id: '/admin/'
@@ -615,10 +616,10 @@ declare module '@tanstack/react-router' {
     }
     '/blog/$slug': {
       id: '/blog/$slug'
-      path: '/$slug'
+      path: '/blog/$slug'
       fullPath: '/blog/$slug'
       preLoaderRoute: typeof BlogSlugRouteImport
-      parentRoute: typeof BlogRoute
+      parentRoute: typeof rootRouteImport
     }
     '/admin/servicos-publicos': {
       id: '/admin/servicos-publicos'
@@ -719,16 +720,6 @@ const AdminRouteChildren: AdminRouteChildren = {
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
-interface BlogRouteChildren {
-  BlogSlugRoute: typeof BlogSlugRoute
-}
-
-const BlogRouteChildren: BlogRouteChildren = {
-  BlogSlugRoute: BlogSlugRoute,
-}
-
-const BlogRouteWithChildren = BlogRoute._addFileChildren(BlogRouteChildren)
-
 interface PainelEmpresasRouteChildren {
   PainelEmpresasIdRoute: typeof PainelEmpresasIdRoute
   PainelEmpresasNovaRoute: typeof PainelEmpresasNovaRoute
@@ -768,7 +759,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
   AuthRoute: AuthRoute,
-  BlogRoute: BlogRouteWithChildren,
   BuscarRoute: BuscarRoute,
   ContatoRoute: ContatoRoute,
   EmergenciaRoute: EmergenciaRoute,
@@ -778,9 +768,11 @@ const rootRouteChildren: RootRouteChildren = {
   ServicosPublicosRoute: ServicosPublicosRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SobreRoute: SobreRoute,
+  BlogSlugRoute: BlogSlugRoute,
   CategoriaSlugRoute: CategoriaSlugRoute,
   CidadesSlugRoute: CidadesSlugRoute,
   EmpresaSlugRoute: EmpresaSlugRoute,
+  BlogIndexRoute: BlogIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -4,7 +4,7 @@ import { Calendar } from "lucide-react";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { fetchBlogPosts } from "@/lib/blog";
 
-export const Route = createFileRoute("/blog")({
+export const Route = createFileRoute("/blog/")({
   head: () => ({
     meta: [
       { title: "Blog AgendaAqui — Dicas e novidades sobre serviços locais" },
