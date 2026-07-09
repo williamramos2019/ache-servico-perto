@@ -24,7 +24,12 @@ function FavoritosPage() {
   const fav = useFavorites();
   const qc = useQueryClient();
 
-  if (userId === null) {
+  // While the auth singleton hydrates, userId is null. Avoid flashing the
+  // "sign in" state before we know for sure the user is signed out — wait
+  // until the favorites query has settled (it's disabled until userId is set).
+  const authHydrating = userId === null && fav.fetchStatus === "idle" && !fav.isFetched;
+
+  if (userId === null && !authHydrating) {
     return (
       <SiteLayout>
         <div className="container mx-auto max-w-md px-4 py-20 text-center">

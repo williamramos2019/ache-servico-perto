@@ -1,4 +1,4 @@
-import { useEffect, useSyncExternalStore } from "react";
+import { useSyncExternalStore } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -102,8 +102,6 @@ export function useToggleFavorite(companyId: string) {
     },
   });
 
-  // Hook compat: keep effect-free signature
-  useEffect(() => {}, []);
 
   return { isFav, isLoggedIn: !!userId, toggle: mutation.mutate, isPending: mutation.isPending };
 }
