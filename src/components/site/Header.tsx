@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Link, useRouterState } from "@tanstack/react-router";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
+import { useQueryClient } from "@tanstack/react-query";
 import { Heart, LayoutDashboard, LogOut, MapPin, Menu, Search, ShieldCheck, X } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -22,16 +23,24 @@ export function Header() {
   const { isAdmin, userId } = useAdmin();
   const [open, setOpen] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const isAuthed = !!userId;
 
   const isActive = (to: string) => (to === "/" ? pathname === "/" : pathname.startsWith(to));
 
   async function handleSignOut() {
+    // Sign-out hygiene: cancel in-flight protected queries, clear cache,
+    // then sign out and send the user to a public route.
+    await queryClient.cancelQueries();
+    queryClient.clear();
     const { error } = await supabase.auth.signOut();
     if (error) toast.error("Erro ao sair");
     else toast.success("Você saiu da conta");
     setOpen(false);
+    navigate({ to: "/", replace: true });
   }
+
 
 
   return (
@@ -143,6 +152,20 @@ export function Header() {
                 </Link>
               );
             })}
+            {(isAuthed || isAdmin) ? (
+              <div className="mt-2 grid grid-cols-2 gap-2 border-t border-border pt-3">
+                {isAuthed ? (
+                  <Link to="/painel" className="col-span-1" onClick={() => setOpen(false)}>
+                    <Button variant="outline" size="sm" className="w-full gap-2"><LayoutDashboard className="h-4 w-4" /> Meu painel</Button>
+                  </Link>
+                ) : null}
+                {isAdmin ? (
+                  <Link to="/admin" className="col-span-1" onClick={() => setOpen(false)}>
+                    <Button variant="outline" size="sm" className="w-full gap-2"><ShieldCheck className="h-4 w-4" /> Admin</Button>
+                  </Link>
+                ) : null}
+              </div>
+            ) : null}
             <div className="mt-2 flex gap-2 border-t border-border pt-3">
               <Link to="/favoritos" className="flex-1" onClick={() => setOpen(false)}>
                 <Button variant="outline" size="sm" className="w-full gap-2"><Heart className="h-4 w-4" /> Favoritos</Button>

@@ -60,7 +60,7 @@ function AdminBlog() {
       cover_url: p.cover_url || null,
       author_name: p.author_name || "Equipe AgendaAqui",
       published: !!p.published,
-      published_at: (p.published ? (p.published_at ?? new Date().toISOString()) : new Date().toISOString()) as string,
+      published_at: (p.published ? (p.published_at ?? new Date().toISOString()) : p.published_at) ?? undefined,
     };
     if (!payload.title || !payload.slug) return toast.error("Título e slug são obrigatórios");
     const q = p.id

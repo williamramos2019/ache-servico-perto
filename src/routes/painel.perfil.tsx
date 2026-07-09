@@ -39,7 +39,7 @@ function PanelPerfil() {
     if (!userId) return;
     setSaving(true);
     try {
-      await upsertMyProfile(userId, { name: name.trim() || null as unknown as string, avatar_url: avatar.trim() || null });
+      await upsertMyProfile(userId, { name: name.trim() || null, avatar_url: avatar.trim() || null });
       toast.success("Perfil atualizado");
       qc.invalidateQueries({ queryKey: ["my-profile"] });
     } catch (err) {

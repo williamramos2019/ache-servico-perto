@@ -22,7 +22,7 @@ const NAV: { to: "/admin" | "/admin/empresas" | "/admin/servicos-publicos" | "/a
 ];
 
 function AdminLayout() {
-  const { loading, isAdmin } = useAdmin();
+  const { loading, isAdmin, userId } = useAdmin();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   if (loading) {
@@ -33,15 +33,21 @@ function AdminLayout() {
     );
   }
   if (!isAdmin) {
+    const isAuthed = !!userId;
     return (
       <SiteLayout>
         <div className="container mx-auto max-w-md px-4 py-20 text-center">
           <h1 className="font-display text-2xl font-bold">Acesso restrito</h1>
           <p className="mt-2 text-muted-foreground">
-            Esta área é exclusiva para administradores do AgendaAqui.
+            {isAuthed
+              ? "Sua conta não tem permissão de administrador. Fale com a equipe se acredita que isso é um engano."
+              : "Esta área é exclusiva para administradores do AgendaAqui. Entre com uma conta de admin para continuar."}
           </p>
-          <Link to="/auth" className="mt-6 inline-flex rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90">
-            Entrar
+          <Link
+            to={isAuthed ? "/painel" : "/auth"}
+            className="mt-6 inline-flex rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+          >
+            {isAuthed ? "Ir para meu painel" : "Entrar"}
           </Link>
         </div>
       </SiteLayout>
