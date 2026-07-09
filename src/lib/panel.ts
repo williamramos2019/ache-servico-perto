@@ -168,7 +168,7 @@ export async function getMyProfile(userId: string) {
   return data;
 }
 
-export async function upsertMyProfile(userId: string, patch: { name?: string; avatar_url?: string | null }) {
+export async function upsertMyProfile(userId: string, patch: { name?: string | null; avatar_url?: string | null }) {
   const { error } = await supabase.from("profiles").upsert({ id: userId, ...patch }, { onConflict: "id" });
   if (error) throw error;
 }
