@@ -134,102 +134,227 @@ function EditarEmpresa() {
     }
   }
 
-  const slug = (company.data as { slug: string }).slug;
+  const slugStr = (company.data as { slug: string }).slug;
+
+  function toggleArray<K extends "differentials" | "badges" | "coverage_cities">(k: K, v: string) {
+    setForm((f) => {
+      const cur = (f[k] as string[] | undefined) ?? [];
+      const next = cur.includes(v) ? cur.filter((x) => x !== v) : [...cur, v];
+      return { ...f, [k]: next };
+    });
+  }
+
+  function setCert(key: string, value: boolean) {
+    setForm((f) => ({
+      ...f,
+      certifications: { ...(f.certifications as Record<string, boolean> | undefined ?? {}), [key]: value },
+    }));
+  }
+
+  function setQuality(key: string, value: number) {
+    setForm((f) => ({
+      ...f,
+      quality_scores: { ...(f.quality_scores as Record<string, number> | undefined ?? {}), [key]: value },
+    }));
+  }
+
+  const certs = (form.certifications as Record<string, boolean> | undefined) ?? {};
+  const qscores = (form.quality_scores as Record<string, number> | undefined) ?? {};
+  const promoObj = (Array.isArray(form.promotions) && form.promotions[0]) as { title?: string; description?: string } | undefined;
+  const finObj = (form.financing_info as { installments?: number; label?: string } | undefined) ?? {};
 
   return (
-    <div className="max-w-3xl">
+    <div className="max-w-4xl">
       <Link to="/painel/empresas" className="mb-2 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"><ChevronLeft className="h-4 w-4" /> Voltar</Link>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="font-display text-2xl font-bold">{form.name || "Empresa"}</h1>
-          <p className="text-xs text-muted-foreground">/empresa/{slug}</p>
+          <p className="text-xs text-muted-foreground">/empresa/{slugStr}</p>
         </div>
         <div className="flex gap-2">
-          <Link to="/empresa/$slug" params={{ slug }} target="_blank"><Button variant="outline" size="sm" className="gap-1"><ExternalLink className="h-4 w-4" /> Ver</Button></Link>
+          <Link to="/empresa/$slug" params={{ slug: slugStr }} target="_blank"><Button variant="outline" size="sm" className="gap-1"><ExternalLink className="h-4 w-4" /> Ver</Button></Link>
           <Button variant="ghost" size="sm" className="gap-1 text-destructive" onClick={remove}><Trash2 className="h-4 w-4" /> Excluir</Button>
         </div>
       </div>
 
-      <form onSubmit={save} className="mt-6 space-y-5 rounded-xl border border-border bg-card p-5">
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div className="sm:col-span-2">
-            <Label>Nome *</Label>
-            <Input value={form.name ?? ""} onChange={(e) => set("name", e.target.value)} required />
-          </div>
-          <div className="sm:col-span-2">
-            <Label>Slogan</Label>
-            <Input value={form.tagline ?? ""} onChange={(e) => set("tagline", e.target.value)} />
-          </div>
-          <div className="sm:col-span-2">
-            <Label>Descrição</Label>
-            <Textarea rows={5} value={form.description ?? ""} onChange={(e) => set("description", e.target.value)} />
-          </div>
-          <div>
-            <Label>Status</Label>
-            <Select value={form.status ?? "pending"} onValueChange={(v) => set("status", v)}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="active">Ativa</SelectItem>
-                <SelectItem value="pending">Pendente</SelectItem>
-                <SelectItem value="paused">Pausada</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div>
-            <Label>Cidade</Label>
-            <Select value={form.city_id ?? ""} onValueChange={(v) => set("city_id", v)}>
-              <SelectTrigger><SelectValue placeholder="Selecione…" /></SelectTrigger>
-              <SelectContent>
-                {(cities.data ?? []).map((c) => <SelectItem key={c.id} value={c.id}>{c.name} — {c.state}</SelectItem>)}
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="sm:col-span-2">
-            <Label>Endereço</Label>
-            <Input value={form.address ?? ""} onChange={(e) => set("address", e.target.value)} />
-          </div>
-          <div>
-            <Label>CEP</Label>
-            <Input value={form.zip ?? ""} onChange={(e) => set("zip", e.target.value)} />
-          </div>
-          <div>
-            <Label>Telefone</Label>
-            <Input value={form.phone ?? ""} onChange={(e) => set("phone", e.target.value)} />
-          </div>
-          <div>
-            <Label>WhatsApp</Label>
-            <Input value={form.whatsapp ?? ""} onChange={(e) => set("whatsapp", e.target.value)} />
-          </div>
-          <div>
-            <Label>E-mail</Label>
-            <Input type="email" value={form.email ?? ""} onChange={(e) => set("email", e.target.value)} />
-          </div>
-          <div>
-            <Label>Website</Label>
-            <Input value={form.website ?? ""} onChange={(e) => set("website", e.target.value)} placeholder="https://" />
-          </div>
-          <div>
-            <Label>Instagram</Label>
-            <Input value={form.instagram ?? ""} onChange={(e) => set("instagram", e.target.value)} />
-          </div>
-          <div>
-            <Label>Facebook</Label>
-            <Input value={form.facebook ?? ""} onChange={(e) => set("facebook", e.target.value)} />
-          </div>
-          <div>
-            <Label>Logo (URL)</Label>
-            <Input value={form.logo_url ?? ""} onChange={(e) => set("logo_url", e.target.value)} placeholder="https://" />
-          </div>
-          <div>
-            <Label>Banner (URL)</Label>
-            <Input value={form.banner_url ?? ""} onChange={(e) => set("banner_url", e.target.value)} placeholder="https://" />
-          </div>
-          <div className="sm:col-span-2">
-            <Label>Vídeo (URL do YouTube)</Label>
-            <Input value={form.video_url ?? ""} onChange={(e) => set("video_url", e.target.value)} placeholder="https://youtube.com/…" />
-          </div>
-        </div>
-        <div className="flex justify-end gap-2 pt-2">
+      <form onSubmit={save} className="mt-6">
+        <Tabs defaultValue="perfil" className="w-full">
+          <TabsList className="w-full justify-start overflow-x-auto">
+            <TabsTrigger value="perfil">Perfil</TabsTrigger>
+            <TabsTrigger value="midia">Mídia</TabsTrigger>
+            <TabsTrigger value="reputacao">Reputação</TabsTrigger>
+            <TabsTrigger value="cobertura">Cobertura</TabsTrigger>
+            <TabsTrigger value="cert">Certificações</TabsTrigger>
+            <TabsTrigger value="promo">Promoções</TabsTrigger>
+          </TabsList>
+
+          {/* -------- Perfil -------- */}
+          <TabsContent value="perfil" className="mt-4 rounded-xl border border-border bg-card p-5">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="sm:col-span-2"><Label>Nome *</Label><Input value={form.name ?? ""} onChange={(e) => set("name", e.target.value)} required /></div>
+              <div className="sm:col-span-2"><Label>Slogan</Label><Input value={form.tagline ?? ""} onChange={(e) => set("tagline", e.target.value)} /></div>
+              <div className="sm:col-span-2"><Label>Descrição</Label><Textarea rows={5} value={form.description ?? ""} onChange={(e) => set("description", e.target.value)} /></div>
+              <div>
+                <Label>Status</Label>
+                <Select value={form.status ?? "pending"} onValueChange={(v) => set("status", v)}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="active">Ativa</SelectItem>
+                    <SelectItem value="pending">Pendente</SelectItem>
+                    <SelectItem value="paused">Pausada</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label>Cidade principal</Label>
+                <Select value={form.city_id ?? ""} onValueChange={(v) => set("city_id", v)}>
+                  <SelectTrigger><SelectValue placeholder="Selecione…" /></SelectTrigger>
+                  <SelectContent>
+                    {(cities.data ?? []).map((c) => <SelectItem key={c.id} value={c.id}>{c.name} — {c.state}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="sm:col-span-2"><Label>Endereço</Label><Input value={form.address ?? ""} onChange={(e) => set("address", e.target.value)} /></div>
+              <div><Label>CEP</Label><Input value={form.zip ?? ""} onChange={(e) => set("zip", e.target.value)} /></div>
+              <div><Label>Telefone</Label><Input value={form.phone ?? ""} onChange={(e) => set("phone", e.target.value)} /></div>
+              <div><Label>WhatsApp</Label><Input value={form.whatsapp ?? ""} onChange={(e) => set("whatsapp", e.target.value)} /></div>
+              <div><Label>E-mail</Label><Input type="email" value={form.email ?? ""} onChange={(e) => set("email", e.target.value)} /></div>
+              <div><Label>Website</Label><Input value={form.website ?? ""} onChange={(e) => set("website", e.target.value)} placeholder="https://" /></div>
+              <div><Label>Instagram</Label><Input value={form.instagram ?? ""} onChange={(e) => set("instagram", e.target.value)} placeholder="@usuario" /></div>
+              <div><Label>Facebook</Label><Input value={form.facebook ?? ""} onChange={(e) => set("facebook", e.target.value)} /></div>
+              <div><Label>TikTok</Label><Input value={form.tiktok ?? ""} onChange={(e) => set("tiktok", e.target.value)} placeholder="@usuario" /></div>
+              <div><Label>YouTube</Label><Input value={form.youtube ?? ""} onChange={(e) => set("youtube", e.target.value)} placeholder="@canal ou URL" /></div>
+              <div><Label>Ano de fundação</Label><Input type="number" value={form.founded_year ?? ""} onChange={(e) => set("founded_year", e.target.value ? Number(e.target.value) : null)} placeholder="2012" /></div>
+              <div>
+                <Label>Faixa de preço</Label>
+                <Select value={form.price_range ? String(form.price_range) : ""} onValueChange={(v) => set("price_range", v ? Number(v) : null)}>
+                  <SelectTrigger><SelectValue placeholder="—" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1">$ — econômico</SelectItem>
+                    <SelectItem value="2">$$ — intermediário</SelectItem>
+                    <SelectItem value="3">$$$ — premium</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </TabsContent>
+
+          {/* -------- Mídia -------- */}
+          <TabsContent value="midia" className="mt-4 rounded-xl border border-border bg-card p-5">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div><Label>Logo (URL)</Label><Input value={form.logo_url ?? ""} onChange={(e) => set("logo_url", e.target.value)} placeholder="https://" /></div>
+              <div><Label>Banner (URL)</Label><Input value={form.banner_url ?? ""} onChange={(e) => set("banner_url", e.target.value)} placeholder="https://" /></div>
+              <div className="sm:col-span-2"><Label>Vídeo (YouTube)</Label><Input value={form.video_url ?? ""} onChange={(e) => set("video_url", e.target.value)} placeholder="https://youtube.com/…" /></div>
+              <div className="sm:col-span-2"><Label>Tour 360° (embed URL)</Label><Input value={form.tour_360_url ?? ""} onChange={(e) => set("tour_360_url", e.target.value)} placeholder="https://…" /></div>
+              <div><Label>Catálogo (URL)</Label><Input value={form.catalog_url ?? ""} onChange={(e) => set("catalog_url", e.target.value)} placeholder="https://…pdf" /></div>
+              <div><Label>Tabela de preços (URL)</Label><Input value={form.pricebook_url ?? ""} onChange={(e) => set("pricebook_url", e.target.value)} placeholder="https://…pdf" /></div>
+              <div className="sm:col-span-2"><Label>Portfólio em PDF (URL)</Label><Input value={form.portfolio_pdf_url ?? ""} onChange={(e) => set("portfolio_pdf_url", e.target.value)} placeholder="https://…pdf" /></div>
+            </div>
+            <p className="mt-4 text-xs text-muted-foreground">A galeria de fotos é gerenciada em breve pela aba Mídia dedicada.</p>
+          </TabsContent>
+
+          {/* -------- Reputação e atendimento -------- */}
+          <TabsContent value="reputacao" className="mt-4 rounded-xl border border-border bg-card p-5">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div><Label>Tempo de resposta (minutos)</Label><Input type="number" value={form.response_time_minutes ?? ""} onChange={(e) => set("response_time_minutes", e.target.value ? Number(e.target.value) : null)} placeholder="5" /></div>
+              <div><Label>Taxa de resposta (%)</Label><Input type="number" step="0.1" min="0" max="100" value={form.response_rate ?? ""} onChange={(e) => set("response_rate", e.target.value ? Number(e.target.value) : null)} placeholder="99" /></div>
+              <div><Label>Serviços realizados (total)</Label><Input type="number" value={form.services_completed ?? ""} onChange={(e) => set("services_completed", e.target.value ? Number(e.target.value) : null)} placeholder="320" /></div>
+              <div><Label>Clientes atendidos (total)</Label><Input type="number" value={form.clients_served ?? ""} onChange={(e) => set("clients_served", e.target.value ? Number(e.target.value) : null)} placeholder="180" /></div>
+            </div>
+
+            <div className="mt-6">
+              <Label className="mb-2 block">Indicadores de qualidade (0 a 5)</Label>
+              <div className="grid gap-3 sm:grid-cols-2">
+                {QUALITY_FIELDS.map((f) => (
+                  <div key={f.key}>
+                    <Label className="text-xs text-muted-foreground">{f.label}</Label>
+                    <Input type="number" step="0.1" min="0" max="5" value={qscores[f.key] ?? ""} onChange={(e) => setQuality(f.key, Number(e.target.value))} placeholder="4.8" />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-6">
+              <Label className="mb-2 block">Diferenciais (ícones no perfil)</Label>
+              <div className="grid gap-2 sm:grid-cols-2">
+                {DIFFERENTIAL_OPTIONS.map((opt) => {
+                  const checked = (form.differentials ?? []).includes(opt.value);
+                  return (
+                    <label key={opt.value} className="flex items-center gap-2 rounded-lg border border-border p-2 text-sm cursor-pointer hover:bg-muted/40">
+                      <Checkbox checked={checked} onCheckedChange={() => toggleArray("differentials", opt.value)} />
+                      {opt.label}
+                    </label>
+                  );
+                })}
+              </div>
+            </div>
+          </TabsContent>
+
+          {/* -------- Cobertura -------- */}
+          <TabsContent value="cobertura" className="mt-4 rounded-xl border border-border bg-card p-5">
+            <Label className="mb-2 block">Cidades atendidas (além da sede)</Label>
+            <div className="grid gap-2 sm:grid-cols-2">
+              {(cities.data ?? []).map((c) => {
+                const checked = (form.coverage_cities ?? []).includes(c.id);
+                return (
+                  <label key={c.id} className="flex items-center gap-2 rounded-lg border border-border p-2 text-sm cursor-pointer hover:bg-muted/40">
+                    <Checkbox checked={checked} onCheckedChange={() => toggleArray("coverage_cities", c.id)} />
+                    {c.name} — {c.state}
+                  </label>
+                );
+              })}
+            </div>
+          </TabsContent>
+
+          {/* -------- Certificações e selos -------- */}
+          <TabsContent value="cert" className="mt-4 rounded-xl border border-border bg-card p-5">
+            <Accordion type="multiple" defaultValue={["c", "b"]}>
+              <AccordionItem value="c">
+                <AccordionTrigger>Certificações</AccordionTrigger>
+                <AccordionContent>
+                  <div className="grid gap-2 sm:grid-cols-2">
+                    {CERT_FIELDS.map((f) => (
+                      <label key={f.key} className="flex items-center gap-2 rounded-lg border border-border p-2 text-sm cursor-pointer hover:bg-muted/40">
+                        <Checkbox checked={!!certs[f.key]} onCheckedChange={(v) => setCert(f.key, !!v)} />
+                        {f.label}
+                      </label>
+                    ))}
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="b">
+                <AccordionTrigger>Selos e reconhecimentos</AccordionTrigger>
+                <AccordionContent>
+                  <div className="grid gap-2 sm:grid-cols-2">
+                    {BADGE_OPTIONS.map((opt) => {
+                      const checked = (form.badges ?? []).includes(opt.key);
+                      return (
+                        <label key={opt.key} className="flex items-center gap-2 rounded-lg border border-border p-2 text-sm cursor-pointer hover:bg-muted/40">
+                          <Checkbox checked={checked} onCheckedChange={() => toggleArray("badges", opt.key)} />
+                          {opt.label}
+                        </label>
+                      );
+                    })}
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </TabsContent>
+
+          {/* -------- Promoções e financiamento -------- */}
+          <TabsContent value="promo" className="mt-4 rounded-xl border border-border bg-card p-5">
+            <div className="grid gap-4">
+              <div><Label>Título da promoção</Label><Input value={promoObj?.title ?? ""} onChange={(e) => set("promotions", [{ ...(promoObj ?? {}), title: e.target.value }])} placeholder="15% em projetos fechados este mês" /></div>
+              <div><Label>Descrição</Label><Textarea rows={3} value={promoObj?.description ?? ""} onChange={(e) => set("promotions", [{ ...(promoObj ?? {}), description: e.target.value }])} /></div>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div><Label>Parcelamento em até (x)</Label><Input type="number" value={finObj.installments ?? ""} onChange={(e) => set("financing_info", { ...finObj, installments: e.target.value ? Number(e.target.value) : undefined })} placeholder="12" /></div>
+                <div><Label>Rótulo</Label><Input value={finObj.label ?? ""} onChange={(e) => set("financing_info", { ...finObj, label: e.target.value })} placeholder="sem juros" /></div>
+              </div>
+            </div>
+          </TabsContent>
+        </Tabs>
+
+        <div className="mt-5 flex justify-end gap-2">
           <Button type="submit" disabled={saving}>{saving ? "Salvando…" : "Salvar alterações"}</Button>
         </div>
       </form>
