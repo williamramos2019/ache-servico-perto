@@ -106,9 +106,18 @@ export function Header() {
           <Link to="/favoritos" aria-label="Favoritos" className="hidden sm:inline-flex">
             <Button variant="ghost" size="icon" className="rounded-full"><Heart className="h-5 w-5" /></Button>
           </Link>
-          <Link to="/buscar" className="lg:hidden">
-            <Button variant="ghost" size="icon" aria-label="Buscar" className="rounded-full"><Search className="h-5 w-5" /></Button>
-          </Link>
+          {isAuthed ? (
+            <Link to="/painel/notificacoes" aria-label="Notificações" className="relative">
+              <Button variant="ghost" size="icon" className="rounded-full">
+                <Bell className="h-5 w-5" />
+                {unreadCount > 0 && (
+                  <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-bold text-destructive-foreground">
+                    {unreadCount > 99 ? "99+" : unreadCount}
+                  </span>
+                )}
+              </Button>
+            </Link>
+          ) : null}
           {isAuthed ? (
             <Button variant="ghost" size="sm" className="hidden lg:inline-flex gap-1" onClick={handleSignOut} aria-label={site.header.logout_label}>
               <LogOut className="h-4 w-4" /> {site.header.logout_label}
