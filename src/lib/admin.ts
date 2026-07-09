@@ -29,17 +29,23 @@ export async function adminStats() {
   };
 }
 
-export async function adminListCompanies(opts: { q?: string; plan?: string; limit?: number } = {}) {
+export async function adminListCompanies(opts: { q?: string; plan?: string; featured?: "all" | "yes" | "no"; page?: number; pageSize?: number } = {}) {
+  const page = Math.max(1, opts.page ?? 1);
+  const pageSize = Math.min(200, Math.max(10, opts.pageSize ?? 50));
+  const from = (page - 1) * pageSize;
+  const to = from + pageSize - 1;
   let query = supabase
     .from("companies")
-    .select("id, name, slug, plan, featured, is_verified, status, city_id, cities(name), created_at")
+    .select("id, name, slug, plan, featured, is_verified, status, city_id, cities(name), created_at, email, phone", { count: "exact" })
     .order("created_at", { ascending: false })
-    .limit(opts.limit ?? 100);
+    .range(from, to);
   if (opts.q) query = query.ilike("name", `%${opts.q}%`);
   if (opts.plan && opts.plan !== "all") query = query.eq("plan", opts.plan);
-  const { data, error } = await query;
+  if (opts.featured === "yes") query = query.eq("featured", true);
+  if (opts.featured === "no") query = query.eq("featured", false);
+  const { data, error, count } = await query;
   if (error) throw error;
-  return data ?? [];
+  return { rows: data ?? [], total: count ?? 0, page, pageSize };
 }
 
 export async function adminUpdateCompany(id: string, patch: Record<string, unknown>) {
