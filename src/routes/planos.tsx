@@ -164,41 +164,42 @@ function PlanosPage() {
       <Dialog open={!!open} onOpenChange={(o) => !o && setOpen(null)}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Solicitar plano {open && PLANS.find((p) => p.id === open)?.name}</DialogTitle>
-            <DialogDescription>Preencha seus dados e entraremos em contato em até 24h.</DialogDescription>
+            <DialogTitle>Plano {open && PLANS.find((p) => p.id === open)?.name} — fale com a gente</DialogTitle>
+            <DialogDescription>Conte um pouco sobre seu negócio. Retornamos no seu WhatsApp em até 24h úteis.</DialogDescription>
           </DialogHeader>
           <form onSubmit={submit} className="space-y-3">
             <div>
-              <Label htmlFor="company_name">Nome da empresa *</Label>
-              <Input id="company_name" required value={form.company_name} onChange={(e) => setForm({ ...form, company_name: e.target.value })} maxLength={200} />
+              <Label htmlFor="company_name">Nome da sua empresa *</Label>
+              <Input id="company_name" placeholder="Ex: Marcenaria Arte em Madeira" required value={form.company_name} onChange={(e) => setForm({ ...form, company_name: e.target.value })} maxLength={200} />
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
               <div>
                 <Label htmlFor="contact_name">Seu nome *</Label>
-                <Input id="contact_name" required value={form.contact_name} onChange={(e) => setForm({ ...form, contact_name: e.target.value })} maxLength={120} />
+                <Input id="contact_name" placeholder="Como te chamamos?" required value={form.contact_name} onChange={(e) => setForm({ ...form, contact_name: e.target.value })} maxLength={120} />
               </div>
               <div>
-                <Label htmlFor="email">E-mail *</Label>
-                <Input id="email" type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} maxLength={255} />
+                <Label htmlFor="email">Seu melhor e-mail *</Label>
+                <Input id="email" type="email" placeholder="voce@exemplo.com" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} maxLength={255} />
               </div>
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
               <div>
-                <Label htmlFor="phone">Telefone</Label>
-                <Input id="phone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} maxLength={40} />
+                <Label htmlFor="phone">WhatsApp</Label>
+                <Input id="phone" placeholder="(31) 9 0000-0000" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} maxLength={40} />
               </div>
               <div>
-                <Label htmlFor="city">Cidade</Label>
-                <Input id="city" value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} maxLength={120} />
+                <Label htmlFor="city">Sua cidade</Label>
+                <Input id="city" placeholder="Vespasiano ou São José da Lapa" value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} maxLength={120} />
               </div>
             </div>
             <div>
-              <Label htmlFor="message">Mensagem (opcional)</Label>
-              <Textarea id="message" value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} maxLength={1000} />
+              <Label htmlFor="message">Algo que devemos saber? (opcional)</Label>
+              <Textarea id="message" placeholder="Conte um pouco do seu negócio ou o que espera do plano" value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} maxLength={1000} />
             </div>
             <Button type="submit" disabled={loading} className="w-full">
-              {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null} Enviar solicitação
+              {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null} Quero começar
             </Button>
+            <p className="text-center text-[11px] text-muted-foreground">Sem compromisso. Sem cobrança automática.</p>
           </form>
         </DialogContent>
       </Dialog>
