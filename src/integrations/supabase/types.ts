@@ -1018,6 +1018,102 @@ export type Database = {
         }
         Relationships: []
       }
+      notification_preferences: {
+        Row: {
+          atualizacoes: boolean
+          blog: boolean
+          empresas: boolean
+          eventos: boolean
+          marketplace: boolean
+          novidades: boolean
+          promocoes: boolean
+          quiet_end: number
+          quiet_hours_enabled: boolean
+          quiet_start: number
+          som: boolean
+          updated_at: string
+          user_id: string
+          vibracao: boolean
+        }
+        Insert: {
+          atualizacoes?: boolean
+          blog?: boolean
+          empresas?: boolean
+          eventos?: boolean
+          marketplace?: boolean
+          novidades?: boolean
+          promocoes?: boolean
+          quiet_end?: number
+          quiet_hours_enabled?: boolean
+          quiet_start?: number
+          som?: boolean
+          updated_at?: string
+          user_id: string
+          vibracao?: boolean
+        }
+        Update: {
+          atualizacoes?: boolean
+          blog?: boolean
+          empresas?: boolean
+          eventos?: boolean
+          marketplace?: boolean
+          novidades?: boolean
+          promocoes?: boolean
+          quiet_end?: number
+          quiet_hours_enabled?: boolean
+          quiet_start?: number
+          som?: boolean
+          updated_at?: string
+          user_id?: string
+          vibracao?: boolean
+        }
+        Relationships: []
+      }
+      notification_templates: {
+        Row: {
+          body_template: string
+          category: string
+          color: string | null
+          created_at: string
+          default_url: string | null
+          emoji: string | null
+          icon_url: string | null
+          id: string
+          name: string
+          slug: string
+          sort: number
+          title_template: string
+        }
+        Insert: {
+          body_template: string
+          category: string
+          color?: string | null
+          created_at?: string
+          default_url?: string | null
+          emoji?: string | null
+          icon_url?: string | null
+          id?: string
+          name: string
+          slug: string
+          sort?: number
+          title_template: string
+        }
+        Update: {
+          body_template?: string
+          category?: string
+          color?: string | null
+          created_at?: string
+          default_url?: string | null
+          emoji?: string | null
+          icon_url?: string | null
+          id?: string
+          name?: string
+          slug?: string
+          sort?: number
+          title_template?: string
+        }
+        Relationships: []
+      }
       notifications: {
         Row: {
           body: string | null
@@ -1373,6 +1469,238 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      push_deliveries: {
+        Row: {
+          browser: string | null
+          clicked_at: string | null
+          created_at: string
+          delivered_at: string | null
+          device: string | null
+          error: string | null
+          id: number
+          notification_id: string
+          opened_at: string | null
+          sent_at: string | null
+          status: string
+          subscription_id: string | null
+          user_id: string
+        }
+        Insert: {
+          browser?: string | null
+          clicked_at?: string | null
+          created_at?: string
+          delivered_at?: string | null
+          device?: string | null
+          error?: string | null
+          id?: number
+          notification_id: string
+          opened_at?: string | null
+          sent_at?: string | null
+          status?: string
+          subscription_id?: string | null
+          user_id: string
+        }
+        Update: {
+          browser?: string | null
+          clicked_at?: string | null
+          created_at?: string
+          delivered_at?: string | null
+          device?: string | null
+          error?: string | null
+          id?: number
+          notification_id?: string
+          opened_at?: string | null
+          sent_at?: string | null
+          status?: string
+          subscription_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "push_deliveries_notification_id_fkey"
+            columns: ["notification_id"]
+            isOneToOne: false
+            referencedRelation: "push_notifications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "push_deliveries_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "push_subscriptions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      push_inbox: {
+        Row: {
+          archived_at: string | null
+          favorite_at: string | null
+          id: number
+          notification_id: string
+          read_at: string | null
+          received_at: string
+          user_id: string
+        }
+        Insert: {
+          archived_at?: string | null
+          favorite_at?: string | null
+          id?: number
+          notification_id: string
+          read_at?: string | null
+          received_at?: string
+          user_id: string
+        }
+        Update: {
+          archived_at?: string | null
+          favorite_at?: string | null
+          id?: number
+          notification_id?: string
+          read_at?: string | null
+          received_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "push_inbox_notification_id_fkey"
+            columns: ["notification_id"]
+            isOneToOne: false
+            referencedRelation: "push_notifications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      push_notifications: {
+        Row: {
+          audience: Json
+          body: string
+          buttons: Json | null
+          category: string
+          clicked_count: number
+          color: string | null
+          created_at: string
+          created_by: string | null
+          delivered_count: number
+          emoji: string | null
+          failed_count: number
+          icon_url: string | null
+          id: string
+          image_url: string | null
+          opened_count: number
+          priority: string
+          scheduled_at: string | null
+          sent_at: string | null
+          sent_count: number
+          status: string
+          template_id: string | null
+          title: string
+          unsubscribed_count: number
+          updated_at: string
+          url: string | null
+        }
+        Insert: {
+          audience?: Json
+          body: string
+          buttons?: Json | null
+          category?: string
+          clicked_count?: number
+          color?: string | null
+          created_at?: string
+          created_by?: string | null
+          delivered_count?: number
+          emoji?: string | null
+          failed_count?: number
+          icon_url?: string | null
+          id?: string
+          image_url?: string | null
+          opened_count?: number
+          priority?: string
+          scheduled_at?: string | null
+          sent_at?: string | null
+          sent_count?: number
+          status?: string
+          template_id?: string | null
+          title: string
+          unsubscribed_count?: number
+          updated_at?: string
+          url?: string | null
+        }
+        Update: {
+          audience?: Json
+          body?: string
+          buttons?: Json | null
+          category?: string
+          clicked_count?: number
+          color?: string | null
+          created_at?: string
+          created_by?: string | null
+          delivered_count?: number
+          emoji?: string | null
+          failed_count?: number
+          icon_url?: string | null
+          id?: string
+          image_url?: string | null
+          opened_count?: number
+          priority?: string
+          scheduled_at?: string | null
+          sent_at?: string | null
+          sent_count?: number
+          status?: string
+          template_id?: string | null
+          title?: string
+          unsubscribed_count?: number
+          updated_at?: string
+          url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "push_notifications_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "notification_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      push_subscriptions: {
+        Row: {
+          auth: string
+          created_at: string
+          endpoint: string
+          id: string
+          is_pwa: boolean
+          last_seen_at: string
+          p256dh: string
+          platform: string | null
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          auth: string
+          created_at?: string
+          endpoint: string
+          id?: string
+          is_pwa?: boolean
+          last_seen_at?: string
+          p256dh: string
+          platform?: string | null
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          auth?: string
+          created_at?: string
+          endpoint?: string
+          id?: string
+          is_pwa?: boolean
+          last_seen_at?: string
+          p256dh?: string
+          platform?: string | null
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       reviews: {
         Row: {
