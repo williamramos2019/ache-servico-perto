@@ -118,6 +118,9 @@ export function Header() {
               </Button>
             </Link>
           ) : null}
+          <Link to="/buscar" className="lg:hidden">
+            <Button variant="ghost" size="icon" aria-label="Buscar" className="rounded-full"><Search className="h-5 w-5" /></Button>
+          </Link>
           {isAuthed ? (
             <Button variant="ghost" size="sm" className="hidden lg:inline-flex gap-1" onClick={handleSignOut} aria-label={site.header.logout_label}>
               <LogOut className="h-4 w-4" /> {site.header.logout_label}
