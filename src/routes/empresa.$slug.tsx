@@ -528,7 +528,55 @@ function CompanyPage() {
             )}
           </div>
 
-          <aside className="space-y-6">
+          <aside className="space-y-6 lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto lg:pr-1">
+            {/* Sticky quote / booking card */}
+            <section className="rounded-xl border-2 border-primary/30 bg-gradient-to-br from-primary/5 to-transparent p-5 shadow-sm">
+              <div className="flex items-center gap-2">
+                <Sparkles className="h-5 w-5 text-primary" />
+                <h3 className="font-display text-lg font-bold">Orçamento instantâneo</h3>
+              </div>
+              <p className="mt-1 text-xs text-muted-foreground">Receba orçamento em minutos, sem compromisso.</p>
+              <div className="mt-3">
+                <StatusPills open={status.open} statusLabel={status.label} responseTimeMinutes={company.response_time_minutes} />
+              </div>
+              <div className="mt-4 space-y-2">
+                {company.whatsapp && (
+                  <a href={waUrl(company.whatsapp, `Olá! Vi sua empresa no AgendaAqui.`)} target="_blank" rel="noreferrer" className="block">
+                    <Button className="w-full bg-[#25D366] text-white hover:bg-[#1ebe5d]">
+                      <MessageCircle className="mr-2 h-4 w-4" /> Falar no WhatsApp
+                    </Button>
+                  </a>
+                )}
+                <QuoteDialog companyId={company.id} companyName={company.name} />
+                {company.phone && (
+                  <a href={telUrl(company.phone)} className="block">
+                    <Button variant="outline" className="w-full">
+                      <Phone className="mr-2 h-4 w-4" /> Ligar
+                    </Button>
+                  </a>
+                )}
+              </div>
+            </section>
+
+            {/* Active promotion */}
+            <PromotionBanner promotions={company.promotions} financing={company.financing_info} />
+
+            {/* Social channels extra */}
+            {(company.instagram || company.facebook || company.tiktok || company.youtube || company.website) && (
+              <section className="rounded-xl border border-border bg-card p-5">
+                <h3 className="font-display text-lg font-bold">Redes sociais</h3>
+                <div className="mt-3">
+                  <SocialLinksExtra
+                    instagram={company.instagram}
+                    facebook={company.facebook}
+                    tiktok={company.tiktok}
+                    youtube={company.youtube}
+                    website={company.website}
+                  />
+                </div>
+              </section>
+            )}
+
             {/* Contact */}
             <section className="rounded-xl border border-border bg-card p-6">
               <h3 className="font-display text-lg font-bold">Contato</h3>
