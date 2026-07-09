@@ -105,7 +105,12 @@ function AuthPage() {
                   <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
                 </div>
                 <div>
-                  <Label htmlFor="pw">Senha</Label>
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="pw">Senha</Label>
+                    <button type="button" onClick={forgotPassword} className="text-xs text-primary hover:underline">
+                      Esqueci minha senha
+                    </button>
+                  </div>
                   <Input id="pw" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
                 </div>
                 <Button type="submit" className="w-full" disabled={loading}>{loading ? "Entrando..." : "Entrar"}</Button>
