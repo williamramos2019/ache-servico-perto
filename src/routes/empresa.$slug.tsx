@@ -21,6 +21,9 @@ import {
   ResponseStatsRow, PromotionBanner, StatusPills,
   type QualityScores, type Certifications,
 } from "@/components/site/CompanyProfileSections";
+import {
+  ReputationRing, SatisfactionStats, CompanyTimeline, TrustSeals, SocialProofBar,
+} from "@/components/site/CompanyReputationSections";
 
 export const Route = createFileRoute("/empresa/$slug")({
   head: ({ params }) => ({
@@ -380,6 +383,51 @@ function CompanyPage() {
               </div>
             </section>
 
+            {/* Fase 2 — Reputação AgendaAqui */}
+            <ReputationRing
+              overrideScore={(company as unknown as { reputation_score?: number | null }).reputation_score ?? null}
+              inputs={{
+                avgRating: avg,
+                reviewCount: ratings.length,
+                responseTimeMinutes: company.response_time_minutes,
+                responseRate: company.response_rate,
+                isVerified: !!isVerified,
+                hasPhotos: company.company_media.length > 0,
+                profileCompleteness: Math.min(100,
+                  (company.description ? 15 : 0) +
+                  (company.logo_url ? 10 : 0) +
+                  (company.banner_url ? 10 : 0) +
+                  (company.phone ? 10 : 0) +
+                  (company.whatsapp ? 10 : 0) +
+                  (company.address ? 10 : 0) +
+                  (company.hours ? 10 : 0) +
+                  (company.company_media.length > 0 ? 10 : 0) +
+                  ((company.differentials?.length ?? 0) > 0 ? 5 : 0) +
+                  ((company.badges?.length ?? 0) > 0 ? 5 : 0) +
+                  (company.website ? 5 : 0)
+                ),
+                yearsActive,
+              }}
+            />
+
+            {/* Fase 2 — Estatísticas de satisfação */}
+            <SatisfactionStats
+              avgRating={avg}
+              reviewCount={ratings.length}
+              recommendPct={recommendPct}
+              responseTimeMinutes={company.response_time_minutes}
+              responseRate={company.response_rate}
+              servicesCompleted={company.services_completed}
+            />
+
+            {/* Fase 2 — Prova social compacta */}
+            <SocialProofBar
+              reviewCount={ratings.length}
+              servicesCompleted={company.services_completed}
+              clientsServed={company.clients_served}
+              yearsActive={yearsActive}
+            />
+
             {/* Diferenciais (grid de ícones) */}
             <DifferentialsGrid differentials={company.differentials} />
 
@@ -391,6 +439,14 @@ function CompanyPage() {
               certifications={company.certifications}
               badges={company.badges}
               isVerified={isVerified}
+            />
+
+            {/* Fase 2 — Linha do tempo */}
+            <CompanyTimeline
+              foundedYear={company.founded_year}
+              createdAt={company.created_at}
+              isVerified={!!isVerified}
+              servicesCompleted={company.services_completed}
             />
 
             {/* Área de cobertura */}
@@ -495,6 +551,14 @@ function CompanyPage() {
             )}
 
             <ReviewsSection companyId={company.id} />
+
+            {/* Fase 2 — Selos de segurança e confiança */}
+            <TrustSeals
+              isVerified={!!isVerified}
+              hasCnpj={!!company.certifications?.cnpj}
+              hasWarranty={!!company.certifications?.garantia || (company.differentials ?? []).includes("garantia")}
+              invoiceIssued={!!company.certifications?.nota_fiscal || (company.differentials ?? []).includes("nota_fiscal")}
+            />
 
             {/* FAQ */}
             <section className="rounded-xl border border-border bg-card p-6">
