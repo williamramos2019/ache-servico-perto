@@ -16,19 +16,19 @@ function PanelHome() {
   const s = stats.data;
 
   const cards = [
-    { label: "Empresas", value: s?.companyCount ?? 0, icon: Building2 },
-    { label: "Visualizações", value: s?.totalViews ?? 0, icon: Eye },
-    { label: "Leads totais", value: s?.totalLeads ?? 0, icon: Mail, hint: `${s?.leads7d ?? 0} nos últimos 7 dias` },
+    { label: "Empresas ativas", value: s?.companyCount ?? 0, icon: Building2 },
+    { label: "Visitas ao perfil", value: s?.totalViews ?? 0, icon: Eye },
+    { label: "Contatos recebidos", value: s?.totalLeads ?? 0, icon: Mail, hint: `${s?.leads7d ?? 0} nos últimos 7 dias` },
     { label: "Avaliações", value: s?.totalReviews ?? 0, icon: Star },
-    { label: "Favoritos salvos", value: s?.favoritesCount ?? 0, icon: Heart },
+    { label: "Salvos como favorito", value: s?.favoritesCount ?? 0, icon: Heart },
   ];
 
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="font-display text-2xl font-bold">Visão geral</h1>
-          <p className="text-sm text-muted-foreground">Resumo das suas empresas e resultados no AgendaAqui.</p>
+          <h1 className="font-display text-2xl font-bold">Seu painel</h1>
+          <p className="text-sm text-muted-foreground">Acompanhe visitas, contatos e avaliações das suas empresas em tempo real.</p>
         </div>
         <Link to="/painel/empresas/nova"><Button size="sm" className="gap-1"><Plus className="h-4 w-4" /> Nova empresa</Button></Link>
       </div>
@@ -44,14 +44,15 @@ function PanelHome() {
       </div>
 
       <div className="mt-8">
-        <h2 className="font-display text-lg font-bold">Suas empresas</h2>
+        <h2 className="font-display text-lg font-bold">Minhas empresas</h2>
         <div className="mt-3 space-y-2">
           {companies.isLoading ? (
-            <div className="text-sm text-muted-foreground">Carregando…</div>
+            <div className="text-sm text-muted-foreground">Carregando suas empresas…</div>
           ) : (companies.data ?? []).length === 0 ? (
             <div className="rounded-xl border border-dashed border-border bg-card p-8 text-center">
-              <p className="text-sm text-muted-foreground">Você ainda não cadastrou nenhuma empresa.</p>
-              <Link to="/painel/empresas/nova"><Button className="mt-4 gap-1"><Plus className="h-4 w-4" /> Cadastrar empresa</Button></Link>
+              <p className="font-medium">Sua vitrine ainda está vazia</p>
+              <p className="mt-1 text-sm text-muted-foreground">Cadastre sua empresa em 2 minutos e comece a receber contatos de clientes da região hoje mesmo.</p>
+              <Link to="/painel/empresas/nova"><Button className="mt-4 gap-1"><Plus className="h-4 w-4" /> Cadastrar minha empresa</Button></Link>
             </div>
           ) : (
             (companies.data ?? []).slice(0, 5).map((c) => (
