@@ -44,7 +44,7 @@ export function Header() {
             <div className="font-display text-lg font-extrabold tracking-tight text-foreground">
               AgendaAqui
             </div>
-            <div className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+            <div className="hidden sm:block text-[10px] uppercase tracking-[0.14em] text-muted-foreground whitespace-nowrap">
               Vespasiano · S. J. da Lapa
             </div>
           </div>
