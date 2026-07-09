@@ -47,7 +47,7 @@ function BlogPage() {
               >
                 <div className="aspect-[16/10] overflow-hidden bg-muted">
                   {p.cover_url && (
-                    <img src={p.cover_url} alt={p.title} loading="lazy" decoding="async"
+                    <img src={p.cover_url ?? undefined} alt={p.title} loading="lazy" decoding="async"
                       className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
                   )}
                 </div>
