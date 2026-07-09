@@ -10,6 +10,7 @@ import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carouse
 import { categoriesQueryOptions, featuredCompaniesQueryOptions } from "@/lib/queries";
 import { PUBLIC_SERVICE_CATEGORIES } from "@/lib/publicServices";
 import { useSelectedCity, CITY_OPTIONS } from "@/hooks/useSelectedCity";
+import { useSiteContent } from "@/lib/siteContent";
 
 export const Route = createFileRoute("/")({
   head: () => ({
