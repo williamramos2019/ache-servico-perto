@@ -15,7 +15,7 @@ export async function adminStats() {
     supabase.from("companies").select("id", { count: "exact", head: true }),
     supabase.from("companies").select("id", { count: "exact", head: true }).eq("plan", "free"),
     supabase.from("companies").select("id", { count: "exact", head: true }).eq("plan", "premium"),
-    supabase.from("companies").select("id", { count: "exact", head: true }).eq("plan", "featured"),
+    supabase.from("companies").select("id", { count: "exact", head: true }).eq("featured", true),
     supabase.from("companies").select("id", { count: "exact", head: true }).gte("created_at", new Date(Date.now() - 7 * 86400000).toISOString()),
     supabase.from("company_views").select("id", { count: "exact", head: true }),
   ]);
