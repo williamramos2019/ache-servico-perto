@@ -4,7 +4,7 @@ import {
   Phone, MessageCircle, Share2, MapPin, Globe, Instagram, Facebook, Star, BadgeCheck,
   Clock, CheckCircle2, Copy, Navigation, Mail, CalendarDays, ShieldCheck, Award,
   CreditCard, Banknote, Users, TrendingUp, Sparkles, ThumbsUp, Building2, Languages,
-  Wallet, QrCode, ExternalLink, ChevronRight,
+  Wallet, QrCode, ExternalLink, ChevronRight, Download, FileText,
 } from "lucide-react";
 import { toast } from "sonner";
 import { SiteLayout } from "@/components/site/SiteLayout";
@@ -13,9 +13,14 @@ import { Badge } from "@/components/ui/badge";
 import { ReviewsSection } from "@/components/site/ReviewsSection";
 import { QuoteDialog } from "@/components/site/QuoteDialog";
 import { CompanyCard, toCompanyCardData } from "@/components/site/CompanyCard";
-import { companyBySlugQueryOptions, fetchCompanyReviews, fetchSimilarCompanies } from "@/lib/queries";
+import { companyBySlugQueryOptions, fetchCompanyReviews, fetchSimilarCompanies, fetchCitiesByIds } from "@/lib/queries";
 import { FavoriteButton } from "@/components/site/FavoriteButton";
 import { telUrl, waUrl } from "@/lib/format";
+import {
+  QualityBars, CertificationsGrid, DifferentialsGrid, CoverageArea, SocialLinksExtra,
+  ResponseStatsRow, PromotionBanner, StatusPills,
+  type QualityScores, type Certifications,
+} from "@/components/site/CompanyProfileSections";
 
 export const Route = createFileRoute("/empresa/$slug")({
   head: ({ params }) => ({
@@ -41,11 +46,32 @@ type Company = {
   phone: string | null; whatsapp: string | null; email: string | null;
   address: string | null; zip: string | null; lat: number | null; lng: number | null;
   website: string | null; instagram: string | null; facebook: string | null;
+  tiktok: string | null; youtube: string | null;
   hours: Record<string, string> | null; logo_url: string | null; banner_url: string | null;
   plan: string | null; featured: boolean | null; created_at: string; city_id: string | null;
   cities: { name: string; slug: string; state: string } | null;
   company_categories: CatLink[];
   company_media: Media[];
+  // New Fase 1 fields
+  founded_year: number | null;
+  response_time_minutes: number | null;
+  response_rate: number | null;
+  services_completed: number | null;
+  clients_served: number | null;
+  price_range: number | null;
+  tour_360_url: string | null;
+  catalog_url: string | null;
+  pricebook_url: string | null;
+  portfolio_pdf_url: string | null;
+  video_url: string | null;
+  coverage_cities: string[] | null;
+  differentials: string[] | null;
+  badges: string[] | null;
+  certifications: Certifications | null;
+  quality_scores: QualityScores | null;
+  promotions: Array<{ title?: string; description?: string }> | null;
+  financing_info: { installments?: number; label?: string } | null;
+  is_verified: boolean | null;
 };
 
 const WEEK_ORDER = ["seg", "ter", "qua", "qui", "sex", "sab", "dom"];
@@ -105,6 +131,12 @@ function CompanyPage() {
       limit: 6,
     }),
     enabled: !!company?.id,
+  });
+  const coverageIds = company?.coverage_cities ?? [];
+  const coverage = useQuery({
+    queryKey: ["coverage", company?.id ?? "", coverageIds.join(",")],
+    queryFn: () => fetchCitiesByIds(coverageIds),
+    enabled: !!company?.id && coverageIds.length > 0,
   });
 
   if (q.isSuccess && !company) throw notFound();
@@ -251,7 +283,18 @@ function CompanyPage() {
                 }`}>
                   <Clock className="h-3 w-3" /> {status.label}
                 </span>
+                {company.price_range ? (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-foreground/80" title="Faixa de preço">
+                    {"$".repeat(company.price_range)}
+                  </span>
+                ) : null}
               </div>
+              <ResponseStatsRow
+                responseTimeMinutes={company.response_time_minutes}
+                responseRate={company.response_rate}
+                servicesCompleted={company.services_completed}
+                clientsServed={company.clients_served}
+              />
               <div className="mt-3 flex flex-wrap gap-2">
                 {company.company_categories.map((cc) => cc.categories ? (
                   <Link key={cc.categories.slug} to="/categoria/$slug" params={{ slug: cc.categories.slug }}
@@ -314,7 +357,7 @@ function CompanyPage() {
         </div>
 
         {/* Body */}
-        <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_320px]">
+        <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_360px]">
           <div className="space-y-8">
             {/* About */}
             {company.description && (
@@ -336,6 +379,61 @@ function CompanyPage() {
                 ))}
               </div>
             </section>
+
+            {/* Diferenciais (grid de ícones) */}
+            <DifferentialsGrid differentials={company.differentials} />
+
+            {/* Indicadores de qualidade estilo Booking */}
+            <QualityBars scores={company.quality_scores} fallbackAvg={avg} />
+
+            {/* Certificações e selos */}
+            <CertificationsGrid
+              certifications={company.certifications}
+              badges={company.badges}
+              isVerified={isVerified}
+            />
+
+            {/* Área de cobertura */}
+            {coverage.data && coverage.data.length > 0 && (
+              <CoverageArea cities={coverage.data} primaryCity={company.cities?.name ?? null} />
+            )}
+
+            {/* Downloads (catálogo, portfólio) */}
+            {(company.catalog_url || company.pricebook_url || company.portfolio_pdf_url) && (
+              <section className="rounded-xl border border-border bg-card p-6">
+                <div className="flex items-center gap-2">
+                  <Download className="h-5 w-5 text-primary" />
+                  <h2 className="font-display text-xl font-bold">Downloads</h2>
+                </div>
+                <div className="mt-4 grid gap-3 sm:grid-cols-3">
+                  {company.catalog_url && (
+                    <a href={company.catalog_url} target="_blank" rel="noreferrer" className="flex items-center gap-2 rounded-lg border border-border bg-background p-3 text-sm font-medium hover:border-primary">
+                      <FileText className="h-4 w-4 text-primary" /> Catálogo
+                    </a>
+                  )}
+                  {company.pricebook_url && (
+                    <a href={company.pricebook_url} target="_blank" rel="noreferrer" className="flex items-center gap-2 rounded-lg border border-border bg-background p-3 text-sm font-medium hover:border-primary">
+                      <FileText className="h-4 w-4 text-primary" /> Tabela de preços
+                    </a>
+                  )}
+                  {company.portfolio_pdf_url && (
+                    <a href={company.portfolio_pdf_url} target="_blank" rel="noreferrer" className="flex items-center gap-2 rounded-lg border border-border bg-background p-3 text-sm font-medium hover:border-primary">
+                      <FileText className="h-4 w-4 text-primary" /> Portfólio (PDF)
+                    </a>
+                  )}
+                </div>
+              </section>
+            )}
+
+            {/* Tour 360° */}
+            {company.tour_360_url && (
+              <section className="rounded-xl border border-border bg-card p-6">
+                <h2 className="font-display text-xl font-bold">Tour 360°</h2>
+                <div className="mt-4 aspect-video overflow-hidden rounded-lg border border-border">
+                  <iframe src={company.tour_360_url} className="h-full w-full" title="Tour 360°" allowFullScreen />
+                </div>
+              </section>
+            )}
 
             {/* Services offered */}
             {services.length > 0 && (
@@ -430,7 +528,55 @@ function CompanyPage() {
             )}
           </div>
 
-          <aside className="space-y-6">
+          <aside className="space-y-6 lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto lg:pr-1">
+            {/* Sticky quote / booking card */}
+            <section className="rounded-xl border-2 border-primary/30 bg-gradient-to-br from-primary/5 to-transparent p-5 shadow-sm">
+              <div className="flex items-center gap-2">
+                <Sparkles className="h-5 w-5 text-primary" />
+                <h3 className="font-display text-lg font-bold">Orçamento instantâneo</h3>
+              </div>
+              <p className="mt-1 text-xs text-muted-foreground">Receba orçamento em minutos, sem compromisso.</p>
+              <div className="mt-3">
+                <StatusPills open={status.open} statusLabel={status.label} responseTimeMinutes={company.response_time_minutes} />
+              </div>
+              <div className="mt-4 space-y-2">
+                {company.whatsapp && (
+                  <a href={waUrl(company.whatsapp, `Olá! Vi sua empresa no AgendaAqui.`)} target="_blank" rel="noreferrer" className="block">
+                    <Button className="w-full bg-[#25D366] text-white hover:bg-[#1ebe5d]">
+                      <MessageCircle className="mr-2 h-4 w-4" /> Falar no WhatsApp
+                    </Button>
+                  </a>
+                )}
+                <QuoteDialog companyId={company.id} companyName={company.name} />
+                {company.phone && (
+                  <a href={telUrl(company.phone)} className="block">
+                    <Button variant="outline" className="w-full">
+                      <Phone className="mr-2 h-4 w-4" /> Ligar
+                    </Button>
+                  </a>
+                )}
+              </div>
+            </section>
+
+            {/* Active promotion */}
+            <PromotionBanner promotions={company.promotions} financing={company.financing_info} />
+
+            {/* Social channels extra */}
+            {(company.instagram || company.facebook || company.tiktok || company.youtube || company.website) && (
+              <section className="rounded-xl border border-border bg-card p-5">
+                <h3 className="font-display text-lg font-bold">Redes sociais</h3>
+                <div className="mt-3">
+                  <SocialLinksExtra
+                    instagram={company.instagram}
+                    facebook={company.facebook}
+                    tiktok={company.tiktok}
+                    youtube={company.youtube}
+                    website={company.website}
+                  />
+                </div>
+              </section>
+            )}
+
             {/* Contact */}
             <section className="rounded-xl border border-border bg-card p-6">
               <h3 className="font-display text-lg font-bold">Contato</h3>

@@ -194,6 +194,16 @@ export async function fetchCompanyReviews(companyId: string) {
   return data ?? [];
 }
 
+export async function fetchCitiesByIds(ids: string[]) {
+  if (!ids || ids.length === 0) return [] as { id: string; name: string; state: string; slug: string }[];
+  const { data, error } = await supabase
+    .from("cities")
+    .select("id, name, state, slug")
+    .in("id", ids);
+  if (error) throw error;
+  return data ?? [];
+}
+
 export async function fetchSimilarCompanies(opts: {
   excludeId: string;
   categoryIds: string[];
