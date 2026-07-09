@@ -40,13 +40,13 @@ const ComposeSchema = z.object({
   template_id: z.string().uuid().nullish(),
 });
 
-async function ensureAdmin(supabase: NonNullable<Awaited<ReturnType<typeof getSupabaseFromContext>>>, userId: string) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type SB = any;
+
+async function ensureAdmin(supabase: SB, userId: string) {
   const { data } = await supabase.rpc("has_role", { _user_id: userId, _role: "admin" });
   if (!data) throw new Error("Acesso restrito.");
 }
-
-type SupabaseClient = Parameters<typeof ensureAdmin>[0];
-function getSupabaseFromContext(ctx: { supabase: SupabaseClient }) { return ctx.supabase; }
 
 // ---------- Audience resolver: returns user_ids ----------
 async function resolveAudience(
