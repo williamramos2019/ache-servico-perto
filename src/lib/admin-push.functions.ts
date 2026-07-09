@@ -50,12 +50,11 @@ async function ensureAdmin(supabase: SB, userId: string) {
 
 // ---------- Audience resolver: returns user_ids ----------
 async function resolveAudience(
-  supabase: SupabaseClient,
+  supabase: SB,
   audience: z.infer<typeof AudienceSchema>,
 ): Promise<string[]> {
-  // Base pool = usuários com push_subscriptions
   const { data: subs } = await supabase.from("push_subscriptions").select("user_id");
-  const subscriberIds = Array.from(new Set((subs ?? []).map((s) => s.user_id as string)));
+  const subscriberIds = Array.from(new Set(((subs ?? []) as Array<{ user_id: string }>).map((s) => s.user_id)));
   if (subscriberIds.length === 0) return [];
 
   const k = audience.kind;
@@ -63,40 +62,36 @@ async function resolveAudience(
 
   if (k === "pwa") {
     const { data } = await supabase.from("push_subscriptions").select("user_id").eq("is_pwa", true);
-    return Array.from(new Set((data ?? []).map((s) => s.user_id as string)));
+    return Array.from(new Set(((data ?? []) as Array<{ user_id: string }>).map((s) => s.user_id)));
   }
 
   if (k === "admins") {
     const { data } = await supabase.from("user_roles").select("user_id").eq("role", "admin");
-    const ids = new Set((data ?? []).map((r) => r.user_id as string));
+    const ids = new Set(((data ?? []) as Array<{ user_id: string }>).map((r) => r.user_id));
     return subscriberIds.filter((id) => ids.has(id));
   }
 
-  // company-owner-based audiences
   if (k === "users" || k === "companies" || k === "premium" || k === "free" || k === "city" || k === "state" || k === "category") {
     let q = supabase.from("companies").select("owner_id, plan, city_id, cities(state), company_categories(category_id)").not("owner_id", "is", null);
     if (k === "premium") q = q.eq("plan", "premium");
     if (k === "free") q = q.eq("plan", "free");
     if (k === "city" && audience.city_id) q = q.eq("city_id", audience.city_id);
     const { data: companies } = await q;
-    let owners = new Set<string>((companies ?? []).map((c) => c.owner_id as string).filter(Boolean));
+    type CompanyRow = { owner_id: string | null; cities?: { state?: string } | null; company_categories?: Array<{ category_id?: string }> };
+    const rows = (companies ?? []) as CompanyRow[];
+    let owners = new Set<string>(rows.map((c) => c.owner_id).filter((v): v is string => !!v));
 
     if (k === "state" && audience.state) {
-      owners = new Set(
-        (companies ?? [])
-          .filter((c) => (c.cities as { state?: string } | null)?.state === audience.state)
-          .map((c) => c.owner_id as string),
-      );
+      owners = new Set(rows.filter((c) => c.cities?.state === audience.state).map((c) => c.owner_id!).filter(Boolean));
     }
     if (k === "category" && audience.category_id) {
       owners = new Set(
-        (companies ?? [])
-          .filter((c) => Array.isArray(c.company_categories) && c.company_categories.some((cc) => (cc as { category_id?: string }).category_id === audience.category_id))
-          .map((c) => c.owner_id as string),
+        rows
+          .filter((c) => Array.isArray(c.company_categories) && c.company_categories.some((cc) => cc.category_id === audience.category_id))
+          .map((c) => c.owner_id!).filter(Boolean),
       );
     }
     if (k === "users") {
-      // Assinantes que NÃO estão entre donos de empresa
       return subscriberIds.filter((id) => !owners.has(id));
     }
     return subscriberIds.filter((id) => owners.has(id));
@@ -105,15 +100,14 @@ async function resolveAudience(
   if (k === "recent30") {
     const cutoff = new Date(Date.now() - 30 * 86400_000).toISOString();
     const { data } = await supabase.from("profiles").select("id, created_at").gte("created_at", cutoff);
-    const ids = new Set((data ?? []).map((p) => p.id as string));
+    const ids = new Set(((data ?? []) as Array<{ id: string }>).map((p) => p.id));
     return subscriberIds.filter((id) => ids.has(id));
   }
 
-  // inactive: aproximação via last_seen_at das subscriptions
   if (k === "inactive") {
     const cutoff = new Date(Date.now() - 60 * 86400_000).toISOString();
     const { data } = await supabase.from("push_subscriptions").select("user_id").lt("last_seen_at", cutoff);
-    return Array.from(new Set((data ?? []).map((s) => s.user_id as string)));
+    return Array.from(new Set(((data ?? []) as Array<{ user_id: string }>).map((s) => s.user_id)));
   }
 
   return subscriberIds;
