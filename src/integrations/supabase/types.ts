@@ -286,13 +286,21 @@ export type Database = {
       companies: {
         Row: {
           address: string | null
+          badges: string[] | null
           banner_url: string | null
+          catalog_url: string | null
+          certifications: Json | null
           city_id: string | null
+          clients_served: number | null
+          coverage_cities: string[] | null
           created_at: string
           description: string | null
+          differentials: string[] | null
           email: string | null
           facebook: string | null
           featured: boolean
+          financing_info: Json | null
+          founded_year: number | null
           hours: Json | null
           id: string
           instagram: string | null
@@ -305,27 +313,48 @@ export type Database = {
           phone: string | null
           plan: string
           plan_expires_at: string | null
+          portfolio_pdf_url: string | null
+          price_range: number | null
+          pricebook_url: string | null
+          promotions: Json | null
+          quality_scores: Json | null
           rating: number
+          reputation_score: number | null
+          response_rate: number | null
+          response_time_minutes: number | null
           review_count: number
+          services_completed: number | null
           slug: string
           status: string
           tagline: string | null
+          tiktok: string | null
+          tour_360_url: string | null
           updated_at: string
           video_url: string | null
           views_count: number
           website: string | null
           whatsapp: string | null
+          years_experience: number | null
+          youtube: string | null
           zip: string | null
         }
         Insert: {
           address?: string | null
+          badges?: string[] | null
           banner_url?: string | null
+          catalog_url?: string | null
+          certifications?: Json | null
           city_id?: string | null
+          clients_served?: number | null
+          coverage_cities?: string[] | null
           created_at?: string
           description?: string | null
+          differentials?: string[] | null
           email?: string | null
           facebook?: string | null
           featured?: boolean
+          financing_info?: Json | null
+          founded_year?: number | null
           hours?: Json | null
           id?: string
           instagram?: string | null
@@ -338,27 +367,48 @@ export type Database = {
           phone?: string | null
           plan?: string
           plan_expires_at?: string | null
+          portfolio_pdf_url?: string | null
+          price_range?: number | null
+          pricebook_url?: string | null
+          promotions?: Json | null
+          quality_scores?: Json | null
           rating?: number
+          reputation_score?: number | null
+          response_rate?: number | null
+          response_time_minutes?: number | null
           review_count?: number
+          services_completed?: number | null
           slug: string
           status?: string
           tagline?: string | null
+          tiktok?: string | null
+          tour_360_url?: string | null
           updated_at?: string
           video_url?: string | null
           views_count?: number
           website?: string | null
           whatsapp?: string | null
+          years_experience?: number | null
+          youtube?: string | null
           zip?: string | null
         }
         Update: {
           address?: string | null
+          badges?: string[] | null
           banner_url?: string | null
+          catalog_url?: string | null
+          certifications?: Json | null
           city_id?: string | null
+          clients_served?: number | null
+          coverage_cities?: string[] | null
           created_at?: string
           description?: string | null
+          differentials?: string[] | null
           email?: string | null
           facebook?: string | null
           featured?: boolean
+          financing_info?: Json | null
+          founded_year?: number | null
           hours?: Json | null
           id?: string
           instagram?: string | null
@@ -371,16 +421,29 @@ export type Database = {
           phone?: string | null
           plan?: string
           plan_expires_at?: string | null
+          portfolio_pdf_url?: string | null
+          price_range?: number | null
+          pricebook_url?: string | null
+          promotions?: Json | null
+          quality_scores?: Json | null
           rating?: number
+          reputation_score?: number | null
+          response_rate?: number | null
+          response_time_minutes?: number | null
           review_count?: number
+          services_completed?: number | null
           slug?: string
           status?: string
           tagline?: string | null
+          tiktok?: string | null
+          tour_360_url?: string | null
           updated_at?: string
           video_url?: string | null
           views_count?: number
           website?: string | null
           whatsapp?: string | null
+          years_experience?: number | null
+          youtube?: string | null
           zip?: string | null
         }
         Relationships: [
@@ -423,6 +486,44 @@ export type Database = {
           },
         ]
       }
+      company_faqs: {
+        Row: {
+          answer: string
+          company_id: string
+          created_at: string
+          id: string
+          question: string
+          sort_order: number | null
+          updated_at: string
+        }
+        Insert: {
+          answer: string
+          company_id: string
+          created_at?: string
+          id?: string
+          question: string
+          sort_order?: number | null
+          updated_at?: string
+        }
+        Update: {
+          answer?: string
+          company_id?: string
+          created_at?: string
+          id?: string
+          question?: string
+          sort_order?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_faqs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       company_media: {
         Row: {
           caption: string | null
@@ -454,6 +555,56 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "company_media_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      company_projects: {
+        Row: {
+          after_url: string | null
+          before_url: string | null
+          category: string | null
+          company_id: string
+          created_at: string
+          description: string | null
+          id: string
+          images: string[] | null
+          sort_order: number | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          after_url?: string | null
+          before_url?: string | null
+          category?: string | null
+          company_id: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          images?: string[] | null
+          sort_order?: number | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          after_url?: string | null
+          before_url?: string | null
+          category?: string | null
+          company_id?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          images?: string[] | null
+          sort_order?: number | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_projects_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies"
