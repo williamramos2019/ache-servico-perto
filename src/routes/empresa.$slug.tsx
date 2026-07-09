@@ -144,6 +144,15 @@ function CompanyPage() {
     enabled: !!company?.id && coverageIds.length > 0,
   });
 
+  // Track a page view once per session per company
+  useEffect(() => {
+    if (!company?.id) return;
+    const key = `cv:${company.id}`;
+    if (typeof sessionStorage !== "undefined" && sessionStorage.getItem(key)) return;
+    sessionStorage.setItem(key, "1");
+    void supabase.from("company_views").insert({ company_id: company.id });
+  }, [company?.id]);
+
   if (q.isSuccess && !company) throw notFound();
   if (!company) {
     return (
