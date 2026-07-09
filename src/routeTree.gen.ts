@@ -47,6 +47,7 @@ import { Route as AdminEmergenciaRouteImport } from './routes/admin.emergencia'
 import { Route as AdminConfiguracoesRouteImport } from './routes/admin.configuracoes'
 import { Route as AdminCidadesRouteImport } from './routes/admin.cidades'
 import { Route as AdminBlogRouteImport } from './routes/admin.blog'
+import { Route as PainelNotificacoesPreferenciasRouteImport } from './routes/painel.notificacoes.preferencias'
 import { Route as PainelEmpresasNovaRouteImport } from './routes/painel.empresas.nova'
 import { Route as PainelEmpresasIdRouteImport } from './routes/painel.empresas.$id'
 import { Route as ApiPublicPushTrackRouteImport } from './routes/api/public/push/track'
@@ -241,6 +242,12 @@ const AdminBlogRoute = AdminBlogRouteImport.update({
   path: '/blog',
   getParentRoute: () => AdminRoute,
 } as any)
+const PainelNotificacoesPreferenciasRoute =
+  PainelNotificacoesPreferenciasRouteImport.update({
+    id: '/preferencias',
+    path: '/preferencias',
+    getParentRoute: () => PainelNotificacoesRoute,
+  } as any)
 const PainelEmpresasNovaRoute = PainelEmpresasNovaRouteImport.update({
   id: '/nova',
   path: '/nova',
@@ -290,7 +297,7 @@ export interface FileRoutesByFullPath {
   '/painel/empresas': typeof PainelEmpresasRouteWithChildren
   '/painel/favoritos': typeof PainelFavoritosRoute
   '/painel/leads': typeof PainelLeadsRoute
-  '/painel/notificacoes': typeof PainelNotificacoesRoute
+  '/painel/notificacoes': typeof PainelNotificacoesRouteWithChildren
   '/painel/perfil': typeof PainelPerfilRoute
   '/admin/': typeof AdminIndexRoute
   '/blog/': typeof BlogIndexRoute
@@ -298,6 +305,7 @@ export interface FileRoutesByFullPath {
   '/painel/': typeof PainelIndexRoute
   '/painel/empresas/$id': typeof PainelEmpresasIdRoute
   '/painel/empresas/nova': typeof PainelEmpresasNovaRoute
+  '/painel/notificacoes/preferencias': typeof PainelNotificacoesPreferenciasRoute
   '/api/public/push/track': typeof ApiPublicPushTrackRoute
 }
 export interface FileRoutesByTo {
@@ -331,7 +339,7 @@ export interface FileRoutesByTo {
   '/painel/empresas': typeof PainelEmpresasRouteWithChildren
   '/painel/favoritos': typeof PainelFavoritosRoute
   '/painel/leads': typeof PainelLeadsRoute
-  '/painel/notificacoes': typeof PainelNotificacoesRoute
+  '/painel/notificacoes': typeof PainelNotificacoesRouteWithChildren
   '/painel/perfil': typeof PainelPerfilRoute
   '/admin': typeof AdminIndexRoute
   '/blog': typeof BlogIndexRoute
@@ -339,6 +347,7 @@ export interface FileRoutesByTo {
   '/painel': typeof PainelIndexRoute
   '/painel/empresas/$id': typeof PainelEmpresasIdRoute
   '/painel/empresas/nova': typeof PainelEmpresasNovaRoute
+  '/painel/notificacoes/preferencias': typeof PainelNotificacoesPreferenciasRoute
   '/api/public/push/track': typeof ApiPublicPushTrackRoute
 }
 export interface FileRoutesById {
@@ -375,7 +384,7 @@ export interface FileRoutesById {
   '/painel/empresas': typeof PainelEmpresasRouteWithChildren
   '/painel/favoritos': typeof PainelFavoritosRoute
   '/painel/leads': typeof PainelLeadsRoute
-  '/painel/notificacoes': typeof PainelNotificacoesRoute
+  '/painel/notificacoes': typeof PainelNotificacoesRouteWithChildren
   '/painel/perfil': typeof PainelPerfilRoute
   '/admin/': typeof AdminIndexRoute
   '/blog/': typeof BlogIndexRoute
@@ -383,6 +392,7 @@ export interface FileRoutesById {
   '/painel/': typeof PainelIndexRoute
   '/painel/empresas/$id': typeof PainelEmpresasIdRoute
   '/painel/empresas/nova': typeof PainelEmpresasNovaRoute
+  '/painel/notificacoes/preferencias': typeof PainelNotificacoesPreferenciasRoute
   '/api/public/push/track': typeof ApiPublicPushTrackRoute
 }
 export interface FileRouteTypes {
@@ -428,6 +438,7 @@ export interface FileRouteTypes {
     | '/painel/'
     | '/painel/empresas/$id'
     | '/painel/empresas/nova'
+    | '/painel/notificacoes/preferencias'
     | '/api/public/push/track'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -469,6 +480,7 @@ export interface FileRouteTypes {
     | '/painel'
     | '/painel/empresas/$id'
     | '/painel/empresas/nova'
+    | '/painel/notificacoes/preferencias'
     | '/api/public/push/track'
   id:
     | '__root__'
@@ -512,6 +524,7 @@ export interface FileRouteTypes {
     | '/painel/'
     | '/painel/empresas/$id'
     | '/painel/empresas/nova'
+    | '/painel/notificacoes/preferencias'
     | '/api/public/push/track'
   fileRoutesById: FileRoutesById
 }
@@ -806,6 +819,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminBlogRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/painel/notificacoes/preferencias': {
+      id: '/painel/notificacoes/preferencias'
+      path: '/preferencias'
+      fullPath: '/painel/notificacoes/preferencias'
+      preLoaderRoute: typeof PainelNotificacoesPreferenciasRouteImport
+      parentRoute: typeof PainelNotificacoesRoute
+    }
     '/painel/empresas/nova': {
       id: '/painel/empresas/nova'
       path: '/nova'
@@ -876,12 +896,23 @@ const PainelEmpresasRouteWithChildren = PainelEmpresasRoute._addFileChildren(
   PainelEmpresasRouteChildren,
 )
 
+interface PainelNotificacoesRouteChildren {
+  PainelNotificacoesPreferenciasRoute: typeof PainelNotificacoesPreferenciasRoute
+}
+
+const PainelNotificacoesRouteChildren: PainelNotificacoesRouteChildren = {
+  PainelNotificacoesPreferenciasRoute: PainelNotificacoesPreferenciasRoute,
+}
+
+const PainelNotificacoesRouteWithChildren =
+  PainelNotificacoesRoute._addFileChildren(PainelNotificacoesRouteChildren)
+
 interface PainelRouteChildren {
   PainelAvaliacoesRoute: typeof PainelAvaliacoesRoute
   PainelEmpresasRoute: typeof PainelEmpresasRouteWithChildren
   PainelFavoritosRoute: typeof PainelFavoritosRoute
   PainelLeadsRoute: typeof PainelLeadsRoute
-  PainelNotificacoesRoute: typeof PainelNotificacoesRoute
+  PainelNotificacoesRoute: typeof PainelNotificacoesRouteWithChildren
   PainelPerfilRoute: typeof PainelPerfilRoute
   PainelIndexRoute: typeof PainelIndexRoute
 }
@@ -891,7 +922,7 @@ const PainelRouteChildren: PainelRouteChildren = {
   PainelEmpresasRoute: PainelEmpresasRouteWithChildren,
   PainelFavoritosRoute: PainelFavoritosRoute,
   PainelLeadsRoute: PainelLeadsRoute,
-  PainelNotificacoesRoute: PainelNotificacoesRoute,
+  PainelNotificacoesRoute: PainelNotificacoesRouteWithChildren,
   PainelPerfilRoute: PainelPerfilRoute,
   PainelIndexRoute: PainelIndexRoute,
 }
