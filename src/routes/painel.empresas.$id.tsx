@@ -9,7 +9,38 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { DIFFERENTIAL_OPTIONS } from "@/components/site/CompanyProfileSections";
 import { ChevronLeft, Trash2, ExternalLink } from "lucide-react";
+
+const CERT_FIELDS: { key: string; label: string }[] = [
+  { key: "cnpj", label: "CNPJ validado" },
+  { key: "cpf_responsavel", label: "CPF do responsável" },
+  { key: "google_maps", label: "Google Maps" },
+  { key: "crea", label: "CREA" },
+  { key: "cau", label: "CAU" },
+  { key: "nota_fiscal", label: "Emite nota fiscal" },
+  { key: "garantia", label: "Oferece garantia" },
+];
+
+const BADGE_OPTIONS: { key: string; label: string }[] = [
+  { key: "mais_contratado", label: "Mais contratado" },
+  { key: "top_atendimento", label: "Top atendimento" },
+  { key: "entrega_garantida", label: "Entrega garantida" },
+  { key: "especialista", label: "Especialista" },
+  { key: "parceiro", label: "Parceiro AgendaAqui" },
+  { key: "top_10", label: "Top 10 da cidade" },
+];
+
+const QUALITY_FIELDS: { key: string; label: string }[] = [
+  { key: "quality", label: "Qualidade" },
+  { key: "punctuality", label: "Pontualidade" },
+  { key: "service", label: "Atendimento" },
+  { key: "cleanliness", label: "Limpeza" },
+  { key: "value", label: "Custo-benefício" },
+];
 
 export const Route = createFileRoute("/painel/empresas/$id")({
   component: EditarEmpresa,
