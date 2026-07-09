@@ -109,9 +109,10 @@ function PlanosPage() {
     <SiteLayout>
       <section className="border-b border-border bg-gradient-to-br from-primary to-primary-dark text-primary-foreground">
         <div className="container mx-auto px-4 py-16 text-center">
-          <h1 className="font-display text-4xl font-extrabold md:text-5xl">Anuncie sua empresa</h1>
+          <span className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] ring-1 ring-white/20 backdrop-blur">Para donos de empresa</span>
+          <h1 className="mt-4 font-display text-4xl font-extrabold md:text-5xl">Apareça para quem já procura o seu serviço</h1>
           <p className="mx-auto mt-3 max-w-2xl text-white/90">
-            Apareça para milhares de clientes em Minas Gerais. Escolha o plano que melhor se encaixa no seu negócio.
+            Vizinhos de Vespasiano e São José da Lapa usam o AgendaAqui todo dia para achar quem resolve. Escolha como quer aparecer — o cadastro leva 2 minutos.
           </p>
         </div>
       </section>
