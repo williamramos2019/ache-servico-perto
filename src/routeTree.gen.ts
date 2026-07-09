@@ -22,6 +22,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PainelIndexRouteImport } from './routes/painel.index'
+import { Route as EventosIndexRouteImport } from './routes/eventos.index'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as PainelPerfilRouteImport } from './routes/painel.perfil'
@@ -29,6 +30,7 @@ import { Route as PainelLeadsRouteImport } from './routes/painel.leads'
 import { Route as PainelFavoritosRouteImport } from './routes/painel.favoritos'
 import { Route as PainelEmpresasRouteImport } from './routes/painel.empresas'
 import { Route as PainelAvaliacoesRouteImport } from './routes/painel.avaliacoes'
+import { Route as EventosSlugRouteImport } from './routes/eventos.$slug'
 import { Route as EmpresaSlugRouteImport } from './routes/empresa.$slug'
 import { Route as CidadesSlugRouteImport } from './routes/cidades.$slug'
 import { Route as CategoriaSlugRouteImport } from './routes/categoria.$slug'
@@ -36,6 +38,7 @@ import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as AdminServicosPublicosRouteImport } from './routes/admin.servicos-publicos'
 import { Route as AdminPlanosRouteImport } from './routes/admin.planos'
 import { Route as AdminLeadsRouteImport } from './routes/admin.leads'
+import { Route as AdminEventosRouteImport } from './routes/admin.eventos'
 import { Route as AdminEmpresasRouteImport } from './routes/admin.empresas'
 import { Route as AdminEmergenciaRouteImport } from './routes/admin.emergencia'
 import { Route as AdminConfiguracoesRouteImport } from './routes/admin.configuracoes'
@@ -109,6 +112,11 @@ const PainelIndexRoute = PainelIndexRouteImport.update({
   path: '/',
   getParentRoute: () => PainelRoute,
 } as any)
+const EventosIndexRoute = EventosIndexRouteImport.update({
+  id: '/eventos/',
+  path: '/eventos/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BlogIndexRoute = BlogIndexRouteImport.update({
   id: '/blog/',
   path: '/blog/',
@@ -144,6 +152,11 @@ const PainelAvaliacoesRoute = PainelAvaliacoesRouteImport.update({
   path: '/avaliacoes',
   getParentRoute: () => PainelRoute,
 } as any)
+const EventosSlugRoute = EventosSlugRouteImport.update({
+  id: '/eventos/$slug',
+  path: '/eventos/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EmpresaSlugRoute = EmpresaSlugRouteImport.update({
   id: '/empresa/$slug',
   path: '/empresa/$slug',
@@ -177,6 +190,11 @@ const AdminPlanosRoute = AdminPlanosRouteImport.update({
 const AdminLeadsRoute = AdminLeadsRouteImport.update({
   id: '/leads',
   path: '/leads',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminEventosRoute = AdminEventosRouteImport.update({
+  id: '/eventos',
+  path: '/eventos',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminEmpresasRoute = AdminEmpresasRouteImport.update({
@@ -233,6 +251,7 @@ export interface FileRoutesByFullPath {
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
   '/admin/emergencia': typeof AdminEmergenciaRoute
   '/admin/empresas': typeof AdminEmpresasRoute
+  '/admin/eventos': typeof AdminEventosRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/planos': typeof AdminPlanosRoute
   '/admin/servicos-publicos': typeof AdminServicosPublicosRoute
@@ -240,6 +259,7 @@ export interface FileRoutesByFullPath {
   '/categoria/$slug': typeof CategoriaSlugRoute
   '/cidades/$slug': typeof CidadesSlugRoute
   '/empresa/$slug': typeof EmpresaSlugRoute
+  '/eventos/$slug': typeof EventosSlugRoute
   '/painel/avaliacoes': typeof PainelAvaliacoesRoute
   '/painel/empresas': typeof PainelEmpresasRouteWithChildren
   '/painel/favoritos': typeof PainelFavoritosRoute
@@ -247,6 +267,7 @@ export interface FileRoutesByFullPath {
   '/painel/perfil': typeof PainelPerfilRoute
   '/admin/': typeof AdminIndexRoute
   '/blog/': typeof BlogIndexRoute
+  '/eventos/': typeof EventosIndexRoute
   '/painel/': typeof PainelIndexRoute
   '/painel/empresas/$id': typeof PainelEmpresasIdRoute
   '/painel/empresas/nova': typeof PainelEmpresasNovaRoute
@@ -267,6 +288,7 @@ export interface FileRoutesByTo {
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
   '/admin/emergencia': typeof AdminEmergenciaRoute
   '/admin/empresas': typeof AdminEmpresasRoute
+  '/admin/eventos': typeof AdminEventosRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/planos': typeof AdminPlanosRoute
   '/admin/servicos-publicos': typeof AdminServicosPublicosRoute
@@ -274,6 +296,7 @@ export interface FileRoutesByTo {
   '/categoria/$slug': typeof CategoriaSlugRoute
   '/cidades/$slug': typeof CidadesSlugRoute
   '/empresa/$slug': typeof EmpresaSlugRoute
+  '/eventos/$slug': typeof EventosSlugRoute
   '/painel/avaliacoes': typeof PainelAvaliacoesRoute
   '/painel/empresas': typeof PainelEmpresasRouteWithChildren
   '/painel/favoritos': typeof PainelFavoritosRoute
@@ -281,6 +304,7 @@ export interface FileRoutesByTo {
   '/painel/perfil': typeof PainelPerfilRoute
   '/admin': typeof AdminIndexRoute
   '/blog': typeof BlogIndexRoute
+  '/eventos': typeof EventosIndexRoute
   '/painel': typeof PainelIndexRoute
   '/painel/empresas/$id': typeof PainelEmpresasIdRoute
   '/painel/empresas/nova': typeof PainelEmpresasNovaRoute
@@ -304,6 +328,7 @@ export interface FileRoutesById {
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
   '/admin/emergencia': typeof AdminEmergenciaRoute
   '/admin/empresas': typeof AdminEmpresasRoute
+  '/admin/eventos': typeof AdminEventosRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/planos': typeof AdminPlanosRoute
   '/admin/servicos-publicos': typeof AdminServicosPublicosRoute
@@ -311,6 +336,7 @@ export interface FileRoutesById {
   '/categoria/$slug': typeof CategoriaSlugRoute
   '/cidades/$slug': typeof CidadesSlugRoute
   '/empresa/$slug': typeof EmpresaSlugRoute
+  '/eventos/$slug': typeof EventosSlugRoute
   '/painel/avaliacoes': typeof PainelAvaliacoesRoute
   '/painel/empresas': typeof PainelEmpresasRouteWithChildren
   '/painel/favoritos': typeof PainelFavoritosRoute
@@ -318,6 +344,7 @@ export interface FileRoutesById {
   '/painel/perfil': typeof PainelPerfilRoute
   '/admin/': typeof AdminIndexRoute
   '/blog/': typeof BlogIndexRoute
+  '/eventos/': typeof EventosIndexRoute
   '/painel/': typeof PainelIndexRoute
   '/painel/empresas/$id': typeof PainelEmpresasIdRoute
   '/painel/empresas/nova': typeof PainelEmpresasNovaRoute
@@ -342,6 +369,7 @@ export interface FileRouteTypes {
     | '/admin/configuracoes'
     | '/admin/emergencia'
     | '/admin/empresas'
+    | '/admin/eventos'
     | '/admin/leads'
     | '/admin/planos'
     | '/admin/servicos-publicos'
@@ -349,6 +377,7 @@ export interface FileRouteTypes {
     | '/categoria/$slug'
     | '/cidades/$slug'
     | '/empresa/$slug'
+    | '/eventos/$slug'
     | '/painel/avaliacoes'
     | '/painel/empresas'
     | '/painel/favoritos'
@@ -356,6 +385,7 @@ export interface FileRouteTypes {
     | '/painel/perfil'
     | '/admin/'
     | '/blog/'
+    | '/eventos/'
     | '/painel/'
     | '/painel/empresas/$id'
     | '/painel/empresas/nova'
@@ -376,6 +406,7 @@ export interface FileRouteTypes {
     | '/admin/configuracoes'
     | '/admin/emergencia'
     | '/admin/empresas'
+    | '/admin/eventos'
     | '/admin/leads'
     | '/admin/planos'
     | '/admin/servicos-publicos'
@@ -383,6 +414,7 @@ export interface FileRouteTypes {
     | '/categoria/$slug'
     | '/cidades/$slug'
     | '/empresa/$slug'
+    | '/eventos/$slug'
     | '/painel/avaliacoes'
     | '/painel/empresas'
     | '/painel/favoritos'
@@ -390,6 +422,7 @@ export interface FileRouteTypes {
     | '/painel/perfil'
     | '/admin'
     | '/blog'
+    | '/eventos'
     | '/painel'
     | '/painel/empresas/$id'
     | '/painel/empresas/nova'
@@ -412,6 +445,7 @@ export interface FileRouteTypes {
     | '/admin/configuracoes'
     | '/admin/emergencia'
     | '/admin/empresas'
+    | '/admin/eventos'
     | '/admin/leads'
     | '/admin/planos'
     | '/admin/servicos-publicos'
@@ -419,6 +453,7 @@ export interface FileRouteTypes {
     | '/categoria/$slug'
     | '/cidades/$slug'
     | '/empresa/$slug'
+    | '/eventos/$slug'
     | '/painel/avaliacoes'
     | '/painel/empresas'
     | '/painel/favoritos'
@@ -426,6 +461,7 @@ export interface FileRouteTypes {
     | '/painel/perfil'
     | '/admin/'
     | '/blog/'
+    | '/eventos/'
     | '/painel/'
     | '/painel/empresas/$id'
     | '/painel/empresas/nova'
@@ -448,7 +484,9 @@ export interface RootRouteChildren {
   CategoriaSlugRoute: typeof CategoriaSlugRoute
   CidadesSlugRoute: typeof CidadesSlugRoute
   EmpresaSlugRoute: typeof EmpresaSlugRoute
+  EventosSlugRoute: typeof EventosSlugRoute
   BlogIndexRoute: typeof BlogIndexRoute
+  EventosIndexRoute: typeof EventosIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -544,6 +582,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PainelIndexRouteImport
       parentRoute: typeof PainelRoute
     }
+    '/eventos/': {
+      id: '/eventos/'
+      path: '/eventos'
+      fullPath: '/eventos/'
+      preLoaderRoute: typeof EventosIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/blog/': {
       id: '/blog/'
       path: '/blog'
@@ -593,6 +638,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PainelAvaliacoesRouteImport
       parentRoute: typeof PainelRoute
     }
+    '/eventos/$slug': {
+      id: '/eventos/$slug'
+      path: '/eventos/$slug'
+      fullPath: '/eventos/$slug'
+      preLoaderRoute: typeof EventosSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/empresa/$slug': {
       id: '/empresa/$slug'
       path: '/empresa/$slug'
@@ -640,6 +692,13 @@ declare module '@tanstack/react-router' {
       path: '/leads'
       fullPath: '/admin/leads'
       preLoaderRoute: typeof AdminLeadsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/eventos': {
+      id: '/admin/eventos'
+      path: '/eventos'
+      fullPath: '/admin/eventos'
+      preLoaderRoute: typeof AdminEventosRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/empresas': {
@@ -700,6 +759,7 @@ interface AdminRouteChildren {
   AdminConfiguracoesRoute: typeof AdminConfiguracoesRoute
   AdminEmergenciaRoute: typeof AdminEmergenciaRoute
   AdminEmpresasRoute: typeof AdminEmpresasRoute
+  AdminEventosRoute: typeof AdminEventosRoute
   AdminLeadsRoute: typeof AdminLeadsRoute
   AdminPlanosRoute: typeof AdminPlanosRoute
   AdminServicosPublicosRoute: typeof AdminServicosPublicosRoute
@@ -712,6 +772,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminConfiguracoesRoute: AdminConfiguracoesRoute,
   AdminEmergenciaRoute: AdminEmergenciaRoute,
   AdminEmpresasRoute: AdminEmpresasRoute,
+  AdminEventosRoute: AdminEventosRoute,
   AdminLeadsRoute: AdminLeadsRoute,
   AdminPlanosRoute: AdminPlanosRoute,
   AdminServicosPublicosRoute: AdminServicosPublicosRoute,
@@ -772,7 +833,9 @@ const rootRouteChildren: RootRouteChildren = {
   CategoriaSlugRoute: CategoriaSlugRoute,
   CidadesSlugRoute: CidadesSlugRoute,
   EmpresaSlugRoute: EmpresaSlugRoute,
+  EventosSlugRoute: EventosSlugRoute,
   BlogIndexRoute: BlogIndexRoute,
+  EventosIndexRoute: EventosIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

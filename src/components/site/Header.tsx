@@ -13,6 +13,7 @@ const NAV: NavItem[] = [
   { to: "/servicos-publicos", label: "Serviços Públicos" },
   { to: "/emergencia", label: "Emergência", danger: true },
   { to: "/buscar", label: "Empresas" },
+  { to: "/eventos", label: "Eventos" },
   { to: "/blog", label: "Blog" },
   { to: "/sobre", label: "Sobre" },
 ];

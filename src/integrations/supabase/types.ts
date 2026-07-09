@@ -537,8 +537,36 @@ export type Database = {
           },
         ]
       }
+      event_categories: {
+        Row: {
+          created_at: string
+          icon: string | null
+          id: string
+          name: string
+          slug: string
+          sort: number
+        }
+        Insert: {
+          created_at?: string
+          icon?: string | null
+          id?: string
+          name: string
+          slug: string
+          sort?: number
+        }
+        Update: {
+          created_at?: string
+          icon?: string | null
+          id?: string
+          name?: string
+          slug?: string
+          sort?: number
+        }
+        Relationships: []
+      }
       events: {
         Row: {
+          category_id: string | null
           city_id: string | null
           company_id: string | null
           cover_image: string | null
@@ -546,15 +574,20 @@ export type Database = {
           created_by: string | null
           description: string | null
           end_at: string | null
+          event_type: string | null
           id: string
           location: string | null
+          price_max: number | null
+          price_min: number | null
           slug: string
           start_at: string
           status: Database["public"]["Enums"]["publish_status"]
+          ticket_url: string | null
           title: string
           updated_at: string
         }
         Insert: {
+          category_id?: string | null
           city_id?: string | null
           company_id?: string | null
           cover_image?: string | null
@@ -562,15 +595,20 @@ export type Database = {
           created_by?: string | null
           description?: string | null
           end_at?: string | null
+          event_type?: string | null
           id?: string
           location?: string | null
+          price_max?: number | null
+          price_min?: number | null
           slug: string
           start_at: string
           status?: Database["public"]["Enums"]["publish_status"]
+          ticket_url?: string | null
           title: string
           updated_at?: string
         }
         Update: {
+          category_id?: string | null
           city_id?: string | null
           company_id?: string | null
           cover_image?: string | null
@@ -578,15 +616,26 @@ export type Database = {
           created_by?: string | null
           description?: string | null
           end_at?: string | null
+          event_type?: string | null
           id?: string
           location?: string | null
+          price_max?: number | null
+          price_min?: number | null
           slug?: string
           start_at?: string
           status?: Database["public"]["Enums"]["publish_status"]
+          ticket_url?: string | null
           title?: string
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "events_category_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "event_categories"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "events_city_id_fkey"
             columns: ["city_id"]
@@ -1205,6 +1254,62 @@ export type Database = {
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      shows: {
+        Row: {
+          artist_name: string
+          cover_image: string | null
+          created_at: string
+          description: string | null
+          end_at: string | null
+          event_id: string
+          id: string
+          sort: number
+          stage: string | null
+          start_at: string
+          ticket_price: number | null
+          ticket_url: string | null
+          updated_at: string
+        }
+        Insert: {
+          artist_name: string
+          cover_image?: string | null
+          created_at?: string
+          description?: string | null
+          end_at?: string | null
+          event_id: string
+          id?: string
+          sort?: number
+          stage?: string | null
+          start_at: string
+          ticket_price?: number | null
+          ticket_url?: string | null
+          updated_at?: string
+        }
+        Update: {
+          artist_name?: string
+          cover_image?: string | null
+          created_at?: string
+          description?: string | null
+          end_at?: string | null
+          event_id?: string
+          id?: string
+          sort?: number
+          stage?: string | null
+          start_at?: string
+          ticket_price?: number | null
+          ticket_url?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shows_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
             referencedColumns: ["id"]
           },
         ]
