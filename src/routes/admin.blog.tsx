@@ -77,7 +77,7 @@ function AdminBlog() {
   async function togglePublish(p: Post) {
     const { error } = await supabase.from("blog_posts_legacy").update({
       published: !p.published,
-      published_at: !p.published ? (p.published_at ?? new Date().toISOString()) : p.published_at,
+      published_at: p.published_at ?? new Date().toISOString(),
     }).eq("id", p.id);
     if (error) return toast.error(error.message);
     toast.success(!p.published ? "Publicado" : "Despublicado");
