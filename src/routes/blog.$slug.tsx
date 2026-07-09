@@ -49,18 +49,19 @@ function BlogPostPage() {
             <header className="mt-6">
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
                 <Calendar className="h-3.5 w-3.5" />
-                {new Date(p.published_at).toLocaleDateString("pt-BR")}
+                {p.published_at ? new Date(p.published_at).toLocaleDateString("pt-BR") : ""}
                 {p.author_name && <span>· {p.author_name}</span>}
               </div>
               <h1 className="mt-2 font-display text-3xl font-extrabold md:text-4xl">{p.title}</h1>
               {p.excerpt && <p className="mt-3 text-lg text-muted-foreground">{p.excerpt}</p>}
             </header>
             {p.cover_url && (
-              <img src={p.cover_url} alt={p.title} className="mt-6 aspect-[16/9] w-full rounded-xl object-cover" />
+              <img src={p.cover_url} alt={p.title ?? ""} className="mt-6 aspect-[16/9] w-full rounded-xl object-cover" />
             )}
             <div className="prose prose-slate mt-2 max-w-none">
-              {renderMarkdown(p.content)}
+              {renderMarkdown(p.content ?? "")}
             </div>
+
           </>
         )}
       </article>

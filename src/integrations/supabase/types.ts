@@ -14,7 +14,135 @@ export type Database = {
   }
   public: {
     Tables: {
-      blog_posts: {
+      analytics_events: {
+        Row: {
+          created_at: string
+          entity_id: string | null
+          entity_type: string | null
+          id: number
+          meta: Json
+          name: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: number
+          meta?: Json
+          name: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: number
+          meta?: Json
+          name?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      appointments: {
+        Row: {
+          company_id: string
+          contact_email: string | null
+          contact_name: string | null
+          contact_phone: string | null
+          created_at: string
+          end_at: string | null
+          id: string
+          notes: string | null
+          service_name: string
+          start_at: string
+          status: Database["public"]["Enums"]["appointment_status"]
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          company_id: string
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          end_at?: string | null
+          id?: string
+          notes?: string | null
+          service_name: string
+          start_at: string
+          status?: Database["public"]["Enums"]["appointment_status"]
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          company_id?: string
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          end_at?: string | null
+          id?: string
+          notes?: string | null
+          service_name?: string
+          start_at?: string
+          status?: Database["public"]["Enums"]["appointment_status"]
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "appointments_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      banners: {
+        Row: {
+          active: boolean
+          alt: string | null
+          created_at: string
+          ends_at: string | null
+          id: string
+          image_url: string
+          link_url: string | null
+          placement: string
+          priority: number
+          starts_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          alt?: string | null
+          created_at?: string
+          ends_at?: string | null
+          id?: string
+          image_url: string
+          link_url?: string | null
+          placement: string
+          priority?: number
+          starts_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          alt?: string | null
+          created_at?: string
+          ends_at?: string | null
+          id?: string
+          image_url?: string
+          link_url?: string | null
+          placement?: string
+          priority?: number
+          starts_at?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      blog_posts_legacy: {
         Row: {
           author_name: string | null
           content: string
@@ -370,6 +498,72 @@ export type Database = {
           },
         ]
       }
+      events: {
+        Row: {
+          city_id: string | null
+          company_id: string | null
+          cover_image: string | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          end_at: string | null
+          id: string
+          location: string | null
+          slug: string
+          start_at: string
+          status: Database["public"]["Enums"]["publish_status"]
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          city_id?: string | null
+          company_id?: string | null
+          cover_image?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          end_at?: string | null
+          id?: string
+          location?: string | null
+          slug: string
+          start_at: string
+          status?: Database["public"]["Enums"]["publish_status"]
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          city_id?: string | null
+          company_id?: string | null
+          cover_image?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          end_at?: string | null
+          id?: string
+          location?: string | null
+          slug?: string
+          start_at?: string
+          status?: Database["public"]["Enums"]["publish_status"]
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "events_city_id_fkey"
+            columns: ["city_id"]
+            isOneToOne: false
+            referencedRelation: "cities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "events_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       favorites: {
         Row: {
           company_id: string
@@ -476,6 +670,91 @@ export type Database = {
         }
         Relationships: []
       }
+      marketplace_items: {
+        Row: {
+          company_id: string
+          created_at: string
+          description: string | null
+          id: string
+          images: Json
+          price: number | null
+          slug: string
+          status: Database["public"]["Enums"]["publish_status"]
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          images?: Json
+          price?: number | null
+          slug: string
+          status?: Database["public"]["Enums"]["publish_status"]
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          images?: Json
+          price?: number | null
+          slug?: string
+          status?: Database["public"]["Enums"]["publish_status"]
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "marketplace_items_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      media: {
+        Row: {
+          company_id: string | null
+          created_at: string
+          id: string
+          kind: string
+          meta: Json
+          owner_id: string | null
+          url: string
+        }
+        Insert: {
+          company_id?: string | null
+          created_at?: string
+          id?: string
+          kind?: string
+          meta?: Json
+          owner_id?: string | null
+          url: string
+        }
+        Update: {
+          company_id?: string | null
+          created_at?: string
+          id?: string
+          kind?: string
+          meta?: Json
+          owner_id?: string | null
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "media_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       newsletter_subscribers: {
         Row: {
           city_slug: string | null
@@ -497,6 +776,39 @@ export type Database = {
           email?: string
           id?: string
           name?: string | null
+        }
+        Relationships: []
+      }
+      notifications: {
+        Row: {
+          body: string | null
+          created_at: string
+          id: string
+          payload: Json
+          read_at: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          payload?: Json
+          read_at?: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          payload?: Json
+          read_at?: string | null
+          title?: string
+          type?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -533,6 +845,136 @@ export type Database = {
         }
         Relationships: []
       }
+      post_categories: {
+        Row: {
+          category_id: string
+          post_id: string
+        }
+        Insert: {
+          category_id: string
+          post_id: string
+        }
+        Update: {
+          category_id?: string
+          post_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_categories_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "post_categories_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "blog_posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "post_categories_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      posts: {
+        Row: {
+          author_id: string | null
+          author_name: string | null
+          auto_generated: boolean
+          city_id: string | null
+          company_id: string | null
+          content: string | null
+          created_at: string
+          excerpt: string | null
+          featured_image: string | null
+          gallery: Json
+          id: string
+          meta_description: string | null
+          meta_title: string | null
+          og_image: string | null
+          published_at: string | null
+          scheduled_at: string | null
+          slug: string
+          status: Database["public"]["Enums"]["publish_status"]
+          tags: string[]
+          title: string
+          type: Database["public"]["Enums"]["post_type"]
+          updated_at: string
+          views_count: number
+        }
+        Insert: {
+          author_id?: string | null
+          author_name?: string | null
+          auto_generated?: boolean
+          city_id?: string | null
+          company_id?: string | null
+          content?: string | null
+          created_at?: string
+          excerpt?: string | null
+          featured_image?: string | null
+          gallery?: Json
+          id?: string
+          meta_description?: string | null
+          meta_title?: string | null
+          og_image?: string | null
+          published_at?: string | null
+          scheduled_at?: string | null
+          slug: string
+          status?: Database["public"]["Enums"]["publish_status"]
+          tags?: string[]
+          title: string
+          type?: Database["public"]["Enums"]["post_type"]
+          updated_at?: string
+          views_count?: number
+        }
+        Update: {
+          author_id?: string | null
+          author_name?: string | null
+          auto_generated?: boolean
+          city_id?: string | null
+          company_id?: string | null
+          content?: string | null
+          created_at?: string
+          excerpt?: string | null
+          featured_image?: string | null
+          gallery?: Json
+          id?: string
+          meta_description?: string | null
+          meta_title?: string | null
+          og_image?: string | null
+          published_at?: string | null
+          scheduled_at?: string | null
+          slug?: string
+          status?: Database["public"]["Enums"]["publish_status"]
+          tags?: string[]
+          title?: string
+          type?: Database["public"]["Enums"]["post_type"]
+          updated_at?: string
+          views_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "posts_city_id_fkey"
+            columns: ["city_id"]
+            isOneToOne: false
+            referencedRelation: "cities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "posts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -556,6 +998,62 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      promotions: {
+        Row: {
+          company_id: string
+          cover_image: string | null
+          created_at: string
+          description: string | null
+          id: string
+          price_from: number | null
+          price_to: number | null
+          slug: string
+          status: Database["public"]["Enums"]["publish_status"]
+          title: string
+          updated_at: string
+          valid_from: string | null
+          valid_to: string | null
+        }
+        Insert: {
+          company_id: string
+          cover_image?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          price_from?: number | null
+          price_to?: number | null
+          slug: string
+          status?: Database["public"]["Enums"]["publish_status"]
+          title: string
+          updated_at?: string
+          valid_from?: string | null
+          valid_to?: string | null
+        }
+        Update: {
+          company_id?: string
+          cover_image?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          price_from?: number | null
+          price_to?: number | null
+          slug?: string
+          status?: Database["public"]["Enums"]["publish_status"]
+          title?: string
+          updated_at?: string
+          valid_from?: string | null
+          valid_to?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "promotions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       public_services: {
         Row: {
@@ -716,7 +1214,48 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      blog_posts: {
+        Row: {
+          author_name: string | null
+          content: string | null
+          cover_url: string | null
+          created_at: string | null
+          excerpt: string | null
+          id: string | null
+          published: boolean | null
+          published_at: string | null
+          slug: string | null
+          title: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          author_name?: string | null
+          content?: string | null
+          cover_url?: string | null
+          created_at?: string | null
+          excerpt?: string | null
+          id?: string | null
+          published?: never
+          published_at?: string | null
+          slug?: string | null
+          title?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          author_name?: string | null
+          content?: string | null
+          cover_url?: string | null
+          created_at?: string | null
+          excerpt?: string | null
+          id?: string | null
+          published?: never
+          published_at?: string | null
+          slug?: string | null
+          title?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       has_role: {
@@ -734,7 +1273,14 @@ export type Database = {
       show_trgm: { Args: { "": string }; Returns: string[] }
     }
     Enums: {
-      app_role: "admin" | "company_owner" | "user"
+      app_role: "admin" | "company_owner" | "user" | "editor" | "publisher"
+      appointment_status:
+        | "pending"
+        | "confirmed"
+        | "cancelled"
+        | "completed"
+        | "no_show"
+      post_type: "article" | "news" | "blog" | "promo" | "event"
       public_service_category:
         | "saude"
         | "educacao"
@@ -744,6 +1290,7 @@ export type Database = {
         | "assistencia_social"
         | "emergencia"
         | "outros"
+      publish_status: "draft" | "scheduled" | "published" | "archived"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -871,7 +1418,15 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "company_owner", "user"],
+      app_role: ["admin", "company_owner", "user", "editor", "publisher"],
+      appointment_status: [
+        "pending",
+        "confirmed",
+        "cancelled",
+        "completed",
+        "no_show",
+      ],
+      post_type: ["article", "news", "blog", "promo", "event"],
       public_service_category: [
         "saude",
         "educacao",
@@ -882,6 +1437,7 @@ export const Constants = {
         "emergencia",
         "outros",
       ],
+      publish_status: ["draft", "scheduled", "published", "archived"],
     },
   },
 } as const
