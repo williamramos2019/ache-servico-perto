@@ -22,6 +22,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PainelIndexRouteImport } from './routes/painel.index'
+import { Route as EventosIndexRouteImport } from './routes/eventos.index'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as PainelPerfilRouteImport } from './routes/painel.perfil'
@@ -108,6 +109,11 @@ const PainelIndexRoute = PainelIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => PainelRoute,
+} as any)
+const EventosIndexRoute = EventosIndexRouteImport.update({
+  id: '/eventos/',
+  path: '/eventos/',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const BlogIndexRoute = BlogIndexRouteImport.update({
   id: '/blog/',
@@ -247,6 +253,7 @@ export interface FileRoutesByFullPath {
   '/painel/perfil': typeof PainelPerfilRoute
   '/admin/': typeof AdminIndexRoute
   '/blog/': typeof BlogIndexRoute
+  '/eventos/': typeof EventosIndexRoute
   '/painel/': typeof PainelIndexRoute
   '/painel/empresas/$id': typeof PainelEmpresasIdRoute
   '/painel/empresas/nova': typeof PainelEmpresasNovaRoute
@@ -281,6 +288,7 @@ export interface FileRoutesByTo {
   '/painel/perfil': typeof PainelPerfilRoute
   '/admin': typeof AdminIndexRoute
   '/blog': typeof BlogIndexRoute
+  '/eventos': typeof EventosIndexRoute
   '/painel': typeof PainelIndexRoute
   '/painel/empresas/$id': typeof PainelEmpresasIdRoute
   '/painel/empresas/nova': typeof PainelEmpresasNovaRoute
@@ -318,6 +326,7 @@ export interface FileRoutesById {
   '/painel/perfil': typeof PainelPerfilRoute
   '/admin/': typeof AdminIndexRoute
   '/blog/': typeof BlogIndexRoute
+  '/eventos/': typeof EventosIndexRoute
   '/painel/': typeof PainelIndexRoute
   '/painel/empresas/$id': typeof PainelEmpresasIdRoute
   '/painel/empresas/nova': typeof PainelEmpresasNovaRoute
@@ -356,6 +365,7 @@ export interface FileRouteTypes {
     | '/painel/perfil'
     | '/admin/'
     | '/blog/'
+    | '/eventos/'
     | '/painel/'
     | '/painel/empresas/$id'
     | '/painel/empresas/nova'
@@ -390,6 +400,7 @@ export interface FileRouteTypes {
     | '/painel/perfil'
     | '/admin'
     | '/blog'
+    | '/eventos'
     | '/painel'
     | '/painel/empresas/$id'
     | '/painel/empresas/nova'
@@ -426,6 +437,7 @@ export interface FileRouteTypes {
     | '/painel/perfil'
     | '/admin/'
     | '/blog/'
+    | '/eventos/'
     | '/painel/'
     | '/painel/empresas/$id'
     | '/painel/empresas/nova'
@@ -449,6 +461,7 @@ export interface RootRouteChildren {
   CidadesSlugRoute: typeof CidadesSlugRoute
   EmpresaSlugRoute: typeof EmpresaSlugRoute
   BlogIndexRoute: typeof BlogIndexRoute
+  EventosIndexRoute: typeof EventosIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -543,6 +556,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/painel/'
       preLoaderRoute: typeof PainelIndexRouteImport
       parentRoute: typeof PainelRoute
+    }
+    '/eventos/': {
+      id: '/eventos/'
+      path: '/eventos'
+      fullPath: '/eventos/'
+      preLoaderRoute: typeof EventosIndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/blog/': {
       id: '/blog/'
@@ -773,6 +793,7 @@ const rootRouteChildren: RootRouteChildren = {
   CidadesSlugRoute: CidadesSlugRoute,
   EmpresaSlugRoute: EmpresaSlugRoute,
   BlogIndexRoute: BlogIndexRoute,
+  EventosIndexRoute: EventosIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
