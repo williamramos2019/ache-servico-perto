@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Link, useRouterState } from "@tanstack/react-router";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
+import { useQueryClient } from "@tanstack/react-query";
 import { Heart, LayoutDashboard, LogOut, MapPin, Menu, Search, ShieldCheck, X } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -22,16 +23,24 @@ export function Header() {
   const { isAdmin, userId } = useAdmin();
   const [open, setOpen] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const isAuthed = !!userId;
 
   const isActive = (to: string) => (to === "/" ? pathname === "/" : pathname.startsWith(to));
 
   async function handleSignOut() {
+    // Sign-out hygiene: cancel in-flight protected queries, clear cache,
+    // then sign out and send the user to a public route.
+    await queryClient.cancelQueries();
+    queryClient.clear();
     const { error } = await supabase.auth.signOut();
     if (error) toast.error("Erro ao sair");
     else toast.success("Você saiu da conta");
     setOpen(false);
+    navigate({ to: "/", replace: true });
   }
+
 
 
   return (
