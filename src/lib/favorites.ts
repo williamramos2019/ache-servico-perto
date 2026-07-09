@@ -12,6 +12,8 @@ function notify() { _listeners.forEach((l) => l()); }
 
 function ensureInit() {
   if (_initialized) return;
+  // Auth session lives only in the browser (localStorage). Never touch it on SSR.
+  if (typeof window === "undefined") return;
   _initialized = true;
   supabase.auth.getUser().then(({ data }) => {
     _userId = data.user?.id ?? null;
