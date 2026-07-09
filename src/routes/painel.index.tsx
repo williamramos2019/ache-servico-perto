@@ -59,9 +59,9 @@ function PanelHome() {
               <Link key={c.id} to="/painel/empresas/$id" params={{ id: c.id }} className="flex items-center justify-between gap-3 rounded-lg border border-border bg-card p-3 hover:bg-muted/50">
                 <div className="min-w-0">
                   <div className="truncate font-medium">{c.name}</div>
-                  <div className="text-xs text-muted-foreground">Status: {c.status ?? "—"} · Plano: {c.plan ?? "free"} · {c.views_count ?? 0} visualizações</div>
+                  <div className="text-xs text-muted-foreground">Status: {c.status ?? "—"} · Plano: {c.plan ?? "free"} · {c.views_count ?? 0} visitas ao perfil</div>
                 </div>
-                <div className="text-xs text-muted-foreground">Editar →</div>
+                <div className="text-xs text-muted-foreground">Gerenciar →</div>
               </Link>
             ))
           )}
