@@ -4,6 +4,7 @@ import { useAdmin } from "@/hooks/use-admin";
 import { panelStats, listMyCompanies } from "@/lib/panel";
 import { Building2, Mail, Star, Eye, Heart, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { EnableNotifications } from "@/components/site/EnableNotifications";
 
 export const Route = createFileRoute("/painel/")({
   component: PanelHome,
