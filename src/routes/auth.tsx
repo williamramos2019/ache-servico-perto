@@ -44,7 +44,7 @@ function AuthPage() {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     setLoading(false);
     if (error) return toast.error(error.message);
-    toast.success("Bem-vindo de volta!");
+    toast.success("Que bom te ver de volta!");
     // Redirect is handled by onAuthStateChange to avoid double navigation.
   }
 
