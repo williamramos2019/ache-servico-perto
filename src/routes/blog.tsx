@@ -54,8 +54,9 @@ function BlogPage() {
                 <div className="flex flex-1 flex-col gap-2 p-5">
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
                     <Calendar className="h-3.5 w-3.5" />
-                    {new Date(p.published_at).toLocaleDateString("pt-BR")}
+                    {p.published_at ? new Date(p.published_at).toLocaleDateString("pt-BR") : ""}
                     {p.author_name && <span>· {p.author_name}</span>}
+
                   </div>
                   <h2 className="font-display text-lg font-bold leading-tight group-hover:text-primary">{p.title}</h2>
                   {p.excerpt && <p className="line-clamp-3 text-sm text-muted-foreground">{p.excerpt}</p>}
