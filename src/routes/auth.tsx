@@ -12,8 +12,8 @@ import { lovable } from "@/integrations/lovable/index";
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Entrar — AgendaAqui" },
-      { name: "description", content: "Acesse sua conta no AgendaAqui ou crie uma nova." },
+      { title: "Entrar ou criar conta — AgendaAqui" },
+      { name: "description", content: "Acesse sua conta para avaliar empresas, salvar favoritos e gerenciar seu negócio no AgendaAqui." },
       { property: "og:url", content: "/auth" },
     ],
     links: [{ rel: "canonical", href: "/auth" }],
