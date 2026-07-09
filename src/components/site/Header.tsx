@@ -1,7 +1,25 @@
-import { useState } from "react";
+import { useState, type ComponentType, type SVGProps } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Bell, Heart, LayoutDashboard, LogOut, MapPin, Menu, Search, ShieldCheck, X } from "lucide-react";
+import {
+  Bell,
+  Bus,
+  Calendar,
+  Briefcase,
+  Building2,
+  Heart,
+  Home,
+  LayoutDashboard,
+  LogOut,
+  MapPin,
+  Megaphone,
+  Menu,
+  Newspaper,
+  Search,
+  ShieldCheck,
+  ShoppingBag,
+  X,
+} from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { unreadInboxCount } from "@/lib/push.functions";
 import { toast } from "sonner";
@@ -11,6 +29,24 @@ import { supabase } from "@/integrations/supabase/client";
 import { CityPickerDialog } from "./CityPickerDialog";
 import { DEFAULT_NAV_ITEMS, fetchNavItems } from "@/lib/navItems";
 import { useSiteContent } from "@/lib/siteContent";
+
+type IconType = ComponentType<SVGProps<SVGSVGElement> & { size?: number | string }>;
+
+const NAV_ICONS: Record<string, IconType> = {
+  "/": Home,
+  "/blog": Newspaper,
+  "/buscar": Building2,
+  "/eventos": Calendar,
+  "/marketplace": ShoppingBag,
+  "/transporte": Bus,
+  "/empregos": Briefcase,
+  "/promocoes": Megaphone,
+};
+
+function stripLeadingEmoji(label: string): string {
+  // remove emoji + optional space at start (Home was previously "🏠 Home")
+  return label.replace(/^\p{Extended_Pictographic}[\uFE0F\u200D]?\s*/u, "");
+}
 
 export function Header() {
   const { data: NAV = DEFAULT_NAV_ITEMS } = useQuery({
