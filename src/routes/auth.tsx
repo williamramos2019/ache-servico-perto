@@ -119,18 +119,19 @@ function AuthPage() {
             <TabsContent value="signup" className="mt-4">
               <form onSubmit={signUp} className="space-y-3">
                 <div>
-                  <Label htmlFor="n">Nome</Label>
-                  <Input id="n" value={name} onChange={(e) => setName(e.target.value)} required maxLength={100} />
+                  <Label htmlFor="n">Como podemos te chamar?</Label>
+                  <Input id="n" placeholder="Seu nome" value={name} onChange={(e) => setName(e.target.value)} required maxLength={100} />
                 </div>
                 <div>
                   <Label htmlFor="e2">E-mail</Label>
-                  <Input id="e2" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                  <Input id="e2" type="email" placeholder="voce@exemplo.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
                 </div>
                 <div>
-                  <Label htmlFor="p2">Senha</Label>
-                  <Input id="p2" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} />
+                  <Label htmlFor="p2">Crie uma senha</Label>
+                  <Input id="p2" type="password" placeholder="Mínimo 6 caracteres" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} />
                 </div>
-                <Button type="submit" className="w-full" disabled={loading}>{loading ? "Criando..." : "Criar conta"}</Button>
+                <Button type="submit" className="w-full" disabled={loading}>{loading ? "Criando..." : "Criar minha conta grátis"}</Button>
+                <p className="pt-1 text-center text-[11px] text-muted-foreground">Grátis, sem cartão. Leva menos de 1 minuto.</p>
               </form>
             </TabsContent>
           </Tabs>
