@@ -1,7 +1,25 @@
-import { useState } from "react";
+import { useState, type ComponentType, type SVGProps } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Bell, Heart, LayoutDashboard, LogOut, MapPin, Menu, Search, ShieldCheck, X } from "lucide-react";
+import {
+  Bell,
+  Bus,
+  Calendar,
+  Briefcase,
+  Building2,
+  Heart,
+  Home,
+  LayoutDashboard,
+  LogOut,
+  MapPin,
+  Megaphone,
+  Menu,
+  Newspaper,
+  Search,
+  ShieldCheck,
+  ShoppingBag,
+  X,
+} from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { unreadInboxCount } from "@/lib/push.functions";
 import { toast } from "sonner";
@@ -11,6 +29,24 @@ import { supabase } from "@/integrations/supabase/client";
 import { CityPickerDialog } from "./CityPickerDialog";
 import { DEFAULT_NAV_ITEMS, fetchNavItems } from "@/lib/navItems";
 import { useSiteContent } from "@/lib/siteContent";
+
+type IconType = ComponentType<SVGProps<SVGSVGElement> & { size?: number | string }>;
+
+const NAV_ICONS: Record<string, IconType> = {
+  "/": Home,
+  "/blog": Newspaper,
+  "/buscar": Building2,
+  "/eventos": Calendar,
+  "/marketplace": ShoppingBag,
+  "/transporte": Bus,
+  "/empregos": Briefcase,
+  "/promocoes": Megaphone,
+};
+
+function stripLeadingEmoji(label: string): string {
+  // remove emoji + optional space at start (Home was previously "🏠 Home")
+  return label.replace(/^\p{Extended_Pictographic}[\uFE0F\u200D]?\s*/u, "");
+}
 
 export function Header() {
   const { data: NAV = DEFAULT_NAV_ITEMS } = useQuery({
@@ -71,25 +107,42 @@ export function Header() {
         <nav className="hidden items-center gap-0.5 lg:flex">
           {NAV.map((n) => {
             const active = isActive(n.to);
+            const Icon = NAV_ICONS[n.to];
+            const label = stripLeadingEmoji(n.label);
             return (
               <Link
                 key={n.to}
                 to={n.to as any}
                 search={n.to === "/servicos-publicos" ? ({} as any) : undefined}
                 className={[
-                  "relative rounded-full px-3.5 py-2 text-sm font-medium transition-colors",
+                  "group relative inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-sm font-medium transition-all",
                   n.danger
                     ? "text-destructive hover:bg-destructive/10"
                     : active
-                    ? "text-foreground bg-muted"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted/70",
+                    ? "bg-primary/10 text-primary shadow-[inset_0_0_0_1px_hsl(var(--primary)/0.15)]"
+                    : "text-muted-foreground hover:text-primary hover:bg-primary/5",
                 ].join(" ")}
               >
-                {n.label}
+                {Icon ? (
+                  <Icon
+                    className={[
+                      "h-4 w-4 transition-transform duration-200 group-hover:scale-110",
+                      n.danger
+                        ? ""
+                        : active
+                        ? "text-primary"
+                        : "text-primary/70 group-hover:text-primary",
+                    ].join(" ")}
+                    strokeWidth={2.2}
+                    aria-hidden
+                  />
+                ) : null}
+                <span>{label}</span>
               </Link>
             );
           })}
         </nav>
+
 
         <div className="flex items-center gap-1.5">
           <div className="hidden md:inline-flex"><CityPickerDialog /></div>
@@ -153,6 +206,8 @@ export function Header() {
           <nav className="container mx-auto flex flex-col gap-1 px-4 py-3">
             {NAV.map((n) => {
               const active = isActive(n.to);
+              const Icon = NAV_ICONS[n.to];
+              const label = stripLeadingEmoji(n.label);
               return (
                 <Link
                   key={n.to}
@@ -160,18 +215,34 @@ export function Header() {
                   search={n.to === "/servicos-publicos" ? ({} as any) : undefined}
                   onClick={() => setOpen(false)}
                   className={[
-                    "rounded-lg px-3 py-2.5 text-sm font-medium",
+                    "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
                     n.danger
                       ? "text-destructive hover:bg-destructive/10"
                       : active
-                      ? "bg-muted text-foreground"
-                      : "text-foreground/80 hover:bg-muted",
+                      ? "bg-primary/10 text-primary"
+                      : "text-foreground/80 hover:bg-primary/5 hover:text-primary",
                   ].join(" ")}
                 >
-                  {n.label}
+                  {Icon ? (
+                    <span
+                      className={[
+                        "flex h-8 w-8 items-center justify-center rounded-lg transition-colors",
+                        n.danger
+                          ? "bg-destructive/10 text-destructive"
+                          : active
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-primary/10 text-primary",
+                      ].join(" ")}
+                      aria-hidden
+                    >
+                      <Icon className="h-4 w-4" strokeWidth={2.2} />
+                    </span>
+                  ) : null}
+                  <span>{label}</span>
                 </Link>
               );
             })}
+
             {(isAuthed || isAdmin) ? (
               <div className="mt-2 grid grid-cols-2 gap-2 border-t border-border pt-3">
                 {isAuthed ? (
