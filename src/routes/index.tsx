@@ -70,6 +70,7 @@ function PublicServiceCard({ slug, label, icon, description }: { slug: string; l
 function Home() {
   const { city } = useSelectedCity();
   const cityName = CITY_OPTIONS.find((c) => c.slug === city)?.name ?? "sua cidade";
+  const site = useSiteContent();
   const cats = useQuery(categoriesQueryOptions);
   const featured = useQuery(featuredCompaniesQueryOptions(8));
 
