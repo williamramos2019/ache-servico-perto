@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { useAdmin } from "@/hooks/use-admin";
 import { supabase } from "@/integrations/supabase/client";
+import { CityPickerDialog } from "./CityPickerDialog";
 
 type NavItem = { to: string; label: string; danger?: boolean };
 const NAV: NavItem[] = [
@@ -73,6 +74,7 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-1.5">
+          <div className="hidden md:inline-flex"><CityPickerDialog /></div>
           {isAdmin ? (
             <Link to="/admin" className="hidden lg:inline-flex" aria-label="Admin">
               <Button variant="ghost" size="sm" className="gap-1"><ShieldCheck className="h-4 w-4" /> Admin</Button>
