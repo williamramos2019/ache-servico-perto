@@ -48,6 +48,7 @@ import { Route as AdminEmergenciaRouteImport } from './routes/admin.emergencia'
 import { Route as AdminConfiguracoesRouteImport } from './routes/admin.configuracoes'
 import { Route as AdminCidadesRouteImport } from './routes/admin.cidades'
 import { Route as AdminBlogRouteImport } from './routes/admin.blog'
+import { Route as AdminPushIndexRouteImport } from './routes/admin.push.index'
 import { Route as PainelNotificacoesPreferenciasRouteImport } from './routes/painel.notificacoes.preferencias'
 import { Route as PainelEmpresasNovaRouteImport } from './routes/painel.empresas.nova'
 import { Route as PainelEmpresasIdRouteImport } from './routes/painel.empresas.$id'
@@ -248,6 +249,11 @@ const AdminBlogRoute = AdminBlogRouteImport.update({
   path: '/blog',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminPushIndexRoute = AdminPushIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminPushRoute,
+} as any)
 const PainelNotificacoesPreferenciasRoute =
   PainelNotificacoesPreferenciasRouteImport.update({
     id: '/preferencias',
@@ -292,7 +298,7 @@ export interface FileRoutesByFullPath {
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/menu': typeof AdminMenuRoute
   '/admin/planos': typeof AdminPlanosRoute
-  '/admin/push': typeof AdminPushRoute
+  '/admin/push': typeof AdminPushRouteWithChildren
   '/admin/servicos-publicos': typeof AdminServicosPublicosRoute
   '/admin/textos': typeof AdminTextosRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -313,6 +319,7 @@ export interface FileRoutesByFullPath {
   '/painel/empresas/$id': typeof PainelEmpresasIdRoute
   '/painel/empresas/nova': typeof PainelEmpresasNovaRoute
   '/painel/notificacoes/preferencias': typeof PainelNotificacoesPreferenciasRoute
+  '/admin/push/': typeof AdminPushIndexRoute
   '/api/public/push/track': typeof ApiPublicPushTrackRoute
 }
 export interface FileRoutesByTo {
@@ -335,7 +342,6 @@ export interface FileRoutesByTo {
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/menu': typeof AdminMenuRoute
   '/admin/planos': typeof AdminPlanosRoute
-  '/admin/push': typeof AdminPushRoute
   '/admin/servicos-publicos': typeof AdminServicosPublicosRoute
   '/admin/textos': typeof AdminTextosRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -356,6 +362,7 @@ export interface FileRoutesByTo {
   '/painel/empresas/$id': typeof PainelEmpresasIdRoute
   '/painel/empresas/nova': typeof PainelEmpresasNovaRoute
   '/painel/notificacoes/preferencias': typeof PainelNotificacoesPreferenciasRoute
+  '/admin/push': typeof AdminPushIndexRoute
   '/api/public/push/track': typeof ApiPublicPushTrackRoute
 }
 export interface FileRoutesById {
@@ -381,7 +388,7 @@ export interface FileRoutesById {
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/menu': typeof AdminMenuRoute
   '/admin/planos': typeof AdminPlanosRoute
-  '/admin/push': typeof AdminPushRoute
+  '/admin/push': typeof AdminPushRouteWithChildren
   '/admin/servicos-publicos': typeof AdminServicosPublicosRoute
   '/admin/textos': typeof AdminTextosRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -402,6 +409,7 @@ export interface FileRoutesById {
   '/painel/empresas/$id': typeof PainelEmpresasIdRoute
   '/painel/empresas/nova': typeof PainelEmpresasNovaRoute
   '/painel/notificacoes/preferencias': typeof PainelNotificacoesPreferenciasRoute
+  '/admin/push/': typeof AdminPushIndexRoute
   '/api/public/push/track': typeof ApiPublicPushTrackRoute
 }
 export interface FileRouteTypes {
@@ -449,6 +457,7 @@ export interface FileRouteTypes {
     | '/painel/empresas/$id'
     | '/painel/empresas/nova'
     | '/painel/notificacoes/preferencias'
+    | '/admin/push/'
     | '/api/public/push/track'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -471,7 +480,6 @@ export interface FileRouteTypes {
     | '/admin/leads'
     | '/admin/menu'
     | '/admin/planos'
-    | '/admin/push'
     | '/admin/servicos-publicos'
     | '/admin/textos'
     | '/blog/$slug'
@@ -492,6 +500,7 @@ export interface FileRouteTypes {
     | '/painel/empresas/$id'
     | '/painel/empresas/nova'
     | '/painel/notificacoes/preferencias'
+    | '/admin/push'
     | '/api/public/push/track'
   id:
     | '__root__'
@@ -537,6 +546,7 @@ export interface FileRouteTypes {
     | '/painel/empresas/$id'
     | '/painel/empresas/nova'
     | '/painel/notificacoes/preferencias'
+    | '/admin/push/'
     | '/api/public/push/track'
   fileRoutesById: FileRoutesById
 }
@@ -838,6 +848,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminBlogRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/push/': {
+      id: '/admin/push/'
+      path: '/'
+      fullPath: '/admin/push/'
+      preLoaderRoute: typeof AdminPushIndexRouteImport
+      parentRoute: typeof AdminPushRoute
+    }
     '/painel/notificacoes/preferencias': {
       id: '/painel/notificacoes/preferencias'
       path: '/preferencias'
@@ -869,6 +886,18 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AdminPushRouteChildren {
+  AdminPushIndexRoute: typeof AdminPushIndexRoute
+}
+
+const AdminPushRouteChildren: AdminPushRouteChildren = {
+  AdminPushIndexRoute: AdminPushIndexRoute,
+}
+
+const AdminPushRouteWithChildren = AdminPushRoute._addFileChildren(
+  AdminPushRouteChildren,
+)
+
 interface AdminRouteChildren {
   AdminBlogRoute: typeof AdminBlogRoute
   AdminCidadesRoute: typeof AdminCidadesRoute
@@ -879,7 +908,7 @@ interface AdminRouteChildren {
   AdminLeadsRoute: typeof AdminLeadsRoute
   AdminMenuRoute: typeof AdminMenuRoute
   AdminPlanosRoute: typeof AdminPlanosRoute
-  AdminPushRoute: typeof AdminPushRoute
+  AdminPushRoute: typeof AdminPushRouteWithChildren
   AdminServicosPublicosRoute: typeof AdminServicosPublicosRoute
   AdminTextosRoute: typeof AdminTextosRoute
   AdminIndexRoute: typeof AdminIndexRoute
@@ -895,7 +924,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminLeadsRoute: AdminLeadsRoute,
   AdminMenuRoute: AdminMenuRoute,
   AdminPlanosRoute: AdminPlanosRoute,
-  AdminPushRoute: AdminPushRoute,
+  AdminPushRoute: AdminPushRouteWithChildren,
   AdminServicosPublicosRoute: AdminServicosPublicosRoute,
   AdminTextosRoute: AdminTextosRoute,
   AdminIndexRoute: AdminIndexRoute,
