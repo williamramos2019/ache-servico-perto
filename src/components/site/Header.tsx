@@ -206,6 +206,8 @@ export function Header() {
           <nav className="container mx-auto flex flex-col gap-1 px-4 py-3">
             {NAV.map((n) => {
               const active = isActive(n.to);
+              const Icon = NAV_ICONS[n.to];
+              const label = stripLeadingEmoji(n.label);
               return (
                 <Link
                   key={n.to}
@@ -213,18 +215,34 @@ export function Header() {
                   search={n.to === "/servicos-publicos" ? ({} as any) : undefined}
                   onClick={() => setOpen(false)}
                   className={[
-                    "rounded-lg px-3 py-2.5 text-sm font-medium",
+                    "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
                     n.danger
                       ? "text-destructive hover:bg-destructive/10"
                       : active
-                      ? "bg-muted text-foreground"
-                      : "text-foreground/80 hover:bg-muted",
+                      ? "bg-primary/10 text-primary"
+                      : "text-foreground/80 hover:bg-primary/5 hover:text-primary",
                   ].join(" ")}
                 >
-                  {n.label}
+                  {Icon ? (
+                    <span
+                      className={[
+                        "flex h-8 w-8 items-center justify-center rounded-lg transition-colors",
+                        n.danger
+                          ? "bg-destructive/10 text-destructive"
+                          : active
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-primary/10 text-primary",
+                      ].join(" ")}
+                      aria-hidden
+                    >
+                      <Icon className="h-4 w-4" strokeWidth={2.2} />
+                    </span>
+                  ) : null}
+                  <span>{label}</span>
                 </Link>
               );
             })}
+
             {(isAuthed || isAdmin) ? (
               <div className="mt-2 grid grid-cols-2 gap-2 border-t border-border pt-3">
                 {isAuthed ? (
