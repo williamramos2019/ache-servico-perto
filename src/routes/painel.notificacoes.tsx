@@ -111,7 +111,7 @@ function NotifPage() {
         </Card>
       ) : (
         <div className="space-y-2">
-          {items.map((row) => {
+          {(items as Array<{ id: number; received_at: string; read_at: string | null; favorite_at: string | null; archived_at: string | null; notification: unknown }>).map((row) => {
             const n = row.notification as { id: string; title: string; body: string; icon_url?: string | null; image_url?: string | null; url?: string | null; emoji?: string | null; color?: string | null; created_at?: string } | null;
             if (!n) return null;
             const isUnread = !row.read_at;
