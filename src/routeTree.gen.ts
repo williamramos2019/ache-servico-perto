@@ -38,6 +38,7 @@ import { Route as CategoriaSlugRouteImport } from './routes/categoria.$slug'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as AdminTextosRouteImport } from './routes/admin.textos'
 import { Route as AdminServicosPublicosRouteImport } from './routes/admin.servicos-publicos'
+import { Route as AdminPushRouteImport } from './routes/admin.push'
 import { Route as AdminPlanosRouteImport } from './routes/admin.planos'
 import { Route as AdminMenuRouteImport } from './routes/admin.menu'
 import { Route as AdminLeadsRouteImport } from './routes/admin.leads'
@@ -197,6 +198,11 @@ const AdminServicosPublicosRoute = AdminServicosPublicosRouteImport.update({
   path: '/servicos-publicos',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminPushRoute = AdminPushRouteImport.update({
+  id: '/push',
+  path: '/push',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminPlanosRoute = AdminPlanosRouteImport.update({
   id: '/planos',
   path: '/planos',
@@ -286,6 +292,7 @@ export interface FileRoutesByFullPath {
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/menu': typeof AdminMenuRoute
   '/admin/planos': typeof AdminPlanosRoute
+  '/admin/push': typeof AdminPushRoute
   '/admin/servicos-publicos': typeof AdminServicosPublicosRoute
   '/admin/textos': typeof AdminTextosRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -328,6 +335,7 @@ export interface FileRoutesByTo {
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/menu': typeof AdminMenuRoute
   '/admin/planos': typeof AdminPlanosRoute
+  '/admin/push': typeof AdminPushRoute
   '/admin/servicos-publicos': typeof AdminServicosPublicosRoute
   '/admin/textos': typeof AdminTextosRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -373,6 +381,7 @@ export interface FileRoutesById {
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/menu': typeof AdminMenuRoute
   '/admin/planos': typeof AdminPlanosRoute
+  '/admin/push': typeof AdminPushRoute
   '/admin/servicos-publicos': typeof AdminServicosPublicosRoute
   '/admin/textos': typeof AdminTextosRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -419,6 +428,7 @@ export interface FileRouteTypes {
     | '/admin/leads'
     | '/admin/menu'
     | '/admin/planos'
+    | '/admin/push'
     | '/admin/servicos-publicos'
     | '/admin/textos'
     | '/blog/$slug'
@@ -461,6 +471,7 @@ export interface FileRouteTypes {
     | '/admin/leads'
     | '/admin/menu'
     | '/admin/planos'
+    | '/admin/push'
     | '/admin/servicos-publicos'
     | '/admin/textos'
     | '/blog/$slug'
@@ -505,6 +516,7 @@ export interface FileRouteTypes {
     | '/admin/leads'
     | '/admin/menu'
     | '/admin/planos'
+    | '/admin/push'
     | '/admin/servicos-publicos'
     | '/admin/textos'
     | '/blog/$slug'
@@ -756,6 +768,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminServicosPublicosRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/push': {
+      id: '/admin/push'
+      path: '/push'
+      fullPath: '/admin/push'
+      preLoaderRoute: typeof AdminPushRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/planos': {
       id: '/admin/planos'
       path: '/planos'
@@ -860,6 +879,7 @@ interface AdminRouteChildren {
   AdminLeadsRoute: typeof AdminLeadsRoute
   AdminMenuRoute: typeof AdminMenuRoute
   AdminPlanosRoute: typeof AdminPlanosRoute
+  AdminPushRoute: typeof AdminPushRoute
   AdminServicosPublicosRoute: typeof AdminServicosPublicosRoute
   AdminTextosRoute: typeof AdminTextosRoute
   AdminIndexRoute: typeof AdminIndexRoute
@@ -875,6 +895,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminLeadsRoute: AdminLeadsRoute,
   AdminMenuRoute: AdminMenuRoute,
   AdminPlanosRoute: AdminPlanosRoute,
+  AdminPushRoute: AdminPushRoute,
   AdminServicosPublicosRoute: AdminServicosPublicosRoute,
   AdminTextosRoute: AdminTextosRoute,
   AdminIndexRoute: AdminIndexRoute,

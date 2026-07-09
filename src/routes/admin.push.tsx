@@ -8,12 +8,12 @@ export const Route = createFileRoute("/admin/push")({
   component: AdminPushLayout,
 });
 
-const NAV = [
+const NAV: Array<{ to: "/admin/push" | "/admin/push/novo" | "/admin/push/historico" | "/admin/push/templates"; label: string; icon: typeof LayoutDashboard; exact?: boolean }> = [
   { to: "/admin/push", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { to: "/admin/push/novo", label: "Novo envio", icon: Send },
   { to: "/admin/push/historico", label: "Histórico", icon: History },
   { to: "/admin/push/templates", label: "Templates", icon: FileText },
-] as const;
+];
 
 function AdminPushLayout() {
   const { loading, isAdmin } = useAdmin();
