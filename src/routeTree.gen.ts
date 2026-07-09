@@ -9,12 +9,16 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TransporteRouteImport } from './routes/transporte'
 import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ServicosPublicosRouteImport } from './routes/servicos-publicos'
+import { Route as PromocoesRouteImport } from './routes/promocoes'
 import { Route as PlanosRouteImport } from './routes/planos'
 import { Route as PainelRouteImport } from './routes/painel'
+import { Route as MarketplaceRouteImport } from './routes/marketplace'
 import { Route as FavoritosRouteImport } from './routes/favoritos'
+import { Route as EmpregosRouteImport } from './routes/empregos'
 import { Route as EmergenciaRouteImport } from './routes/emergencia'
 import { Route as ContatoRouteImport } from './routes/contato'
 import { Route as BuscarRouteImport } from './routes/buscar'
@@ -58,6 +62,11 @@ import { Route as AdminPushHistoricoRouteImport } from './routes/admin.push.hist
 import { Route as AdminPushIdRouteImport } from './routes/admin.push.$id'
 import { Route as ApiPublicPushTrackRouteImport } from './routes/api/public/push/track'
 
+const TransporteRoute = TransporteRouteImport.update({
+  id: '/transporte',
+  path: '/transporte',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SobreRoute = SobreRouteImport.update({
   id: '/sobre',
   path: '/sobre',
@@ -73,6 +82,11 @@ const ServicosPublicosRoute = ServicosPublicosRouteImport.update({
   path: '/servicos-publicos',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PromocoesRoute = PromocoesRouteImport.update({
+  id: '/promocoes',
+  path: '/promocoes',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PlanosRoute = PlanosRouteImport.update({
   id: '/planos',
   path: '/planos',
@@ -83,9 +97,19 @@ const PainelRoute = PainelRouteImport.update({
   path: '/painel',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MarketplaceRoute = MarketplaceRouteImport.update({
+  id: '/marketplace',
+  path: '/marketplace',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FavoritosRoute = FavoritosRouteImport.update({
   id: '/favoritos',
   path: '/favoritos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EmpregosRoute = EmpregosRouteImport.update({
+  id: '/empregos',
+  path: '/empregos',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EmergenciaRoute = EmergenciaRouteImport.update({
@@ -307,12 +331,16 @@ export interface FileRoutesByFullPath {
   '/buscar': typeof BuscarRoute
   '/contato': typeof ContatoRoute
   '/emergencia': typeof EmergenciaRoute
+  '/empregos': typeof EmpregosRoute
   '/favoritos': typeof FavoritosRoute
+  '/marketplace': typeof MarketplaceRoute
   '/painel': typeof PainelRouteWithChildren
   '/planos': typeof PlanosRoute
+  '/promocoes': typeof PromocoesRoute
   '/servicos-publicos': typeof ServicosPublicosRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
+  '/transporte': typeof TransporteRoute
   '/admin/blog': typeof AdminBlogRoute
   '/admin/cidades': typeof AdminCidadesRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
@@ -356,11 +384,15 @@ export interface FileRoutesByTo {
   '/buscar': typeof BuscarRoute
   '/contato': typeof ContatoRoute
   '/emergencia': typeof EmergenciaRoute
+  '/empregos': typeof EmpregosRoute
   '/favoritos': typeof FavoritosRoute
+  '/marketplace': typeof MarketplaceRoute
   '/planos': typeof PlanosRoute
+  '/promocoes': typeof PromocoesRoute
   '/servicos-publicos': typeof ServicosPublicosRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
+  '/transporte': typeof TransporteRoute
   '/admin/blog': typeof AdminBlogRoute
   '/admin/cidades': typeof AdminCidadesRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
@@ -405,12 +437,16 @@ export interface FileRoutesById {
   '/buscar': typeof BuscarRoute
   '/contato': typeof ContatoRoute
   '/emergencia': typeof EmergenciaRoute
+  '/empregos': typeof EmpregosRoute
   '/favoritos': typeof FavoritosRoute
+  '/marketplace': typeof MarketplaceRoute
   '/painel': typeof PainelRouteWithChildren
   '/planos': typeof PlanosRoute
+  '/promocoes': typeof PromocoesRoute
   '/servicos-publicos': typeof ServicosPublicosRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
+  '/transporte': typeof TransporteRoute
   '/admin/blog': typeof AdminBlogRoute
   '/admin/cidades': typeof AdminCidadesRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
@@ -457,12 +493,16 @@ export interface FileRouteTypes {
     | '/buscar'
     | '/contato'
     | '/emergencia'
+    | '/empregos'
     | '/favoritos'
+    | '/marketplace'
     | '/painel'
     | '/planos'
+    | '/promocoes'
     | '/servicos-publicos'
     | '/sitemap.xml'
     | '/sobre'
+    | '/transporte'
     | '/admin/blog'
     | '/admin/cidades'
     | '/admin/configuracoes'
@@ -506,11 +546,15 @@ export interface FileRouteTypes {
     | '/buscar'
     | '/contato'
     | '/emergencia'
+    | '/empregos'
     | '/favoritos'
+    | '/marketplace'
     | '/planos'
+    | '/promocoes'
     | '/servicos-publicos'
     | '/sitemap.xml'
     | '/sobre'
+    | '/transporte'
     | '/admin/blog'
     | '/admin/cidades'
     | '/admin/configuracoes'
@@ -554,12 +598,16 @@ export interface FileRouteTypes {
     | '/buscar'
     | '/contato'
     | '/emergencia'
+    | '/empregos'
     | '/favoritos'
+    | '/marketplace'
     | '/painel'
     | '/planos'
+    | '/promocoes'
     | '/servicos-publicos'
     | '/sitemap.xml'
     | '/sobre'
+    | '/transporte'
     | '/admin/blog'
     | '/admin/cidades'
     | '/admin/configuracoes'
@@ -605,12 +653,16 @@ export interface RootRouteChildren {
   BuscarRoute: typeof BuscarRoute
   ContatoRoute: typeof ContatoRoute
   EmergenciaRoute: typeof EmergenciaRoute
+  EmpregosRoute: typeof EmpregosRoute
   FavoritosRoute: typeof FavoritosRoute
+  MarketplaceRoute: typeof MarketplaceRoute
   PainelRoute: typeof PainelRouteWithChildren
   PlanosRoute: typeof PlanosRoute
+  PromocoesRoute: typeof PromocoesRoute
   ServicosPublicosRoute: typeof ServicosPublicosRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SobreRoute: typeof SobreRoute
+  TransporteRoute: typeof TransporteRoute
   BlogSlugRoute: typeof BlogSlugRoute
   CategoriaSlugRoute: typeof CategoriaSlugRoute
   CidadesSlugRoute: typeof CidadesSlugRoute
@@ -623,6 +675,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/transporte': {
+      id: '/transporte'
+      path: '/transporte'
+      fullPath: '/transporte'
+      preLoaderRoute: typeof TransporteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sobre': {
       id: '/sobre'
       path: '/sobre'
@@ -644,6 +703,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServicosPublicosRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/promocoes': {
+      id: '/promocoes'
+      path: '/promocoes'
+      fullPath: '/promocoes'
+      preLoaderRoute: typeof PromocoesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/planos': {
       id: '/planos'
       path: '/planos'
@@ -658,11 +724,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PainelRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/marketplace': {
+      id: '/marketplace'
+      path: '/marketplace'
+      fullPath: '/marketplace'
+      preLoaderRoute: typeof MarketplaceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/favoritos': {
       id: '/favoritos'
       path: '/favoritos'
       fullPath: '/favoritos'
       preLoaderRoute: typeof FavoritosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/empregos': {
+      id: '/empregos'
+      path: '/empregos'
+      fullPath: '/empregos'
+      preLoaderRoute: typeof EmpregosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/emergencia': {
@@ -1071,12 +1151,16 @@ const rootRouteChildren: RootRouteChildren = {
   BuscarRoute: BuscarRoute,
   ContatoRoute: ContatoRoute,
   EmergenciaRoute: EmergenciaRoute,
+  EmpregosRoute: EmpregosRoute,
   FavoritosRoute: FavoritosRoute,
+  MarketplaceRoute: MarketplaceRoute,
   PainelRoute: PainelRouteWithChildren,
   PlanosRoute: PlanosRoute,
+  PromocoesRoute: PromocoesRoute,
   ServicosPublicosRoute: ServicosPublicosRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SobreRoute: SobreRoute,
+  TransporteRoute: TransporteRoute,
   BlogSlugRoute: BlogSlugRoute,
   CategoriaSlugRoute: CategoriaSlugRoute,
   CidadesSlugRoute: CidadesSlugRoute,
