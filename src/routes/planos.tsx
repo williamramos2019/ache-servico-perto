@@ -99,8 +99,8 @@ function PlanosPage() {
       plan: open,
     });
     setLoading(false);
-    if (error) { toast.error("Não foi possível enviar agora"); return; }
-    toast.success("Recebemos seu interesse! Entraremos em contato.");
+    if (error) { toast.error("Não conseguimos enviar agora. Tente de novo em instantes."); return; }
+    toast.success("Recebido! Nossa equipe entra em contato em até 24h.");
     setOpen(null);
     setForm({ company_name: "", contact_name: "", email: "", phone: "", city: "", message: "" });
   }
