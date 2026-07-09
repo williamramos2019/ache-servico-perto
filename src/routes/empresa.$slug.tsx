@@ -552,6 +552,14 @@ function CompanyPage() {
 
             <ReviewsSection companyId={company.id} />
 
+            {/* Fase 2 — Selos de segurança e confiança */}
+            <TrustSeals
+              isVerified={!!isVerified}
+              hasCnpj={!!company.certifications?.cnpj}
+              hasWarranty={!!company.certifications?.garantia || (company.differentials ?? []).includes("garantia")}
+              invoiceIssued={!!company.certifications?.nota_fiscal || (company.differentials ?? []).includes("nota_fiscal")}
+            />
+
             {/* FAQ */}
             <section className="rounded-xl border border-border bg-card p-6">
               <h2 className="font-display text-xl font-bold">Perguntas frequentes</h2>
