@@ -1,25 +1,20 @@
 import { useState } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Heart, LayoutDashboard, LogOut, MapPin, Menu, Search, ShieldCheck, X } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { useAdmin } from "@/hooks/use-admin";
 import { supabase } from "@/integrations/supabase/client";
 import { CityPickerDialog } from "./CityPickerDialog";
-
-type NavItem = { to: string; label: string; danger?: boolean };
-const NAV: NavItem[] = [
-  { to: "/", label: "Início" },
-  { to: "/servicos-publicos", label: "Serviços Públicos" },
-  { to: "/emergencia", label: "Emergência", danger: true },
-  { to: "/buscar", label: "Empresas" },
-  { to: "/eventos", label: "Eventos" },
-  { to: "/blog", label: "Blog" },
-  { to: "/sobre", label: "Sobre" },
-];
+import { DEFAULT_NAV_ITEMS, fetchNavItems } from "@/lib/navItems";
 
 export function Header() {
+  const { data: NAV = DEFAULT_NAV_ITEMS } = useQuery({
+    queryKey: ["nav-items"],
+    queryFn: fetchNavItems,
+    staleTime: 5 * 60_000,
+  });
   const { isAdmin, userId } = useAdmin();
   const [open, setOpen] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
