@@ -99,32 +99,36 @@ export function slugify(s: string) {
 
 export async function createMyCompany(userId: string, input: { name: string; tagline?: string; description?: string; city_id?: string | null; phone?: string; whatsapp?: string; email?: string; address?: string }) {
   const base = slugify(input.name) || `empresa-${Date.now()}`;
-  let slug = base;
-  for (let i = 0; i < 5; i++) {
-    const { data: exists } = await supabase.from("companies").select("id").eq("slug", slug).maybeSingle();
-    if (!exists) break;
-    slug = `${base}-${Math.random().toString(36).slice(2, 6)}`;
+  const payload = {
+    owner_id: userId,
+    name: input.name,
+    tagline: input.tagline || null,
+    description: input.description || null,
+    city_id: input.city_id || null,
+    phone: input.phone || null,
+    whatsapp: input.whatsapp || null,
+    email: input.email || null,
+    address: input.address || null,
+    plan: "free",
+    status: "pending",
+  };
+  // Try base slug then retry with random suffixes on unique_violation.
+  // RLS hides other users' non-active rows, so a pre-SELECT can miss a clash —
+  // rely on the DB unique constraint instead.
+  let lastError: unknown = null;
+  for (let i = 0; i < 6; i++) {
+    const slug = i === 0 ? base : `${base}-${Math.random().toString(36).slice(2, 6)}`;
+    const { data, error } = await supabase
+      .from("companies")
+      .insert({ ...payload, slug })
+      .select("id, slug")
+      .single();
+    if (!error) return data;
+    lastError = error;
+    // 23505 = unique_violation. Anything else, bail immediately.
+    if ((error as { code?: string }).code !== "23505") throw error;
   }
-  const { data, error } = await supabase
-    .from("companies")
-    .insert({
-      owner_id: userId,
-      name: input.name,
-      slug,
-      tagline: input.tagline || null,
-      description: input.description || null,
-      city_id: input.city_id || null,
-      phone: input.phone || null,
-      whatsapp: input.whatsapp || null,
-      email: input.email || null,
-      address: input.address || null,
-      plan: "free",
-      status: "pending",
-    })
-    .select("id, slug")
-    .single();
-  if (error) throw error;
-  return data;
+  throw lastError ?? new Error("Não foi possível criar a empresa");
 }
 
 export async function listMyLeads(userId: string) {
