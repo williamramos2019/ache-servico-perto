@@ -283,7 +283,18 @@ function CompanyPage() {
                 }`}>
                   <Clock className="h-3 w-3" /> {status.label}
                 </span>
+                {company.price_range ? (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-foreground/80" title="Faixa de preço">
+                    {"$".repeat(company.price_range)}
+                  </span>
+                ) : null}
               </div>
+              <ResponseStatsRow
+                responseTimeMinutes={company.response_time_minutes}
+                responseRate={company.response_rate}
+                servicesCompleted={company.services_completed}
+                clientsServed={company.clients_served}
+              />
               <div className="mt-3 flex flex-wrap gap-2">
                 {company.company_categories.map((cc) => cc.categories ? (
                   <Link key={cc.categories.slug} to="/categoria/$slug" params={{ slug: cc.categories.slug }}
