@@ -45,19 +45,29 @@ function AuthPage() {
     setLoading(false);
     if (error) return toast.error(error.message);
     toast.success("Bem-vindo de volta!");
-    navigate({ to: "/" });
+    // Redirect is handled by onAuthStateChange to avoid double navigation.
   }
 
   async function signUp(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email, password,
       options: { data: { name }, emailRedirectTo: `${window.location.origin}/` },
     });
     setLoading(false);
     if (error) return toast.error(error.message);
-    toast.success("Cadastro realizado! Você já pode entrar.");
+    if (data.session) toast.success("Conta criada! Bem-vindo.");
+    else toast.success("Conta criada! Verifique seu e-mail para confirmar o cadastro.");
+  }
+
+  async function forgotPassword() {
+    if (!email) return toast.error("Digite seu e-mail para receber o link de redefinição.");
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/auth`,
+    });
+    if (error) return toast.error(error.message);
+    toast.success("Enviamos um link de redefinição para seu e-mail.");
   }
 
   async function withGoogle() {
