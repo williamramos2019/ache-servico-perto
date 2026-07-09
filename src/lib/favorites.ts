@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 // ---- Singleton auth state (1 listener for the whole app) ----
 let _userId: string | null = null;
+let _authReady = false;
 let _initialized = false;
 const _listeners = new Set<() => void>();
 
@@ -14,10 +15,15 @@ function ensureInit() {
   _initialized = true;
   supabase.auth.getUser().then(({ data }) => {
     _userId = data.user?.id ?? null;
+    _authReady = true;
+    notify();
+  }).catch(() => {
+    _authReady = true;
     notify();
   });
   supabase.auth.onAuthStateChange((_e, session) => {
     _userId = session?.user?.id ?? null;
+    _authReady = true;
     notify();
   });
 }
@@ -30,6 +36,11 @@ function subscribe(cb: () => void) {
 
 export function useCurrentUserId() {
   return useSyncExternalStore(subscribe, () => _userId, () => null);
+}
+
+/** True once the initial auth state has been resolved (signed in or out). */
+export function useAuthReady() {
+  return useSyncExternalStore(subscribe, () => _authReady, () => false);
 }
 
 // ---- Favorites: single query per user, O(1) membership check ----
