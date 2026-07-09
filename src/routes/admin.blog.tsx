@@ -39,7 +39,7 @@ function slugify(s: string) {
 
 async function fetchAll(): Promise<Post[]> {
   const { data, error } = await supabase
-    .from("blog_posts")
+    .from("blog_posts_legacy")
     .select("id, slug, title, excerpt, content, cover_url, author_name, published, published_at, created_at")
     .order("created_at", { ascending: false });
   if (error) throw error;
@@ -64,8 +64,8 @@ function AdminBlog() {
     };
     if (!payload.title || !payload.slug) return toast.error("Título e slug são obrigatórios");
     const q = p.id
-      ? supabase.from("blog_posts").update(payload).eq("id", p.id)
-      : supabase.from("blog_posts").insert(payload);
+      ? supabase.from("blog_posts_legacy").update(payload).eq("id", p.id)
+      : supabase.from("blog_posts_legacy").insert(payload);
     const { error } = await q;
     if (error) return toast.error(error.message);
     toast.success(p.id ? "Post atualizado" : "Post criado");
@@ -75,7 +75,7 @@ function AdminBlog() {
   }
 
   async function togglePublish(p: Post) {
-    const { error } = await supabase.from("blog_posts").update({
+    const { error } = await supabase.from("blog_posts_legacy").update({
       published: !p.published,
       published_at: !p.published ? (p.published_at ?? new Date().toISOString()) : p.published_at,
     }).eq("id", p.id);
@@ -87,7 +87,7 @@ function AdminBlog() {
 
   async function remove(p: Post) {
     if (!confirm(`Excluir "${p.title}"?`)) return;
-    const { error } = await supabase.from("blog_posts").delete().eq("id", p.id);
+    const { error } = await supabase.from("blog_posts_legacy").delete().eq("id", p.id);
     if (error) return toast.error(error.message);
     toast.success("Post excluído");
     qc.invalidateQueries({ queryKey: ["admin-blog-posts"] });
