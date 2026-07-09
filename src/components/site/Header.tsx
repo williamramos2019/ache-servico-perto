@@ -107,25 +107,42 @@ export function Header() {
         <nav className="hidden items-center gap-0.5 lg:flex">
           {NAV.map((n) => {
             const active = isActive(n.to);
+            const Icon = NAV_ICONS[n.to];
+            const label = stripLeadingEmoji(n.label);
             return (
               <Link
                 key={n.to}
                 to={n.to as any}
                 search={n.to === "/servicos-publicos" ? ({} as any) : undefined}
                 className={[
-                  "relative rounded-full px-3.5 py-2 text-sm font-medium transition-colors",
+                  "group relative inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-sm font-medium transition-all",
                   n.danger
                     ? "text-destructive hover:bg-destructive/10"
                     : active
-                    ? "text-foreground bg-muted"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted/70",
+                    ? "bg-primary/10 text-primary shadow-[inset_0_0_0_1px_hsl(var(--primary)/0.15)]"
+                    : "text-muted-foreground hover:text-primary hover:bg-primary/5",
                 ].join(" ")}
               >
-                {n.label}
+                {Icon ? (
+                  <Icon
+                    className={[
+                      "h-4 w-4 transition-transform duration-200 group-hover:scale-110",
+                      n.danger
+                        ? ""
+                        : active
+                        ? "text-primary"
+                        : "text-primary/70 group-hover:text-primary",
+                    ].join(" ")}
+                    strokeWidth={2.2}
+                    aria-hidden
+                  />
+                ) : null}
+                <span>{label}</span>
               </Link>
             );
           })}
         </nav>
+
 
         <div className="flex items-center gap-1.5">
           <div className="hidden md:inline-flex"><CityPickerDialog /></div>
