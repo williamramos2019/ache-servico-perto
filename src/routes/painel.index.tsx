@@ -34,6 +34,8 @@ function PanelHome() {
         <Link to="/painel/empresas/nova"><Button size="sm" className="gap-1"><Plus className="h-4 w-4" /> Nova empresa</Button></Link>
       </div>
 
+      <div className="mt-4"><EnableNotifications /></div>
+
       <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
         {cards.map((c) => (
           <div key={c.label} className="rounded-xl border border-border bg-card p-4">
