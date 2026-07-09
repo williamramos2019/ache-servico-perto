@@ -70,10 +70,33 @@ export type CompanyPatch = Partial<{
   website: string | null;
   instagram: string | null;
   facebook: string | null;
+  tiktok: string | null;
+  youtube: string | null;
   logo_url: string | null;
   banner_url: string | null;
   video_url: string | null;
   status: string;
+  founded_year: number | null;
+  response_time_minutes: number | null;
+  response_rate: number | null;
+  services_completed: number | null;
+  clients_served: number | null;
+  price_range: number | null;
+  tour_360_url: string | null;
+  catalog_url: string | null;
+  pricebook_url: string | null;
+  portfolio_pdf_url: string | null;
+  coverage_cities: string[];
+  differentials: string[];
+  badges: string[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  certifications: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  quality_scores: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  promotions: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  financing_info: any;
 }>;
 
 export async function updateMyCompany(id: string, patch: CompanyPatch) {
