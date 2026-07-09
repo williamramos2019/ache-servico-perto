@@ -52,6 +52,7 @@ import { Route as AdminPushIndexRouteImport } from './routes/admin.push.index'
 import { Route as PainelNotificacoesPreferenciasRouteImport } from './routes/painel.notificacoes.preferencias'
 import { Route as PainelEmpresasNovaRouteImport } from './routes/painel.empresas.nova'
 import { Route as PainelEmpresasIdRouteImport } from './routes/painel.empresas.$id'
+import { Route as AdminPushTemplatesRouteImport } from './routes/admin.push.templates'
 import { Route as AdminPushNovoRouteImport } from './routes/admin.push.novo'
 import { Route as AdminPushHistoricoRouteImport } from './routes/admin.push.historico'
 import { Route as AdminPushIdRouteImport } from './routes/admin.push.$id'
@@ -273,6 +274,11 @@ const PainelEmpresasIdRoute = PainelEmpresasIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => PainelEmpresasRoute,
 } as any)
+const AdminPushTemplatesRoute = AdminPushTemplatesRouteImport.update({
+  id: '/templates',
+  path: '/templates',
+  getParentRoute: () => AdminPushRoute,
+} as any)
 const AdminPushNovoRoute = AdminPushNovoRouteImport.update({
   id: '/novo',
   path: '/novo',
@@ -337,6 +343,7 @@ export interface FileRoutesByFullPath {
   '/admin/push/$id': typeof AdminPushIdRoute
   '/admin/push/historico': typeof AdminPushHistoricoRoute
   '/admin/push/novo': typeof AdminPushNovoRoute
+  '/admin/push/templates': typeof AdminPushTemplatesRoute
   '/painel/empresas/$id': typeof PainelEmpresasIdRoute
   '/painel/empresas/nova': typeof PainelEmpresasNovaRoute
   '/painel/notificacoes/preferencias': typeof PainelNotificacoesPreferenciasRoute
@@ -383,6 +390,7 @@ export interface FileRoutesByTo {
   '/admin/push/$id': typeof AdminPushIdRoute
   '/admin/push/historico': typeof AdminPushHistoricoRoute
   '/admin/push/novo': typeof AdminPushNovoRoute
+  '/admin/push/templates': typeof AdminPushTemplatesRoute
   '/painel/empresas/$id': typeof PainelEmpresasIdRoute
   '/painel/empresas/nova': typeof PainelEmpresasNovaRoute
   '/painel/notificacoes/preferencias': typeof PainelNotificacoesPreferenciasRoute
@@ -433,6 +441,7 @@ export interface FileRoutesById {
   '/admin/push/$id': typeof AdminPushIdRoute
   '/admin/push/historico': typeof AdminPushHistoricoRoute
   '/admin/push/novo': typeof AdminPushNovoRoute
+  '/admin/push/templates': typeof AdminPushTemplatesRoute
   '/painel/empresas/$id': typeof PainelEmpresasIdRoute
   '/painel/empresas/nova': typeof PainelEmpresasNovaRoute
   '/painel/notificacoes/preferencias': typeof PainelNotificacoesPreferenciasRoute
@@ -484,6 +493,7 @@ export interface FileRouteTypes {
     | '/admin/push/$id'
     | '/admin/push/historico'
     | '/admin/push/novo'
+    | '/admin/push/templates'
     | '/painel/empresas/$id'
     | '/painel/empresas/nova'
     | '/painel/notificacoes/preferencias'
@@ -530,6 +540,7 @@ export interface FileRouteTypes {
     | '/admin/push/$id'
     | '/admin/push/historico'
     | '/admin/push/novo'
+    | '/admin/push/templates'
     | '/painel/empresas/$id'
     | '/painel/empresas/nova'
     | '/painel/notificacoes/preferencias'
@@ -579,6 +590,7 @@ export interface FileRouteTypes {
     | '/admin/push/$id'
     | '/admin/push/historico'
     | '/admin/push/novo'
+    | '/admin/push/templates'
     | '/painel/empresas/$id'
     | '/painel/empresas/nova'
     | '/painel/notificacoes/preferencias'
@@ -912,6 +924,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PainelEmpresasIdRouteImport
       parentRoute: typeof PainelEmpresasRoute
     }
+    '/admin/push/templates': {
+      id: '/admin/push/templates'
+      path: '/templates'
+      fullPath: '/admin/push/templates'
+      preLoaderRoute: typeof AdminPushTemplatesRouteImport
+      parentRoute: typeof AdminPushRoute
+    }
     '/admin/push/novo': {
       id: '/admin/push/novo'
       path: '/novo'
@@ -947,6 +966,7 @@ interface AdminPushRouteChildren {
   AdminPushIdRoute: typeof AdminPushIdRoute
   AdminPushHistoricoRoute: typeof AdminPushHistoricoRoute
   AdminPushNovoRoute: typeof AdminPushNovoRoute
+  AdminPushTemplatesRoute: typeof AdminPushTemplatesRoute
   AdminPushIndexRoute: typeof AdminPushIndexRoute
 }
 
@@ -954,6 +974,7 @@ const AdminPushRouteChildren: AdminPushRouteChildren = {
   AdminPushIdRoute: AdminPushIdRoute,
   AdminPushHistoricoRoute: AdminPushHistoricoRoute,
   AdminPushNovoRoute: AdminPushNovoRoute,
+  AdminPushTemplatesRoute: AdminPushTemplatesRoute,
   AdminPushIndexRoute: AdminPushIndexRoute,
 }
 

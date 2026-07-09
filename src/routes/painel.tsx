@@ -2,19 +2,20 @@ import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-r
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { useAdmin } from "@/hooks/use-admin";
 import { Button } from "@/components/ui/button";
-import { LayoutDashboard, Building2, Mail, Star, User, Heart } from "lucide-react";
+import { LayoutDashboard, Building2, Mail, Star, User, Heart, Bell } from "lucide-react";
 
 export const Route = createFileRoute("/painel")({
   head: () => ({ meta: [{ title: "Meu painel — AgendaAqui" }, { name: "robots", content: "noindex" }] }),
   component: PanelLayout,
 });
 
-const NAV: { to: "/painel" | "/painel/empresas" | "/painel/leads" | "/painel/avaliacoes" | "/painel/favoritos" | "/painel/perfil"; label: string; icon: typeof LayoutDashboard; exact?: boolean }[] = [
+const NAV: { to: "/painel" | "/painel/empresas" | "/painel/leads" | "/painel/avaliacoes" | "/painel/favoritos" | "/painel/notificacoes" | "/painel/perfil"; label: string; icon: typeof LayoutDashboard; exact?: boolean }[] = [
   { to: "/painel", label: "Visão geral", icon: LayoutDashboard, exact: true },
   { to: "/painel/empresas", label: "Minhas empresas", icon: Building2 },
   { to: "/painel/leads", label: "Leads recebidos", icon: Mail },
   { to: "/painel/avaliacoes", label: "Avaliações", icon: Star },
   { to: "/painel/favoritos", label: "Favoritos", icon: Heart },
+  { to: "/painel/notificacoes", label: "Notificações", icon: Bell },
   { to: "/painel/perfil", label: "Meu perfil", icon: User },
 ];
 
