@@ -5,6 +5,7 @@ import { Mail, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
+import { useSiteContent } from "@/lib/siteContent";
 
 const schema = z.object({
   email: z.string().trim().email("E-mail inválido").max(255),
@@ -12,6 +13,7 @@ const schema = z.object({
 });
 
 export function NewsletterForm({ compact = false }: { compact?: boolean }) {
+  const c = useSiteContent().newsletter;
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
@@ -42,7 +44,7 @@ export function NewsletterForm({ compact = false }: { compact?: boolean }) {
         <Input
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="Seu nome (opcional)"
+          placeholder={c.name_placeholder}
           maxLength={120}
         />
       )}
@@ -52,12 +54,12 @@ export function NewsletterForm({ compact = false }: { compact?: boolean }) {
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="seu@email.com"
+          placeholder={c.email_placeholder}
           maxLength={255}
         />
         <Button type="submit" disabled={loading} className="bg-accent text-accent-foreground hover:bg-accent/90">
           {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Mail className="h-4 w-4" />}
-          <span className="ml-1 hidden sm:inline">Assinar</span>
+          <span className="ml-1 hidden sm:inline">{c.button_label}</span>
         </Button>
       </div>
     </form>
