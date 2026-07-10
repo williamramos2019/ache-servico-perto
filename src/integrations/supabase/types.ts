@@ -915,6 +915,187 @@ export type Database = {
         }
         Relationships: []
       }
+      listing_categories: {
+        Row: {
+          created_at: string
+          icon: string | null
+          id: string
+          is_active: boolean
+          name: string
+          slug: string
+          sort_order: number
+        }
+        Insert: {
+          created_at?: string
+          icon?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          slug: string
+          sort_order?: number
+        }
+        Update: {
+          created_at?: string
+          icon?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          slug?: string
+          sort_order?: number
+        }
+        Relationships: []
+      }
+      listing_messages: {
+        Row: {
+          body: string
+          buyer_id: string
+          created_at: string
+          id: string
+          listing_id: string
+          read_at: string | null
+          seller_id: string
+          sender_id: string
+        }
+        Insert: {
+          body: string
+          buyer_id: string
+          created_at?: string
+          id?: string
+          listing_id: string
+          read_at?: string | null
+          seller_id: string
+          sender_id: string
+        }
+        Update: {
+          body?: string
+          buyer_id?: string
+          created_at?: string
+          id?: string
+          listing_id?: string
+          read_at?: string | null
+          seller_id?: string
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "listing_messages_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: false
+            referencedRelation: "listings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      listing_reports: {
+        Row: {
+          created_at: string
+          id: string
+          listing_id: string
+          notes: string | null
+          reason: string
+          reporter_id: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          listing_id: string
+          notes?: string | null
+          reason: string
+          reporter_id: string
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          listing_id?: string
+          notes?: string | null
+          reason?: string
+          reporter_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "listing_reports_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: false
+            referencedRelation: "listings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      listings: {
+        Row: {
+          category_slug: string
+          city_id: string | null
+          condition: Database["public"]["Enums"]["listing_condition"]
+          contact_phone: string | null
+          created_at: string
+          description: string | null
+          id: string
+          images: Json
+          neighborhood: string | null
+          price: number | null
+          slug: string
+          status: Database["public"]["Enums"]["listing_status"]
+          title: string
+          updated_at: string
+          user_id: string
+          views_count: number
+        }
+        Insert: {
+          category_slug: string
+          city_id?: string | null
+          condition?: Database["public"]["Enums"]["listing_condition"]
+          contact_phone?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          images?: Json
+          neighborhood?: string | null
+          price?: number | null
+          slug: string
+          status?: Database["public"]["Enums"]["listing_status"]
+          title: string
+          updated_at?: string
+          user_id: string
+          views_count?: number
+        }
+        Update: {
+          category_slug?: string
+          city_id?: string | null
+          condition?: Database["public"]["Enums"]["listing_condition"]
+          contact_phone?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          images?: Json
+          neighborhood?: string | null
+          price?: number | null
+          slug?: string
+          status?: Database["public"]["Enums"]["listing_status"]
+          title?: string
+          updated_at?: string
+          user_id?: string
+          views_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "listings_category_slug_fkey"
+            columns: ["category_slug"]
+            isOneToOne: false
+            referencedRelation: "listing_categories"
+            referencedColumns: ["slug"]
+          },
+          {
+            foreignKeyName: "listings_city_id_fkey"
+            columns: ["city_id"]
+            isOneToOne: false
+            referencedRelation: "cities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       marketplace_items: {
         Row: {
           company_id: string
@@ -2112,6 +2293,8 @@ export type Database = {
         | "cancelled"
         | "completed"
         | "no_show"
+      listing_condition: "novo" | "seminovo" | "usado"
+      listing_status: "ativo" | "vendido" | "pausado" | "removido"
       post_type: "article" | "news" | "blog" | "promo" | "event"
       public_service_category:
         | "saude"
@@ -2279,6 +2462,8 @@ export const Constants = {
         "completed",
         "no_show",
       ],
+      listing_condition: ["novo", "seminovo", "usado"],
+      listing_status: ["ativo", "vendido", "pausado", "removido"],
       post_type: ["article", "news", "blog", "promo", "event"],
       public_service_category: [
         "saude",
