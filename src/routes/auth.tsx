@@ -58,8 +58,8 @@ function AuthPage() {
     setLoading(false);
     if (error) return toast.error(error.message);
     if (data.session) {
-      toast.success("Conta criada! Vamos cadastrar sua empresa.");
-      window.location.href = "/painel/empresas/nova";
+      toast.success("Conta criada! Complete seu perfil para começar.");
+      window.location.href = "/painel/perfil";
     } else {
       toast.success("Falta pouco — confirme seu e-mail para ativar o cadastro.");
     }
