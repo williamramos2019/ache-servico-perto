@@ -150,6 +150,8 @@ export type Database = {
           created_at: string
           excerpt: string | null
           id: string
+          keywords: string[]
+          meta_description: string | null
           published: boolean
           published_at: string
           slug: string
@@ -163,6 +165,8 @@ export type Database = {
           created_at?: string
           excerpt?: string | null
           id?: string
+          keywords?: string[]
+          meta_description?: string | null
           published?: boolean
           published_at?: string
           slug: string
@@ -176,6 +180,8 @@ export type Database = {
           created_at?: string
           excerpt?: string | null
           id?: string
+          keywords?: string[]
+          meta_description?: string | null
           published?: boolean
           published_at?: string
           slug?: string
