@@ -173,7 +173,18 @@ function EditarEmpresa() {
       <Link to="/painel/empresas" className="mb-2 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"><ChevronLeft className="h-4 w-4" /> Voltar</Link>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="font-display text-2xl font-bold">{form.name || "Empresa"}</h1>
+          <h1 className="font-display text-2xl font-bold">
+            {form.name || "Empresa"}
+            {isPremium((company.data as { plan?: string } | undefined)?.plan) ? (
+              <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-accent px-2 py-0.5 align-middle text-[11px] font-semibold text-accent-foreground">
+                <Crown className="h-3 w-3" /> Premium
+              </span>
+            ) : (
+              <Link to="/planos" className="ml-2 inline-flex items-center gap-1 rounded-full border border-accent/40 bg-accent/10 px-2 py-0.5 align-middle text-[11px] font-semibold text-accent hover:bg-accent/20">
+                <Crown className="h-3 w-3" /> Plano Grátis · Fazer upgrade
+              </Link>
+            )}
+          </h1>
           <p className="text-xs text-muted-foreground">/empresa/{slugStr}</p>
         </div>
         <div className="flex gap-2">
@@ -181,6 +192,7 @@ function EditarEmpresa() {
           <Button variant="ghost" size="sm" className="gap-1 text-destructive" onClick={remove}><Trash2 className="h-4 w-4" /> Excluir</Button>
         </div>
       </div>
+
 
       <form onSubmit={save} className="mt-6">
         <div className="mb-6">
