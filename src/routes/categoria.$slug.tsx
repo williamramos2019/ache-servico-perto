@@ -53,7 +53,7 @@ function CategoryPage() {
               <div key={i} className="h-72 animate-pulse rounded-xl bg-muted" />
             ))}
           </div>
-        ) : (results.data ?? []).length === 0 ? (
+        ) : (results.data?.items ?? []).length === 0 ? (
           <div className="rounded-xl border border-dashed border-border bg-card p-10 text-center">
             <p className="text-lg font-semibold">Nenhuma empresa nesta categoria ainda</p>
             <p className="mt-1 text-sm text-muted-foreground">Volte em breve, novas empresas são cadastradas toda semana.</p>
@@ -63,7 +63,7 @@ function CategoryPage() {
           </div>
         ) : (
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {(results.data ?? []).map((co) => (
+            {(results.data?.items ?? []).map((co) => (
               <CompanyCard key={co.id} company={toCompanyCardData(co)} />
             ))}
           </div>
