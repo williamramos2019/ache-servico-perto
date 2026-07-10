@@ -1702,6 +1702,162 @@ export type Database = {
         }
         Relationships: []
       }
+      qa_ticket_comments: {
+        Row: {
+          author_id: string | null
+          body: string
+          created_at: string
+          id: string
+          ticket_id: string
+        }
+        Insert: {
+          author_id?: string | null
+          body: string
+          created_at?: string
+          id?: string
+          ticket_id: string
+        }
+        Update: {
+          author_id?: string | null
+          body?: string
+          created_at?: string
+          id?: string
+          ticket_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "qa_ticket_comments_ticket_id_fkey"
+            columns: ["ticket_id"]
+            isOneToOne: false
+            referencedRelation: "qa_tickets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      qa_ticket_events: {
+        Row: {
+          actor_id: string | null
+          created_at: string
+          id: string
+          kind: string
+          payload: Json
+          ticket_id: string
+        }
+        Insert: {
+          actor_id?: string | null
+          created_at?: string
+          id?: string
+          kind: string
+          payload?: Json
+          ticket_id: string
+        }
+        Update: {
+          actor_id?: string | null
+          created_at?: string
+          id?: string
+          kind?: string
+          payload?: Json
+          ticket_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "qa_ticket_events_ticket_id_fkey"
+            columns: ["ticket_id"]
+            isOneToOne: false
+            referencedRelation: "qa_tickets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      qa_tickets: {
+        Row: {
+          assigned_to: string | null
+          city_id: string | null
+          console_logs: Json
+          created_at: string
+          description: string
+          device: Json
+          extra: Json
+          fingerprint: string | null
+          id: string
+          ip: string | null
+          network_logs: Json
+          page_title: string | null
+          page_url: string | null
+          priority: Database["public"]["Enums"]["qa_priority"]
+          resolved_at: string | null
+          screenshot_url: string | null
+          status: Database["public"]["Enums"]["qa_status"]
+          ticket_number: string
+          type: Database["public"]["Enums"]["qa_type"]
+          updated_at: string
+          user_email: string | null
+          user_id: string | null
+          user_name: string | null
+          video_url: string | null
+        }
+        Insert: {
+          assigned_to?: string | null
+          city_id?: string | null
+          console_logs?: Json
+          created_at?: string
+          description: string
+          device?: Json
+          extra?: Json
+          fingerprint?: string | null
+          id?: string
+          ip?: string | null
+          network_logs?: Json
+          page_title?: string | null
+          page_url?: string | null
+          priority?: Database["public"]["Enums"]["qa_priority"]
+          resolved_at?: string | null
+          screenshot_url?: string | null
+          status?: Database["public"]["Enums"]["qa_status"]
+          ticket_number?: string
+          type?: Database["public"]["Enums"]["qa_type"]
+          updated_at?: string
+          user_email?: string | null
+          user_id?: string | null
+          user_name?: string | null
+          video_url?: string | null
+        }
+        Update: {
+          assigned_to?: string | null
+          city_id?: string | null
+          console_logs?: Json
+          created_at?: string
+          description?: string
+          device?: Json
+          extra?: Json
+          fingerprint?: string | null
+          id?: string
+          ip?: string | null
+          network_logs?: Json
+          page_title?: string | null
+          page_url?: string | null
+          priority?: Database["public"]["Enums"]["qa_priority"]
+          resolved_at?: string | null
+          screenshot_url?: string | null
+          status?: Database["public"]["Enums"]["qa_status"]
+          ticket_number?: string
+          type?: Database["public"]["Enums"]["qa_type"]
+          updated_at?: string
+          user_email?: string | null
+          user_id?: string | null
+          user_name?: string | null
+          video_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "qa_tickets_city_id_fkey"
+            columns: ["city_id"]
+            isOneToOne: false
+            referencedRelation: "cities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       reviews: {
         Row: {
           comment: string | null
@@ -1923,6 +2079,27 @@ export type Database = {
         | "emergencia"
         | "outros"
       publish_status: "draft" | "scheduled" | "published" | "archived"
+      qa_priority: "baixa" | "media" | "alta" | "critica"
+      qa_status:
+        | "novo"
+        | "em_analise"
+        | "reproduzido"
+        | "em_desenvolvimento"
+        | "corrigido"
+        | "publicado"
+        | "fechado"
+      qa_type:
+        | "erro"
+        | "bug"
+        | "info_incorreta"
+        | "empresa"
+        | "evento"
+        | "noticia"
+        | "layout"
+        | "lentidao"
+        | "funcionalidade"
+        | "sugestao"
+        | "outro"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -2070,6 +2247,29 @@ export const Constants = {
         "outros",
       ],
       publish_status: ["draft", "scheduled", "published", "archived"],
+      qa_priority: ["baixa", "media", "alta", "critica"],
+      qa_status: [
+        "novo",
+        "em_analise",
+        "reproduzido",
+        "em_desenvolvimento",
+        "corrigido",
+        "publicado",
+        "fechado",
+      ],
+      qa_type: [
+        "erro",
+        "bug",
+        "info_incorreta",
+        "empresa",
+        "evento",
+        "noticia",
+        "layout",
+        "lentidao",
+        "funcionalidade",
+        "sugestao",
+        "outro",
+      ],
     },
   },
 } as const
