@@ -34,6 +34,7 @@ import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as PainelRankingRouteImport } from './routes/painel.ranking'
 import { Route as PainelPerfilRouteImport } from './routes/painel.perfil'
 import { Route as PainelNotificacoesRouteImport } from './routes/painel.notificacoes'
+import { Route as PainelMensagensRouteImport } from './routes/painel.mensagens'
 import { Route as PainelLeadsRouteImport } from './routes/painel.leads'
 import { Route as PainelFavoritosRouteImport } from './routes/painel.favoritos'
 import { Route as PainelEmpresasRouteImport } from './routes/painel.empresas'
@@ -194,6 +195,11 @@ const PainelPerfilRoute = PainelPerfilRouteImport.update({
 const PainelNotificacoesRoute = PainelNotificacoesRouteImport.update({
   id: '/notificacoes',
   path: '/notificacoes',
+  getParentRoute: () => PainelRoute,
+} as any)
+const PainelMensagensRoute = PainelMensagensRouteImport.update({
+  id: '/mensagens',
+  path: '/mensagens',
   getParentRoute: () => PainelRoute,
 } as any)
 const PainelLeadsRoute = PainelLeadsRouteImport.update({
@@ -422,6 +428,7 @@ export interface FileRoutesByFullPath {
   '/painel/empresas': typeof PainelEmpresasRouteWithChildren
   '/painel/favoritos': typeof PainelFavoritosRoute
   '/painel/leads': typeof PainelLeadsRoute
+  '/painel/mensagens': typeof PainelMensagensRoute
   '/painel/notificacoes': typeof PainelNotificacoesRouteWithChildren
   '/painel/perfil': typeof PainelPerfilRoute
   '/painel/ranking': typeof PainelRankingRoute
@@ -482,6 +489,7 @@ export interface FileRoutesByTo {
   '/painel/empresas': typeof PainelEmpresasRouteWithChildren
   '/painel/favoritos': typeof PainelFavoritosRoute
   '/painel/leads': typeof PainelLeadsRoute
+  '/painel/mensagens': typeof PainelMensagensRoute
   '/painel/notificacoes': typeof PainelNotificacoesRouteWithChildren
   '/painel/perfil': typeof PainelPerfilRoute
   '/painel/ranking': typeof PainelRankingRoute
@@ -546,6 +554,7 @@ export interface FileRoutesById {
   '/painel/empresas': typeof PainelEmpresasRouteWithChildren
   '/painel/favoritos': typeof PainelFavoritosRoute
   '/painel/leads': typeof PainelLeadsRoute
+  '/painel/mensagens': typeof PainelMensagensRoute
   '/painel/notificacoes': typeof PainelNotificacoesRouteWithChildren
   '/painel/perfil': typeof PainelPerfilRoute
   '/painel/ranking': typeof PainelRankingRoute
@@ -611,6 +620,7 @@ export interface FileRouteTypes {
     | '/painel/empresas'
     | '/painel/favoritos'
     | '/painel/leads'
+    | '/painel/mensagens'
     | '/painel/notificacoes'
     | '/painel/perfil'
     | '/painel/ranking'
@@ -671,6 +681,7 @@ export interface FileRouteTypes {
     | '/painel/empresas'
     | '/painel/favoritos'
     | '/painel/leads'
+    | '/painel/mensagens'
     | '/painel/notificacoes'
     | '/painel/perfil'
     | '/painel/ranking'
@@ -734,6 +745,7 @@ export interface FileRouteTypes {
     | '/painel/empresas'
     | '/painel/favoritos'
     | '/painel/leads'
+    | '/painel/mensagens'
     | '/painel/notificacoes'
     | '/painel/perfil'
     | '/painel/ranking'
@@ -958,6 +970,13 @@ declare module '@tanstack/react-router' {
       path: '/notificacoes'
       fullPath: '/painel/notificacoes'
       preLoaderRoute: typeof PainelNotificacoesRouteImport
+      parentRoute: typeof PainelRoute
+    }
+    '/painel/mensagens': {
+      id: '/painel/mensagens'
+      path: '/mensagens'
+      fullPath: '/painel/mensagens'
+      preLoaderRoute: typeof PainelMensagensRouteImport
       parentRoute: typeof PainelRoute
     }
     '/painel/leads': {
@@ -1330,6 +1349,7 @@ interface PainelRouteChildren {
   PainelEmpresasRoute: typeof PainelEmpresasRouteWithChildren
   PainelFavoritosRoute: typeof PainelFavoritosRoute
   PainelLeadsRoute: typeof PainelLeadsRoute
+  PainelMensagensRoute: typeof PainelMensagensRoute
   PainelNotificacoesRoute: typeof PainelNotificacoesRouteWithChildren
   PainelPerfilRoute: typeof PainelPerfilRoute
   PainelRankingRoute: typeof PainelRankingRoute
@@ -1342,6 +1362,7 @@ const PainelRouteChildren: PainelRouteChildren = {
   PainelEmpresasRoute: PainelEmpresasRouteWithChildren,
   PainelFavoritosRoute: PainelFavoritosRoute,
   PainelLeadsRoute: PainelLeadsRoute,
+  PainelMensagensRoute: PainelMensagensRoute,
   PainelNotificacoesRoute: PainelNotificacoesRouteWithChildren,
   PainelPerfilRoute: PainelPerfilRoute,
   PainelRankingRoute: PainelRankingRoute,
