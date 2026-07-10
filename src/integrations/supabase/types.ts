@@ -2016,6 +2016,10 @@ export type Database = {
           created_at: string | null
           excerpt: string | null
           id: string | null
+          keywords: string[] | null
+          meta_description: string | null
+          meta_title: string | null
+          og_image: string | null
           published: boolean | null
           published_at: string | null
           slug: string | null
@@ -2029,6 +2033,10 @@ export type Database = {
           created_at?: string | null
           excerpt?: string | null
           id?: string | null
+          keywords?: never
+          meta_description?: string | null
+          meta_title?: string | null
+          og_image?: string | null
           published?: never
           published_at?: string | null
           slug?: string | null
@@ -2042,6 +2050,10 @@ export type Database = {
           created_at?: string | null
           excerpt?: string | null
           id?: string | null
+          keywords?: never
+          meta_description?: string | null
+          meta_title?: string | null
+          og_image?: string | null
           published?: never
           published_at?: string | null
           slug?: string | null
