@@ -113,6 +113,32 @@ function PrefsPage() {
       </Card>
 
       <Card className="p-5">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h2 className="font-display text-lg font-semibold flex items-center gap-2">
+              <BellRing className="h-5 w-5 text-accent" /> Alerta crítico
+            </h2>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Testa uma notificação de alta prioridade com som forte, vibração intensa
+              (padrão <code>[300,100,300,100,500]</code>) e que permanece na tela até ser dispensada.
+            </p>
+          </div>
+          <Button
+            variant="outline"
+            onClick={async () => {
+              const r = await fireHighAlertTest();
+              if (r === "denied") toast.error("Permissão de notificação negada.");
+              else if (r === "unsupported") toast.error("Notificações não são suportadas neste navegador.");
+              else toast.success("Alerta crítico disparado.");
+            }}
+          >
+            Ativar notificações com alerta
+          </Button>
+        </div>
+      </Card>
+
+      <Card className="p-5">
+
         <div className="flex items-center justify-between">
           <div>
             <h2 className="font-display text-lg font-semibold">Horário silencioso</h2>
