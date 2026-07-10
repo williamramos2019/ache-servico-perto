@@ -203,11 +203,13 @@ function EditarEmpresa() {
           <TabsList className="w-full justify-start overflow-x-auto">
             <TabsTrigger value="perfil">Perfil</TabsTrigger>
             <TabsTrigger value="midia">Mídia</TabsTrigger>
+            <TabsTrigger value="horarios">Horários</TabsTrigger>
             <TabsTrigger value="reputacao">Reputação</TabsTrigger>
             <TabsTrigger value="cobertura">Cobertura</TabsTrigger>
             <TabsTrigger value="cert">Certificações</TabsTrigger>
             <TabsTrigger value="promo">Promoções</TabsTrigger>
           </TabsList>
+
 
           {/* -------- Perfil -------- */}
           <TabsContent value="perfil" className="mt-4 rounded-xl border border-border bg-card p-5">
