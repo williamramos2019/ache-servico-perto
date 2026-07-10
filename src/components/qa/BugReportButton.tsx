@@ -34,7 +34,7 @@ export function BugReportButton() {
   const [captureShot, setCaptureShot] = useState(true);
   const [recording, setRecording] = useState(false);
   const recorderRef = useRef<MediaRecorder | null>(null);
-  const cityId = useSelectedCity();
+  const { city } = useSelectedCity();
   const createTicket = useServerFn(createQaTicket);
 
   useEffect(() => {
