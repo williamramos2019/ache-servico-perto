@@ -198,7 +198,11 @@ export const updateQaTicket = createServerFn({ method: "POST" })
     const { supabase, userId } = context;
     const { data: isAdmin } = await supabase.rpc("has_role", { _user_id: userId, _role: "admin" });
     if (!isAdmin) throw new Error("Forbidden");
-    const patch: Record<string, unknown> = {};
+    const patch: {
+      status?: z.infer<typeof StatusEnum>;
+      priority?: z.infer<typeof PriorityEnum>;
+      assigned_to?: string | null;
+    } = {};
     if (data.status) patch.status = data.status;
     if (data.priority) patch.priority = data.priority;
     if (data.assigned_to !== undefined) patch.assigned_to = data.assigned_to;
