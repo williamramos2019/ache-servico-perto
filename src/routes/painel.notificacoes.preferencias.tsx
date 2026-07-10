@@ -9,6 +9,8 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { getMyPreferences, savePreferences } from "@/lib/push.functions";
 import { EnableNotifications } from "@/components/site/EnableNotifications";
+import { fireHighAlertTest } from "@/lib/pwa";
+import { BellRing } from "lucide-react";
 
 export const Route = createFileRoute("/painel/notificacoes/preferencias")({
   head: () => ({ meta: [{ title: "Preferências de notificações — AgendaAqui" }, { name: "robots", content: "noindex" }] }),
