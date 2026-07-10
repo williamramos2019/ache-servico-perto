@@ -68,6 +68,7 @@ import { Route as AdminPushTemplatesRouteImport } from './routes/admin.push.temp
 import { Route as AdminPushNovoRouteImport } from './routes/admin.push.novo'
 import { Route as AdminPushHistoricoRouteImport } from './routes/admin.push.historico'
 import { Route as AdminPushIdRouteImport } from './routes/admin.push.$id'
+import { Route as PainelAnunciosIdEditarRouteImport } from './routes/painel.anuncios.$id.editar'
 import { Route as ApiPublicPushTrackRouteImport } from './routes/api/public/push/track'
 
 const TransporteRoute = TransporteRouteImport.update({
@@ -366,6 +367,11 @@ const AdminPushIdRoute = AdminPushIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => AdminPushRoute,
 } as any)
+const PainelAnunciosIdEditarRoute = PainelAnunciosIdEditarRouteImport.update({
+  id: '/$id/editar',
+  path: '/$id/editar',
+  getParentRoute: () => PainelAnunciosRoute,
+} as any)
 const ApiPublicPushTrackRoute = ApiPublicPushTrackRouteImport.update({
   id: '/api/public/push/track',
   path: '/api/public/push/track',
@@ -433,6 +439,7 @@ export interface FileRoutesByFullPath {
   '/painel/notificacoes/preferencias': typeof PainelNotificacoesPreferenciasRoute
   '/admin/push/': typeof AdminPushIndexRoute
   '/api/public/push/track': typeof ApiPublicPushTrackRoute
+  '/painel/anuncios/$id/editar': typeof PainelAnunciosIdEditarRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -492,6 +499,7 @@ export interface FileRoutesByTo {
   '/painel/notificacoes/preferencias': typeof PainelNotificacoesPreferenciasRoute
   '/admin/push': typeof AdminPushIndexRoute
   '/api/public/push/track': typeof ApiPublicPushTrackRoute
+  '/painel/anuncios/$id/editar': typeof PainelAnunciosIdEditarRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -555,6 +563,7 @@ export interface FileRoutesById {
   '/painel/notificacoes/preferencias': typeof PainelNotificacoesPreferenciasRoute
   '/admin/push/': typeof AdminPushIndexRoute
   '/api/public/push/track': typeof ApiPublicPushTrackRoute
+  '/painel/anuncios/$id/editar': typeof PainelAnunciosIdEditarRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -619,6 +628,7 @@ export interface FileRouteTypes {
     | '/painel/notificacoes/preferencias'
     | '/admin/push/'
     | '/api/public/push/track'
+    | '/painel/anuncios/$id/editar'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -678,6 +688,7 @@ export interface FileRouteTypes {
     | '/painel/notificacoes/preferencias'
     | '/admin/push'
     | '/api/public/push/track'
+    | '/painel/anuncios/$id/editar'
   id:
     | '__root__'
     | '/'
@@ -740,6 +751,7 @@ export interface FileRouteTypes {
     | '/painel/notificacoes/preferencias'
     | '/admin/push/'
     | '/api/public/push/track'
+    | '/painel/anuncios/$id/editar'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -1186,6 +1198,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminPushIdRouteImport
       parentRoute: typeof AdminPushRoute
     }
+    '/painel/anuncios/$id/editar': {
+      id: '/painel/anuncios/$id/editar'
+      path: '/$id/editar'
+      fullPath: '/painel/anuncios/$id/editar'
+      preLoaderRoute: typeof PainelAnunciosIdEditarRouteImport
+      parentRoute: typeof PainelAnunciosRoute
+    }
     '/api/public/push/track': {
       id: '/api/public/push/track'
       path: '/api/public/push/track'
@@ -1268,10 +1287,12 @@ const MarketplaceRouteWithChildren = MarketplaceRoute._addFileChildren(
 
 interface PainelAnunciosRouteChildren {
   PainelAnunciosNovoRoute: typeof PainelAnunciosNovoRoute
+  PainelAnunciosIdEditarRoute: typeof PainelAnunciosIdEditarRoute
 }
 
 const PainelAnunciosRouteChildren: PainelAnunciosRouteChildren = {
   PainelAnunciosNovoRoute: PainelAnunciosNovoRoute,
+  PainelAnunciosIdEditarRoute: PainelAnunciosIdEditarRoute,
 }
 
 const PainelAnunciosRouteWithChildren = PainelAnunciosRoute._addFileChildren(
