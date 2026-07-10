@@ -145,7 +145,7 @@ export function Header() {
         </nav>
 
 
-        <div className="flex items-center gap-1.5">
+        <div className="flex shrink-0 items-center gap-1 sm:gap-1.5">
           <div className="hidden md:inline-flex"><CityPickerDialog /></div>
           {isAdmin ? (
             <Link to="/admin" className="hidden lg:inline-flex" aria-label={site.header.admin_label}>
