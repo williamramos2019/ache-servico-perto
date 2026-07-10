@@ -17,6 +17,7 @@ import { ChevronLeft, Trash2, ExternalLink, Crown } from "lucide-react";
 import { ProfileCompleteness } from "@/components/panel/ProfileCompleteness";
 import { PremiumLock } from "@/components/panel/PremiumLock";
 import { HoursEditor, type HoursValue } from "@/components/panel/HoursEditor";
+import { CompanyImageUpload } from "@/components/panel/CompanyImageUpload";
 
 import { isPremium } from "@/lib/plans";
 
@@ -267,12 +268,22 @@ function EditarEmpresa() {
           {/* -------- Mídia -------- */}
           <TabsContent value="midia" className="mt-4 rounded-xl border border-border bg-card p-5">
             {(() => { const plan = (company.data as { plan?: string } | undefined)?.plan; return (
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div><Label>Logo (URL)</Label><Input value={form.logo_url ?? ""} onChange={(e) => set("logo_url", e.target.value)} placeholder="https://" /></div>
+            <div className="grid gap-6 sm:grid-cols-2">
+              <CompanyImageUpload
+                companyId={id}
+                kind="logo"
+                value={form.logo_url ?? null}
+                onChange={(u) => set("logo_url", u)}
+              />
               <div>
-                <Label>Banner (URL)</Label>
-                <PremiumLock plan={plan} label="Banner é Premium">
-                  <Input value={form.banner_url ?? ""} onChange={(e) => set("banner_url", e.target.value)} placeholder="https://" disabled={!isPremium(plan)} />
+                <PremiumLock plan={plan} label="Banner de capa é Premium">
+                  <CompanyImageUpload
+                    companyId={id}
+                    kind="banner"
+                    value={form.banner_url ?? null}
+                    onChange={(u) => set("banner_url", u)}
+                    disabled={!isPremium(plan)}
+                  />
                 </PremiumLock>
               </div>
               <div className="sm:col-span-2">
