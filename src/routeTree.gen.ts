@@ -17,6 +17,7 @@ import { Route as ReputacaoRouteImport } from './routes/reputacao'
 import { Route as PromocoesRouteImport } from './routes/promocoes'
 import { Route as PlanosRouteImport } from './routes/planos'
 import { Route as PainelRouteImport } from './routes/painel'
+import { Route as OQueFazerRouteImport } from './routes/o-que-fazer'
 import { Route as MarketplaceRouteImport } from './routes/marketplace'
 import { Route as FavoritosRouteImport } from './routes/favoritos'
 import { Route as EmpregosRouteImport } from './routes/empregos'
@@ -104,6 +105,11 @@ const PlanosRoute = PlanosRouteImport.update({
 const PainelRoute = PainelRouteImport.update({
   id: '/painel',
   path: '/painel',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OQueFazerRoute = OQueFazerRouteImport.update({
+  id: '/o-que-fazer',
+  path: '/o-que-fazer',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MarketplaceRoute = MarketplaceRouteImport.update({
@@ -358,6 +364,7 @@ export interface FileRoutesByFullPath {
   '/empregos': typeof EmpregosRoute
   '/favoritos': typeof FavoritosRoute
   '/marketplace': typeof MarketplaceRoute
+  '/o-que-fazer': typeof OQueFazerRoute
   '/painel': typeof PainelRouteWithChildren
   '/planos': typeof PlanosRoute
   '/promocoes': typeof PromocoesRoute
@@ -415,6 +422,7 @@ export interface FileRoutesByTo {
   '/empregos': typeof EmpregosRoute
   '/favoritos': typeof FavoritosRoute
   '/marketplace': typeof MarketplaceRoute
+  '/o-que-fazer': typeof OQueFazerRoute
   '/planos': typeof PlanosRoute
   '/promocoes': typeof PromocoesRoute
   '/reputacao': typeof ReputacaoRoute
@@ -472,6 +480,7 @@ export interface FileRoutesById {
   '/empregos': typeof EmpregosRoute
   '/favoritos': typeof FavoritosRoute
   '/marketplace': typeof MarketplaceRoute
+  '/o-que-fazer': typeof OQueFazerRoute
   '/painel': typeof PainelRouteWithChildren
   '/planos': typeof PlanosRoute
   '/promocoes': typeof PromocoesRoute
@@ -532,6 +541,7 @@ export interface FileRouteTypes {
     | '/empregos'
     | '/favoritos'
     | '/marketplace'
+    | '/o-que-fazer'
     | '/painel'
     | '/planos'
     | '/promocoes'
@@ -589,6 +599,7 @@ export interface FileRouteTypes {
     | '/empregos'
     | '/favoritos'
     | '/marketplace'
+    | '/o-que-fazer'
     | '/planos'
     | '/promocoes'
     | '/reputacao'
@@ -645,6 +656,7 @@ export interface FileRouteTypes {
     | '/empregos'
     | '/favoritos'
     | '/marketplace'
+    | '/o-que-fazer'
     | '/painel'
     | '/planos'
     | '/promocoes'
@@ -704,6 +716,7 @@ export interface RootRouteChildren {
   EmpregosRoute: typeof EmpregosRoute
   FavoritosRoute: typeof FavoritosRoute
   MarketplaceRoute: typeof MarketplaceRoute
+  OQueFazerRoute: typeof OQueFazerRoute
   PainelRoute: typeof PainelRouteWithChildren
   PlanosRoute: typeof PlanosRoute
   PromocoesRoute: typeof PromocoesRoute
@@ -778,6 +791,13 @@ declare module '@tanstack/react-router' {
       path: '/painel'
       fullPath: '/painel'
       preLoaderRoute: typeof PainelRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/o-que-fazer': {
+      id: '/o-que-fazer'
+      path: '/o-que-fazer'
+      fullPath: '/o-que-fazer'
+      preLoaderRoute: typeof OQueFazerRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/marketplace': {
@@ -1237,6 +1257,7 @@ const rootRouteChildren: RootRouteChildren = {
   EmpregosRoute: EmpregosRoute,
   FavoritosRoute: FavoritosRoute,
   MarketplaceRoute: MarketplaceRoute,
+  OQueFazerRoute: OQueFazerRoute,
   PainelRoute: PainelRouteWithChildren,
   PlanosRoute: PlanosRoute,
   PromocoesRoute: PromocoesRoute,
