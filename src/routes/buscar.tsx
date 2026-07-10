@@ -94,7 +94,7 @@ function BuscarPage() {
   return (
     <SiteLayout>
       {/* Sticky search hero */}
-      <section className="sticky top-14 z-30 border-b border-border bg-background/85 backdrop-blur supports-[backdrop-filter]:bg-background/70">
+      <section className="sticky top-16 z-30 border-b border-border bg-background/85 backdrop-blur supports-[backdrop-filter]:bg-background/70">
         <div className="container mx-auto px-4 py-4">
           <SmartSearchBar />
 
