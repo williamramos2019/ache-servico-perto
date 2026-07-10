@@ -16,6 +16,8 @@ import { DIFFERENTIAL_OPTIONS } from "@/components/site/CompanyProfileSections";
 import { ChevronLeft, Trash2, ExternalLink, Crown } from "lucide-react";
 import { ProfileCompleteness } from "@/components/panel/ProfileCompleteness";
 import { PremiumLock } from "@/components/panel/PremiumLock";
+import { HoursEditor, type HoursValue } from "@/components/panel/HoursEditor";
+
 import { isPremium } from "@/lib/plans";
 
 
