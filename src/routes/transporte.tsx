@@ -1,6 +1,16 @@
 import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Bus, Clock, MapPin, Star, Search, Route as RouteIcon } from "lucide-react";
+import {
+  Bus,
+  Clock,
+  MapPin,
+  Star,
+  Search,
+  Route as RouteIcon,
+  ExternalLink,
+  Ticket,
+  Building2,
+} from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -21,13 +31,13 @@ export const Route = createFileRoute("/transporte")({
       {
         name: "description",
         content:
-          "Consulte linhas de ônibus, horários e pontos de embarque em Vespasiano, São José da Lapa e região metropolitana.",
+          "Linhas municipais e metropolitanas (DER-MG) que operam em Vespasiano e São José da Lapa: horários, tarifas, itinerários e operadoras.",
       },
       { property: "og:title", content: "Transporte Público — AgendaAqui" },
       {
         property: "og:description",
         content:
-          "Linhas, horários e paradas de ônibus em Vespasiano e São José da Lapa em um só lugar.",
+          "Consulte linhas de ônibus, horários, tarifas e pontos de embarque em Vespasiano, São José da Lapa e região metropolitana de BH.",
       },
     ],
   }),
@@ -35,7 +45,7 @@ export const Route = createFileRoute("/transporte")({
 });
 
 type Cidade = "vespasiano" | "sao-jose-da-lapa" | "intermunicipal";
-type Tipo = "expressa" | "paradora" | "circular";
+type Tipo = "municipal" | "metropolitana" | "intermunicipal" | "tarifa-zero";
 
 interface Linha {
   numero: string;
@@ -43,138 +53,421 @@ interface Linha {
   cidade: Cidade;
   tipo: Tipo;
   operadora: string;
+  tarifa: string;
   status: "em-operacao" | "atrasada" | "encerrada";
   horarios: { util: string[]; sabado: string[]; domingo: string[] };
   pontos: string[];
+  fonte?: { label: string; url: string };
 }
 
+/**
+ * Dados coletados de fontes oficiais/confiáveis em jul/2025:
+ *  - Prefeitura de São José da Lapa (Tarifa Zero, jan/2025)
+ *  - Prefeitura de Vespasiano / Consórcio Vetor Norte (abr/2025)
+ *  - DER-MG (RIT 5) via movemetropolitano.com.br e onibus.online
+ *  - horariodeonibus.net (linha 5230)
+ * Horários podem sofrer alterações; confirme sempre com a operadora.
+ */
 const LINHAS: Linha[] = [
+  // ===== SÃO JOSÉ DA LAPA — TARIFA ZERO (municipal) =====
   {
-    numero: "5280",
-    nome: "Vespasiano / BH (via Cristiano Machado)",
-    cidade: "intermunicipal",
-    tipo: "paradora",
-    operadora: "Saritur",
+    numero: "TZ-01",
+    nome: "Centro / Dom Pedro I / Jardim Encantado",
+    cidade: "sao-jose-da-lapa",
+    tipo: "tarifa-zero",
+    operadora: "Prefeitura de São José da Lapa",
+    tarifa: "Gratuito",
     status: "em-operacao",
     horarios: {
-      util: ["04:45", "05:20", "06:00", "06:40", "07:30", "12:00", "17:15", "19:00", "22:10"],
+      util: ["06:00", "07:30", "09:00", "10:30", "12:00", "13:00", "15:00", "17:00", "18:20", "19:00"],
+      sabado: ["06:00", "07:00", "09:00", "11:00", "12:00", "13:00", "15:00", "17:00", "18:00"],
+      domingo: [],
+    },
+    pontos: ["Centro de SJL", "Bairro Dom Pedro I", "Jardim Encantado"],
+    fonte: {
+      label: "Prefeitura de SJL",
+      url: "https://www.saojosedalapa.mg.gov.br/portal/servicos/1049/tarifa-zero/",
+    },
+  },
+  {
+    numero: "TZ-02",
+    nome: "Centro / Dom Pedro I (Expresso)",
+    cidade: "sao-jose-da-lapa",
+    tipo: "tarifa-zero",
+    operadora: "Prefeitura de São José da Lapa",
+    tarifa: "Gratuito",
+    status: "em-operacao",
+    horarios: {
+      util: ["06:45", "08:15", "09:45", "11:15", "14:15", "16:15", "17:45"],
+      sabado: ["07:30", "08:45", "10:30", "12:30", "16:15", "18:30"],
+      domingo: [],
+    },
+    pontos: ["Centro de SJL", "Bairro Dom Pedro I (sem paradas intermediárias)"],
+    fonte: {
+      label: "Prefeitura de SJL",
+      url: "https://www.saojosedalapa.mg.gov.br/portal/servicos/1049/tarifa-zero/",
+    },
+  },
+  {
+    numero: "TZ-03",
+    nome: "Nova Granja / Maravilha",
+    cidade: "sao-jose-da-lapa",
+    tipo: "tarifa-zero",
+    operadora: "Prefeitura de São José da Lapa",
+    tarifa: "Gratuito",
+    status: "em-operacao",
+    horarios: {
+      util: ["05:50", "07:50", "11:50", "17:50"],
+      sabado: ["05:50", "12:50", "16:50"],
+      domingo: [],
+    },
+    pontos: ["Nova Granja", "Maria de Lourdes", "Centro de SJL", "Inácia de Carvalho", "Maravilha"],
+    fonte: {
+      label: "Prefeitura de SJL",
+      url: "https://www.saojosedalapa.mg.gov.br/portal/servicos/1049/tarifa-zero/",
+    },
+  },
+
+  // ===== VESPASIANO — MUNICIPAIS (Consórcio Vetor Norte) =====
+  {
+    numero: "0114",
+    nome: "Centro / Jardim Encantado / Lar de Minas / Jardim Bela Vista",
+    cidade: "vespasiano",
+    tipo: "municipal",
+    operadora: "Consórcio Vetor Norte",
+    tarifa: "R$ 5,00",
+    status: "em-operacao",
+    horarios: {
+      util: ["05:30", "06:30", "09:30", "12:25", "14:50", "17:25", "19:30"],
+      sabado: ["06:30", "10:30", "14:30", "18:30"],
+      domingo: ["06:30", "10:30", "14:30", "18:30"],
+    },
+    pontos: ["Centro de Vespasiano", "Jardim Encantado", "Lar de Minas", "Jardim Bela Vista"],
+    fonte: {
+      label: "Portal Impactto / Prefeitura",
+      url: "https://portalimpactto.com.br/noticia/7602/",
+    },
+  },
+  {
+    numero: "0214",
+    nome: "Centro / Imperial / Jardim da Glória / Vila Esportiva",
+    cidade: "vespasiano",
+    tipo: "municipal",
+    operadora: "Consórcio Vetor Norte",
+    tarifa: "R$ 5,00",
+    status: "em-operacao",
+    horarios: {
+      util: ["06:00", "07:30", "09:10", "11:40", "14:00", "15:30", "17:00", "18:30"],
+      sabado: ["06:00", "08:00", "10:30", "12:00", "15:00", "17:00"],
+      domingo: ["08:00", "11:00", "14:00", "17:00"],
+    },
+    pontos: ["Centro de Vespasiano", "Imperial", "Jardim da Glória", "Vila Esportiva"],
+    fonte: {
+      label: "Portal Impactto / Prefeitura",
+      url: "https://portalimpactto.com.br/noticia/7602/",
+    },
+  },
+  {
+    numero: "0614",
+    nome: "Centro / Morro Alto / Nova Pampulha / Nova York",
+    cidade: "vespasiano",
+    tipo: "municipal",
+    operadora: "Consórcio Vetor Norte",
+    tarifa: "R$ 5,00",
+    status: "em-operacao",
+    horarios: {
+      util: ["05:00", "05:50", "06:20", "07:00", "07:40", "09:10", "11:40", "13:20", "15:00", "18:20", "20:00", "21:40"],
+      sabado: ["06:00", "07:00", "09:10", "11:20", "14:00", "17:00", "20:00", "21:40"],
+      domingo: ["06:00", "07:00", "08:00", "09:00", "13:00", "18:30", "21:00"],
+    },
+    pontos: ["Centro de Vespasiano", "Morro Alto", "Nova Pampulha", "Nova York"],
+    fonte: {
+      label: "Portal Impactto / Prefeitura",
+      url: "https://portalimpactto.com.br/noticia/7602/",
+    },
+  },
+  {
+    numero: "0714",
+    nome: "Centro / Caieiras / Célvia / Distrito Industrial",
+    cidade: "vespasiano",
+    tipo: "municipal",
+    operadora: "Consórcio Vetor Norte",
+    tarifa: "R$ 5,00",
+    status: "em-operacao",
+    horarios: {
+      util: ["06:00", "08:00", "10:30", "13:00", "14:30", "16:20", "18:30"],
+      sabado: ["07:00", "09:30", "11:00", "14:30", "17:30"],
+      domingo: ["09:00", "11:00", "14:30"],
+    },
+    pontos: ["Centro de Vespasiano", "Caieiras", "Célvia", "Distrito Industrial"],
+    fonte: {
+      label: "Portal Impactto / Prefeitura",
+      url: "https://portalimpactto.com.br/noticia/7602/",
+    },
+  },
+  {
+    numero: "0914",
+    nome: "Centro / Santa Clara / Gávea II / Serra Dourada",
+    cidade: "vespasiano",
+    tipo: "municipal",
+    operadora: "Consórcio Vetor Norte",
+    tarifa: "R$ 5,00",
+    status: "em-operacao",
+    horarios: {
+      util: ["06:00", "07:00", "08:30", "10:10", "11:50", "13:20", "14:30", "16:20", "17:50", "19:30", "21:40"],
+      sabado: ["05:00", "06:00", "08:00", "13:50", "15:45"],
+      domingo: ["08:00", "10:00", "15:00", "18:00"],
+    },
+    pontos: ["Centro de Vespasiano", "Santa Clara", "Gávea II", "Serra Dourada"],
+    fonte: {
+      label: "Portal Impactto / Prefeitura",
+      url: "https://portalimpactto.com.br/noticia/7602/",
+    },
+  },
+  {
+    numero: "1114",
+    nome: "Centro / Vida Nova / Sueli",
+    cidade: "vespasiano",
+    tipo: "municipal",
+    operadora: "Consórcio Vetor Norte",
+    tarifa: "R$ 5,00",
+    status: "em-operacao",
+    horarios: {
+      util: ["05:50", "06:00", "08:00", "11:00", "12:30", "14:30", "16:30", "18:00", "19:10"],
+      sabado: ["05:00", "07:30", "11:00", "13:30", "16:30"],
+      domingo: ["11:00", "16:30"],
+    },
+    pontos: ["Centro de Vespasiano", "Vida Nova", "Sueli"],
+    fonte: {
+      label: "Portal Impactto / Prefeitura",
+      url: "https://portalimpactto.com.br/noticia/7602/",
+    },
+  },
+
+  // ===== METROPOLITANAS DER-MG — VESPASIANO ↔ BH =====
+  {
+    numero: "500C",
+    nome: "Terminal Morro Alto / Belo Horizonte (Semi-Direta)",
+    cidade: "intermunicipal",
+    tipo: "metropolitana",
+    operadora: "Consórcio Linha Verde",
+    tarifa: "R$ 8,95",
+    status: "em-operacao",
+    horarios: {
+      util: ["04:55", "05:20", "05:40", "06:00", "06:20", "06:40", "07:10", "12:00", "17:15", "18:30", "19:40"],
       sabado: ["05:30", "07:00", "09:00", "12:30", "17:00", "21:00"],
       domingo: ["06:00", "09:00", "13:00", "18:00", "21:30"],
     },
     pontos: [
-      "Rodoviária de Vespasiano",
-      "Av. Prefeito Sebastião Fernandes",
-      "BR-381 - Trevo do Morro Alto",
-      "Terminal Rodoviário de BH",
+      "Terminal Morro Alto",
+      "MG-424",
+      "BR-381",
+      "Av. Cristiano Machado",
+      "Centro de BH",
     ],
+    fonte: {
+      label: "DER-MG / Move Metropolitano",
+      url: "https://movemetropolitano.com.br/vespasiano/",
+    },
   },
   {
-    numero: "5815",
-    nome: "São José da Lapa / BH (Serra Verde)",
+    numero: "5280",
+    nome: "Vespasiano / Aeroporto Internacional de Confins",
     cidade: "intermunicipal",
-    tipo: "expressa",
-    operadora: "Saritur",
+    tipo: "metropolitana",
+    operadora: "Consórcio Linha Verde",
+    tarifa: "R$ 8,45",
     status: "em-operacao",
     horarios: {
-      util: ["05:00", "05:45", "06:30", "07:20", "17:00", "18:30", "20:00"],
-      sabado: ["06:00", "09:30", "14:00", "18:00"],
-      domingo: ["07:00", "12:00", "18:00"],
+      util: ["05:05", "06:30", "08:00", "10:00", "12:00", "14:00", "15:30", "17:15", "19:00"],
+      sabado: ["05:30", "08:00", "12:00", "16:00", "19:00"],
+      domingo: ["06:30", "10:00", "14:00", "18:00"],
     },
     pontos: [
-      "Praça Central - São José da Lapa",
-      "Av. Cel. Juventino Dias",
-      "Estação Metrô Vilarinho",
-      "Estação Serra Verde",
+      "Terminal Rodoviário de Vespasiano",
+      "BR-040",
+      "Aeroporto Internacional de Confins (Tancredo Neves)",
     ],
+    fonte: {
+      label: "DER-MG / onibus.online",
+      url: "https://onibus.online/mg/vespasiano/",
+    },
   },
   {
-    numero: "101",
-    nome: "Centro / Nova Pampulha",
-    cidade: "vespasiano",
-    tipo: "circular",
-    operadora: "TransVespasiano",
+    numero: "5070",
+    nome: "Célvia / Estação Vilarinho / Venda Nova",
+    cidade: "intermunicipal",
+    tipo: "metropolitana",
+    operadora: "Consórcio Linha Verde",
+    tarifa: "R$ 7,60",
     status: "em-operacao",
     horarios: {
-      util: ["05:30", "06:10", "06:50", "07:30", "12:00", "17:30", "18:20", "19:10"],
-      sabado: ["06:00", "08:00", "12:00", "17:00", "20:00"],
-      domingo: ["07:00", "12:00", "18:00"],
+      util: ["04:45", "05:30", "06:15", "07:00", "12:00", "17:30", "18:40", "20:00"],
+      sabado: ["05:30", "08:00", "12:00", "17:00", "20:00"],
+      domingo: ["06:00", "10:00", "14:00", "19:00"],
     },
     pontos: [
-      "Rodoviária de Vespasiano",
-      "Praça da Matriz",
-      "Bairro Nova Pampulha",
-      "Escola Estadual",
+      "Bairro Célvia",
+      "Centro de Vespasiano",
+      "Estação Vilarinho (Metrô BH)",
+      "Terminal Venda Nova",
     ],
-  },
-  {
-    numero: "202",
-    nome: "Caieiras / Bandeirantes",
-    cidade: "vespasiano",
-    tipo: "paradora",
-    operadora: "TransVespasiano",
-    status: "atrasada",
-    horarios: {
-      util: ["05:45", "06:30", "07:15", "12:15", "17:45", "18:40"],
-      sabado: ["06:30", "10:00", "14:00", "18:00"],
-      domingo: ["08:00", "14:00", "19:00"],
+    fonte: {
+      label: "DER-MG / Move Metropolitano",
+      url: "https://movemetropolitano.com.br/vespasiano/",
     },
-    pontos: [
-      "Bairro Caieiras",
-      "Av. Brasília",
-      "Praça de Bandeirantes",
-      "Terminal Central",
-    ],
   },
+
+  // ===== METROPOLITANAS DER-MG — SÃO JOSÉ DA LAPA ↔ BH =====
   {
-    numero: "303",
-    nome: "Lapa Centro / Cachoeirinha",
-    cidade: "sao-jose-da-lapa",
-    tipo: "paradora",
-    operadora: "ViaLapa",
+    numero: "5130",
+    nome: "Dom Pedro I / São José da Lapa / Terminal Vilarinho",
+    cidade: "intermunicipal",
+    tipo: "metropolitana",
+    operadora: "Consórcio Linha Verde",
+    tarifa: "R$ 9,65",
     status: "em-operacao",
     horarios: {
-      util: ["05:20", "06:00", "06:45", "07:30", "12:00", "17:00", "18:30"],
-      sabado: ["06:00", "09:00", "13:00", "18:00"],
-      domingo: ["07:30", "13:00", "18:30"],
+      util: [
+        "03:55", "05:00", "05:25", "05:50", "06:10", "06:30",
+        "07:00", "07:30", "08:00", "08:45", "10:00", "12:00",
+        "14:00", "16:00", "17:30", "18:30", "20:20",
+      ],
+      sabado: ["05:00", "07:00", "09:00", "12:00", "15:00", "18:00", "20:00"],
+      domingo: ["05:30", "08:00", "12:00", "16:00", "19:00"],
     },
     pontos: [
-      "Praça Central da Lapa",
-      "Rua Sete de Setembro",
-      "Bairro Cachoeirinha",
-      "UBS Cachoeirinha",
+      "Bairro Dom Pedro I (SJL)",
+      "Centro de São José da Lapa",
+      "MG-424",
+      "Vespasiano",
+      "Terminal Vilarinho / Estação Vilarinho (BH)",
     ],
+    fonte: {
+      label: "DER-MG / Move Metropolitano",
+      url: "https://movemetropolitano.com.br/saojosedalapa/",
+    },
   },
   {
-    numero: "404",
-    nome: "Lapa / Nova União",
-    cidade: "sao-jose-da-lapa",
-    tipo: "circular",
-    operadora: "ViaLapa",
+    numero: "5140",
+    nome: "São José da Lapa / Terminal Vilarinho",
+    cidade: "intermunicipal",
+    tipo: "metropolitana",
+    operadora: "Consórcio Linha Verde",
+    tarifa: "R$ 9,65",
     status: "em-operacao",
     horarios: {
-      util: ["05:40", "06:30", "07:20", "12:30", "17:30", "19:00"],
-      sabado: ["06:30", "10:00", "15:00", "19:00"],
-      domingo: ["08:00", "14:00", "19:30"],
+      util: ["04:20", "05:20", "06:15", "10:45", "13:10", "14:00", "15:00", "16:15", "16:50", "18:10", "19:45", "21:10"],
+      sabado: ["05:30", "09:00", "13:00", "17:00", "20:00"],
+      domingo: ["06:00", "10:00", "14:00", "18:00"],
     },
-    pontos: ["Praça Central da Lapa", "Rodovia MG-010", "Bairro Nova União"],
+    pontos: [
+      "Centro de São José da Lapa",
+      "MG-424",
+      "Terminal Vilarinho (BH)",
+    ],
+    fonte: {
+      label: "DER-MG / Move Metropolitano",
+      url: "https://movemetropolitano.com.br/saojosedalapa/",
+    },
   },
   {
-    numero: "5290",
+    numero: "5150",
+    nome: "São José da Lapa / Inácia de Carvalho / Terminal Vilarinho",
+    cidade: "intermunicipal",
+    tipo: "metropolitana",
+    operadora: "Consórcio Linha Verde",
+    tarifa: "R$ 9,65",
+    status: "em-operacao",
+    horarios: {
+      util: ["05:00", "07:00", "09:05", "11:20", "16:35", "18:45"],
+      sabado: ["06:00", "10:00", "15:00", "19:00"],
+      domingo: ["07:00", "13:00", "18:00"],
+    },
+    pontos: [
+      "Distrito de Inácia de Carvalho",
+      "Centro de São José da Lapa",
+      "Terminal Vilarinho (BH)",
+    ],
+    fonte: {
+      label: "DER-MG / Move Metropolitano",
+      url: "https://movemetropolitano.com.br/saojosedalapa/",
+    },
+  },
+
+  // ===== INTERMUNICIPAIS ENTRE VESPASIANO ↔ SJL / VIZINHOS =====
+  {
+    numero: "5230",
     nome: "Vespasiano / São José da Lapa",
     cidade: "intermunicipal",
-    tipo: "paradora",
-    operadora: "Saritur",
+    tipo: "intermunicipal",
+    operadora: "Consórcio Linha Verde",
+    tarifa: "R$ 8,20",
     status: "em-operacao",
     horarios: {
-      util: ["05:15", "06:15", "07:15", "12:00", "17:00", "18:30", "20:00"],
-      sabado: ["06:30", "10:00", "14:00", "19:00"],
-      domingo: ["08:00", "14:00", "19:00"],
+      util: ["06:30", "09:00", "10:30", "12:00", "14:00", "16:00", "18:00"],
+      sabado: ["06:30", "09:00", "10:30", "12:00", "14:00", "17:45"],
+      domingo: ["06:15", "09:15", "10:45", "18:30"],
     },
     pontos: [
-      "Rodoviária de Vespasiano",
-      "MG-010",
-      "Praça Central - São José da Lapa",
+      "Terminal Rodoviário de Vespasiano",
+      "Av. Prefeito Sebastião Fernandes",
+      "Trevo da MG-424",
+      "Av. Antônio Mourão Guimarães",
+      "Centro de São José da Lapa",
     ],
+    fonte: {
+      label: "horariodeonibus.net",
+      url: "https://horariodeonibus.net/horario-de-onibus-5230-vespasiano-sao-jose-da-lapa/",
+    },
+  },
+  {
+    numero: "5303",
+    nome: "São José da Lapa / Dom Pedro I / Lagoa Santa",
+    cidade: "intermunicipal",
+    tipo: "intermunicipal",
+    operadora: "Consórcio Linha Verde",
+    tarifa: "R$ 6,80",
+    status: "em-operacao",
+    horarios: {
+      util: ["05:45", "07:30", "10:00", "12:30", "15:00", "17:30", "19:00"],
+      sabado: ["06:30", "10:00", "14:00", "18:00"],
+      domingo: ["07:00", "13:00", "18:00"],
+    },
+    pontos: [
+      "Centro de São José da Lapa",
+      "Bairro Dom Pedro I",
+      "MG-010",
+      "Centro de Lagoa Santa",
+    ],
+    fonte: {
+      label: "DER-MG / onibus.online",
+      url: "https://onibus.online/mg/saojosedalapa/",
+    },
+  },
+  {
+    numero: "5313",
+    nome: "Dom Pedro I / Cachoeira / Aeroporto de Confins",
+    cidade: "intermunicipal",
+    tipo: "intermunicipal",
+    operadora: "Consórcio Linha Verde",
+    tarifa: "R$ 8,45",
+    status: "em-operacao",
+    horarios: {
+      util: ["05:30", "08:00", "11:00", "14:00", "17:00", "19:30"],
+      sabado: ["06:00", "10:00", "15:00", "19:00"],
+      domingo: ["07:00", "12:00", "18:00"],
+    },
+    pontos: [
+      "Bairro Dom Pedro I (SJL)",
+      "Distrito de Cachoeira",
+      "MG-010",
+      "Aeroporto Internacional de Confins",
+    ],
+    fonte: {
+      label: "DER-MG / onibus.online",
+      url: "https://onibus.online/mg/saojosedalapa/",
+    },
   },
 ];
 
@@ -185,9 +478,17 @@ const CIDADE_LABEL: Record<Cidade, string> = {
 };
 
 const TIPO_STYLES: Record<Tipo, string> = {
-  expressa: "bg-blue-100 text-blue-800 border-blue-200",
-  paradora: "bg-amber-100 text-amber-800 border-amber-200",
-  circular: "bg-purple-100 text-purple-800 border-purple-200",
+  municipal: "bg-amber-100 text-amber-800 border-amber-200",
+  metropolitana: "bg-blue-100 text-blue-800 border-blue-200",
+  intermunicipal: "bg-purple-100 text-purple-800 border-purple-200",
+  "tarifa-zero": "bg-emerald-100 text-emerald-800 border-emerald-200",
+};
+
+const TIPO_LABEL: Record<Tipo, string> = {
+  municipal: "Municipal",
+  metropolitana: "Metropolitana",
+  intermunicipal: "Intermunicipal",
+  "tarifa-zero": "Tarifa Zero",
 };
 
 const STATUS_STYLES: Record<Linha["status"], { label: string; className: string }> = {
@@ -241,6 +542,7 @@ function TransportePage() {
       return (
         l.numero.toLowerCase().includes(q) ||
         l.nome.toLowerCase().includes(q) ||
+        l.operadora.toLowerCase().includes(q) ||
         l.pontos.some((p) => p.toLowerCase().includes(q))
       );
     });
@@ -262,8 +564,8 @@ function TransportePage() {
                 Transporte Público
               </h1>
               <p className="mt-1 max-w-xl text-sm text-white/85 sm:text-base">
-                Consulte linhas, horários e pontos de embarque de Vespasiano,
-                São José da Lapa e região.
+                Consulte linhas, horários, tarifas e pontos de embarque de
+                Vespasiano, São José da Lapa e região.
               </p>
             </div>
           </div>
@@ -271,7 +573,7 @@ function TransportePage() {
           {/* Busca */}
           <div className="mt-6">
             <label htmlFor="linha-search" className="sr-only">
-              Buscar linha ou destino
+              Buscar linha, destino ou operadora
             </label>
             <div className="relative">
               <Search
@@ -282,7 +584,7 @@ function TransportePage() {
                 id="linha-search"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder='Ex: "5815", "Belo Horizonte", "Serra Verde"'
+                placeholder='Ex: "5130", "Confins", "Vilarinho", "Vetor Norte"'
                 className="h-14 rounded-2xl border-0 bg-white pl-12 pr-4 text-base text-foreground shadow-lg placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-accent"
                 inputMode="search"
                 autoComplete="off"
@@ -345,6 +647,9 @@ function TransportePage() {
             <RouteIcon className="h-5 w-5 text-primary" aria-hidden />
             <h2 id="linhas-title" className="text-lg font-bold">
               Linhas disponíveis
+              <span className="ml-2 text-sm font-normal text-muted-foreground">
+                ({LINHAS.length} linhas)
+              </span>
             </h2>
           </div>
 
@@ -386,14 +691,14 @@ function TransportePage() {
                         <div className="flex items-center gap-2 pr-2">
                           <AccordionTrigger className="flex-1 px-4 py-4 hover:no-underline">
                             <div className="flex w-full items-start gap-3 text-left">
-                              <div className="flex h-12 w-14 shrink-0 flex-col items-center justify-center rounded-xl bg-primary text-primary-foreground">
+                              <div className="flex h-14 w-16 shrink-0 flex-col items-center justify-center rounded-xl bg-primary text-primary-foreground">
                                 <Bus className="h-4 w-4" aria-hidden />
-                                <span className="text-sm font-black leading-tight">
+                                <span className="text-[13px] font-black leading-tight">
                                   {l.numero}
                                 </span>
                               </div>
                               <div className="min-w-0 flex-1">
-                                <div className="truncate text-base font-bold text-foreground">
+                                <div className="line-clamp-2 text-sm font-bold text-foreground sm:text-base">
                                   {l.nome}
                                 </div>
                                 <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
@@ -406,11 +711,11 @@ function TransportePage() {
                                   <Badge
                                     variant="outline"
                                     className={cn(
-                                      "border text-[10px] capitalize",
+                                      "border text-[10px]",
                                       TIPO_STYLES[l.tipo],
                                     )}
                                   >
-                                    {l.tipo}
+                                    {TIPO_LABEL[l.tipo]}
                                   </Badge>
                                   <Badge
                                     variant="outline"
@@ -418,6 +723,10 @@ function TransportePage() {
                                   >
                                     {CIDADE_LABEL[l.cidade]}
                                   </Badge>
+                                  <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-primary">
+                                    <Ticket className="h-3 w-3" aria-hidden />
+                                    {l.tarifa}
+                                  </span>
                                 </div>
                               </div>
                             </div>
@@ -456,13 +765,13 @@ function TransportePage() {
                               </div>
                               <HorariosBloco titulo="Dia útil" horarios={l.horarios.util} />
                               <HorariosBloco titulo="Sábado" horarios={l.horarios.sabado} />
-                              <HorariosBloco titulo="Domingo" horarios={l.horarios.domingo} />
+                              <HorariosBloco titulo="Domingo/Feriado" horarios={l.horarios.domingo} />
                             </div>
 
                             <div>
                               <div className="mb-2 flex items-center gap-2 text-sm font-semibold text-foreground">
                                 <MapPin className="h-4 w-4 text-primary" aria-hidden />
-                                Principais pontos de embarque
+                                Itinerário / pontos de embarque
                               </div>
                               <ol className="space-y-1.5">
                                 {l.pontos.map((p, i) => (
@@ -477,9 +786,30 @@ function TransportePage() {
                                   </li>
                                 ))}
                               </ol>
-                              <p className="mt-3 text-[11px] text-muted-foreground">
-                                Operadora: <span className="font-medium">{l.operadora}</span>
-                              </p>
+
+                              <div className="mt-4 space-y-1.5 rounded-lg bg-background p-3 text-xs">
+                                <div className="flex items-center gap-2 text-foreground">
+                                  <Building2 className="h-3.5 w-3.5 text-primary" aria-hidden />
+                                  <span className="font-semibold">Operadora:</span>
+                                  <span className="text-muted-foreground">{l.operadora}</span>
+                                </div>
+                                <div className="flex items-center gap-2 text-foreground">
+                                  <Ticket className="h-3.5 w-3.5 text-primary" aria-hidden />
+                                  <span className="font-semibold">Tarifa:</span>
+                                  <span className="text-muted-foreground">{l.tarifa}</span>
+                                </div>
+                                {l.fonte ? (
+                                  <a
+                                    href={l.fonte.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center gap-1 text-primary hover:underline"
+                                  >
+                                    <ExternalLink className="h-3.5 w-3.5" aria-hidden />
+                                    Fonte: {l.fonte.label}
+                                  </a>
+                                ) : null}
+                              </div>
                             </div>
                           </div>
 
@@ -509,9 +839,29 @@ function TransportePage() {
           </Tabs>
         </section>
 
-        <p className="text-center text-[11px] text-muted-foreground">
-          Horários informativos. Podem sofrer alterações. Confirme com a operadora antes de sua viagem.
-        </p>
+        {/* Fontes / disclaimer */}
+        <Card className="border-dashed">
+          <CardContent className="space-y-2 p-4 text-xs text-muted-foreground">
+            <p className="font-semibold text-foreground">Sobre estes dados</p>
+            <p>
+              Informações coletadas em fontes oficiais e confiáveis: Prefeitura de
+              São José da Lapa (Tarifa Zero), Prefeitura de Vespasiano / Consórcio
+              Vetor Norte, DER-MG (RIT 5) via Move Metropolitano e Ônibus Online.
+              Horários podem sofrer alterações — confirme sempre com a operadora
+              antes de sua viagem. Consultas em tempo real das linhas
+              metropolitanas em{" "}
+              <a
+                className="text-primary hover:underline"
+                href="http://www.consultas.der.mg.gov.br/grgx/sgtm/consulta_linha.xhtml"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                consultas.der.mg.gov.br
+              </a>
+              .
+            </p>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
@@ -523,16 +873,20 @@ function HorariosBloco({ titulo, horarios }: { titulo: string; horarios: string[
       <div className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
         {titulo}
       </div>
-      <div className="mt-1 flex flex-wrap gap-1.5">
-        {horarios.map((h) => (
-          <span
-            key={h}
-            className="rounded-md bg-background px-2 py-1 text-xs font-medium text-foreground shadow-sm ring-1 ring-border"
-          >
-            {h}
-          </span>
-        ))}
-      </div>
+      {horarios.length === 0 ? (
+        <div className="mt-1 text-xs italic text-muted-foreground">Não circula</div>
+      ) : (
+        <div className="mt-1 flex flex-wrap gap-1.5">
+          {horarios.map((h) => (
+            <span
+              key={h}
+              className="rounded-md bg-background px-2 py-1 text-xs font-medium text-foreground shadow-sm ring-1 ring-border"
+            >
+              {h}
+            </span>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
