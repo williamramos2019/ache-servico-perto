@@ -1,5 +1,5 @@
 /* AgendaAqui Service Worker — PWA offline + push notifications */
-const VERSION = 'v1.1.0';
+const VERSION = 'v1.2.0';
 const STATIC_CACHE = `static-${VERSION}`;
 const RUNTIME_CACHE = `runtime-${VERSION}`;
 const IMAGE_CACHE = `images-${VERSION}`;
@@ -100,38 +100,59 @@ function track(deliveryId, event) {
   }).catch(() => {});
 }
 
+const HIGH_ALERT_VIBRATE = [300, 100, 300, 100, 500];
+
+async function notifyClientsPlaySound(soundUrl) {
+  try {
+    const clients = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    for (const c of clients) {
+      c.postMessage({ type: 'PLAY_ALERT_SOUND', url: soundUrl || '/alert.mp3' });
+    }
+  } catch {}
+}
+
 self.addEventListener('push', (event) => {
   let data = {};
   try { data = event.data ? event.data.json() : {}; }
   catch { data = { title: 'AgendaAqui', body: event.data ? event.data.text() : '' }; }
 
-  const title = data.title || 'AgendaAqui';
+  const isHigh = data.priority === 'high' || data.critical === true;
+  const title = data.title || (isHigh ? 'Novo Alerta Crítico!' : 'AgendaAqui');
   const actions = Array.isArray(data.buttons)
     ? data.buttons.slice(0, 2).map((b, i) => ({ action: `btn_${i}`, title: b.label || `Ação ${i + 1}` }))
     : [];
 
+  const vibrate = data.vibrate === false
+    ? undefined
+    : (isHigh ? HIGH_ALERT_VIBRATE : (Array.isArray(data.vibrate) ? data.vibrate : [120, 60, 120]));
+
   const options = {
     body: data.body || '',
     icon: data.icon || '/icons/icon-192.png',
-    badge: '/icons/icon-192.png',
+    badge: '/icons/badge-72.png',
     image: data.image,
-    tag: data.tag || `agendaaqui-${data.notification_id || Date.now()}`,
+    tag: data.tag || `agendaaqui-${isHigh ? 'high-' : ''}${data.notification_id || Date.now()}`,
+    renotify: isHigh ? true : !!data.renotify,
     data: {
       url: data.url || '/',
       notification_id: data.notification_id,
       delivery_id: data.delivery_id,
       buttons: Array.isArray(data.buttons) ? data.buttons : [],
+      priority: isHigh ? 'high' : 'normal',
+      sound: data.sound || (isHigh ? '/alert.mp3' : undefined),
     },
-    vibrate: data.vibrate === false ? undefined : [120, 60, 120],
+    vibrate,
     silent: data.silent === true,
-    requireInteraction: !!data.requireInteraction,
+    requireInteraction: isHigh ? true : !!data.requireInteraction,
     actions,
   };
 
-  event.waitUntil(Promise.all([
+  const tasks = [
     self.registration.showNotification(title, options),
     track(data.delivery_id, 'delivered'),
-  ]));
+  ];
+  if (isHigh && data.silent !== true) tasks.push(notifyClientsPlaySound(options.data.sound));
+  event.waitUntil(Promise.all(tasks));
 });
 
 self.addEventListener('notificationclick', (event) => {
