@@ -13,11 +13,11 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { DIFFERENTIAL_OPTIONS } from "@/components/site/CompanyProfileSections";
-import { ChevronLeft, Trash2, ExternalLink } from "lucide-react";
+import { ChevronLeft, Trash2, ExternalLink, Crown } from "lucide-react";
 import { ProfileCompleteness } from "@/components/panel/ProfileCompleteness";
 import { PremiumLock } from "@/components/panel/PremiumLock";
 import { isPremium } from "@/lib/plans";
-import { Crown } from "lucide-react";
+
 
 
 const CERT_FIELDS: { key: string; label: string }[] = [
