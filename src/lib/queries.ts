@@ -116,10 +116,13 @@ export async function searchCompanies(params: {
   plan?: "free" | "premium" | "featured" | "all";
   sort?: "relevance" | "rating" | "name" | "newest";
   limit?: number;
-}): Promise<CompanyListItem[]> {
-  const limit = params.limit ?? 60;
+  page?: number;
+}): Promise<{ items: CompanyListItem[]; hasMore: boolean; total: number | null }> {
+  const limit = params.limit ?? 24;
+  const page = Math.max(0, params.page ?? 0);
+  const from = page * limit;
+  const to = from + limit - 1;
 
-  // Resolve city/category to ids in parallel
   const [cityRes, catRes] = await Promise.all([
     params.city
       ? supabase.from("cities").select("id").eq("slug", params.city).maybeSingle()
@@ -137,12 +140,12 @@ export async function searchCompanies(params: {
       .eq("category_id", catRes.data.id)
       .limit(5000);
     companyIdsForCategory = (links ?? []).map((l) => l.company_id);
-    if (companyIdsForCategory.length === 0) return [];
+    if (companyIdsForCategory.length === 0) return { items: [], hasMore: false, total: 0 };
   }
 
   let query = supabase
     .from("companies")
-    .select(SELECT)
+    .select(SELECT, { count: "exact" })
     .eq("status", "active");
 
   if (params.premiumOnly) query = query.in("plan", ["premium", "featured"]);
@@ -161,18 +164,47 @@ export async function searchCompanies(params: {
   else if (params.sort === "rating") {
     query = query.order("rating", { ascending: false }).order("review_count", { ascending: false });
   } else {
-    // Relevance: featured/premium first (plan asc → featured,free,premium isn't ideal),
-    // so we order by featured then rating; premium boost handled by featured flag + rating.
     query = query
       .order("featured", { ascending: false })
       .order("rating", { ascending: false })
       .order("review_count", { ascending: false });
   }
 
-  const { data, error } = await query.limit(limit);
+  const { data, count, error } = await query.range(from, to);
   if (error) throw error;
-  return (data as CompanyRow[] | null ?? []).map(mapCompany);
+  const items = (data as CompanyRow[] | null ?? []).map(mapCompany);
+  const total = typeof count === "number" ? count : null;
+  const hasMore = total != null ? to + 1 < total : items.length === limit;
+  return { items, hasMore, total };
 }
+
+export async function suggestCompanies(q: string, city?: string): Promise<{ id: string; name: string; slug: string; logo_url: string | null; city_name: string | null }[]> {
+  const safe = q.replace(/[%,]/g, " ").trim();
+  if (safe.length < 2) return [];
+  let cityId: string | null = null;
+  if (city) {
+    const { data } = await supabase.from("cities").select("id").eq("slug", city).maybeSingle();
+    cityId = data?.id ?? null;
+  }
+  let query = supabase
+    .from("companies")
+    .select("id, name, slug, logo_url, cities ( name )")
+    .eq("status", "active")
+    .or(`name.ilike.%${safe}%,tagline.ilike.%${safe}%`)
+    .order("featured", { ascending: false })
+    .order("rating", { ascending: false })
+    .limit(6);
+  if (cityId) query = query.eq("city_id", cityId);
+  const { data } = await query;
+  return (data ?? []).map((r) => ({
+    id: r.id,
+    name: r.name,
+    slug: r.slug,
+    logo_url: r.logo_url,
+    city_name: (r.cities as { name: string } | null)?.name ?? null,
+  }));
+}
+
 
 export async function fetchCompanyBySlug(slug: string) {
   const { data, error } = await supabase
