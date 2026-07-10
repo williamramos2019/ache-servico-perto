@@ -357,5 +357,3 @@ function ListingDetail() {
   );
 }
 
-// suppress unused import lint (waUrlBuild is imported for tree-shaking discipline; actual util lives inline)
-void waUrlBuild;
