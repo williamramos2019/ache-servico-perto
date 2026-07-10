@@ -2064,6 +2064,23 @@ export type Database = {
       }
     }
     Functions: {
+      get_weekly_ranking: {
+        Args: never
+        Returns: {
+          activity: number
+          avg_rating: number
+          city_id: string
+          company_id: string
+          is_self: boolean
+          logo_url: string
+          name: string
+          rank_position: number
+          reviews: number
+          score: number
+          slug: string
+          visits: number
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
