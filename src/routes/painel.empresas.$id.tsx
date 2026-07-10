@@ -336,7 +336,7 @@ function EditarEmpresa() {
                     <h3 className="font-semibold">Horários de funcionamento</h3>
                     <p className="text-xs text-muted-foreground">Defina os dias e horários. Os clientes veem status "Aberto agora" ou "Fechado" em tempo real.</p>
                   </div>
-                  <HoursEditor value={(form.hours as Record<string, string> | null) ?? null} onChange={(v) => set("hours", v)} />
+                  <HoursEditor value={(form.hours as HoursValue) ?? null} onChange={(v: HoursValue) => set("hours", v as unknown as string)} />
                 </>
               );
             })()}
