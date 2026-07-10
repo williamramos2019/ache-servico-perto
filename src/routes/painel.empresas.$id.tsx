@@ -14,6 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { DIFFERENTIAL_OPTIONS } from "@/components/site/CompanyProfileSections";
 import { ChevronLeft, Trash2, ExternalLink } from "lucide-react";
+import { ProfileCompleteness } from "@/components/panel/ProfileCompleteness";
 
 const CERT_FIELDS: { key: string; label: string }[] = [
   { key: "cnpj", label: "CNPJ validado" },
@@ -178,6 +179,10 @@ function EditarEmpresa() {
       </div>
 
       <form onSubmit={save} className="mt-6">
+        <div className="mb-6">
+          <ProfileCompleteness company={company.data as Record<string, unknown>} companyId={id} />
+        </div>
+
         <Tabs defaultValue="perfil" className="w-full">
           <TabsList className="w-full justify-start overflow-x-auto">
             <TabsTrigger value="perfil">Perfil</TabsTrigger>
