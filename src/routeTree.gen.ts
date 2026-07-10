@@ -63,6 +63,7 @@ import { Route as AdminPushIndexRouteImport } from './routes/admin.push.index'
 import { Route as PainelNotificacoesPreferenciasRouteImport } from './routes/painel.notificacoes.preferencias'
 import { Route as PainelEmpresasNovaRouteImport } from './routes/painel.empresas.nova'
 import { Route as PainelEmpresasIdRouteImport } from './routes/painel.empresas.$id'
+import { Route as PainelAnunciosNovoRouteImport } from './routes/painel.anuncios.novo'
 import { Route as AdminPushTemplatesRouteImport } from './routes/admin.push.templates'
 import { Route as AdminPushNovoRouteImport } from './routes/admin.push.novo'
 import { Route as AdminPushHistoricoRouteImport } from './routes/admin.push.historico'
@@ -340,6 +341,11 @@ const PainelEmpresasIdRoute = PainelEmpresasIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => PainelEmpresasRoute,
 } as any)
+const PainelAnunciosNovoRoute = PainelAnunciosNovoRouteImport.update({
+  id: '/novo',
+  path: '/novo',
+  getParentRoute: () => PainelAnunciosRoute,
+} as any)
 const AdminPushTemplatesRoute = AdminPushTemplatesRouteImport.update({
   id: '/templates',
   path: '/templates',
@@ -405,7 +411,7 @@ export interface FileRoutesByFullPath {
   '/empresa/$slug': typeof EmpresaSlugRoute
   '/eventos/$slug': typeof EventosSlugRoute
   '/marketplace/$slug': typeof MarketplaceSlugRoute
-  '/painel/anuncios': typeof PainelAnunciosRoute
+  '/painel/anuncios': typeof PainelAnunciosRouteWithChildren
   '/painel/avaliacoes': typeof PainelAvaliacoesRoute
   '/painel/empresas': typeof PainelEmpresasRouteWithChildren
   '/painel/favoritos': typeof PainelFavoritosRoute
@@ -421,6 +427,7 @@ export interface FileRoutesByFullPath {
   '/admin/push/historico': typeof AdminPushHistoricoRoute
   '/admin/push/novo': typeof AdminPushNovoRoute
   '/admin/push/templates': typeof AdminPushTemplatesRoute
+  '/painel/anuncios/novo': typeof PainelAnunciosNovoRoute
   '/painel/empresas/$id': typeof PainelEmpresasIdRoute
   '/painel/empresas/nova': typeof PainelEmpresasNovaRoute
   '/painel/notificacoes/preferencias': typeof PainelNotificacoesPreferenciasRoute
@@ -463,7 +470,7 @@ export interface FileRoutesByTo {
   '/empresa/$slug': typeof EmpresaSlugRoute
   '/eventos/$slug': typeof EventosSlugRoute
   '/marketplace/$slug': typeof MarketplaceSlugRoute
-  '/painel/anuncios': typeof PainelAnunciosRoute
+  '/painel/anuncios': typeof PainelAnunciosRouteWithChildren
   '/painel/avaliacoes': typeof PainelAvaliacoesRoute
   '/painel/empresas': typeof PainelEmpresasRouteWithChildren
   '/painel/favoritos': typeof PainelFavoritosRoute
@@ -479,6 +486,7 @@ export interface FileRoutesByTo {
   '/admin/push/historico': typeof AdminPushHistoricoRoute
   '/admin/push/novo': typeof AdminPushNovoRoute
   '/admin/push/templates': typeof AdminPushTemplatesRoute
+  '/painel/anuncios/novo': typeof PainelAnunciosNovoRoute
   '/painel/empresas/$id': typeof PainelEmpresasIdRoute
   '/painel/empresas/nova': typeof PainelEmpresasNovaRoute
   '/painel/notificacoes/preferencias': typeof PainelNotificacoesPreferenciasRoute
@@ -525,7 +533,7 @@ export interface FileRoutesById {
   '/empresa/$slug': typeof EmpresaSlugRoute
   '/eventos/$slug': typeof EventosSlugRoute
   '/marketplace/$slug': typeof MarketplaceSlugRoute
-  '/painel/anuncios': typeof PainelAnunciosRoute
+  '/painel/anuncios': typeof PainelAnunciosRouteWithChildren
   '/painel/avaliacoes': typeof PainelAvaliacoesRoute
   '/painel/empresas': typeof PainelEmpresasRouteWithChildren
   '/painel/favoritos': typeof PainelFavoritosRoute
@@ -541,6 +549,7 @@ export interface FileRoutesById {
   '/admin/push/historico': typeof AdminPushHistoricoRoute
   '/admin/push/novo': typeof AdminPushNovoRoute
   '/admin/push/templates': typeof AdminPushTemplatesRoute
+  '/painel/anuncios/novo': typeof PainelAnunciosNovoRoute
   '/painel/empresas/$id': typeof PainelEmpresasIdRoute
   '/painel/empresas/nova': typeof PainelEmpresasNovaRoute
   '/painel/notificacoes/preferencias': typeof PainelNotificacoesPreferenciasRoute
@@ -604,6 +613,7 @@ export interface FileRouteTypes {
     | '/admin/push/historico'
     | '/admin/push/novo'
     | '/admin/push/templates'
+    | '/painel/anuncios/novo'
     | '/painel/empresas/$id'
     | '/painel/empresas/nova'
     | '/painel/notificacoes/preferencias'
@@ -662,6 +672,7 @@ export interface FileRouteTypes {
     | '/admin/push/historico'
     | '/admin/push/novo'
     | '/admin/push/templates'
+    | '/painel/anuncios/novo'
     | '/painel/empresas/$id'
     | '/painel/empresas/nova'
     | '/painel/notificacoes/preferencias'
@@ -723,6 +734,7 @@ export interface FileRouteTypes {
     | '/admin/push/historico'
     | '/admin/push/novo'
     | '/admin/push/templates'
+    | '/painel/anuncios/novo'
     | '/painel/empresas/$id'
     | '/painel/empresas/nova'
     | '/painel/notificacoes/preferencias'
@@ -1139,6 +1151,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PainelEmpresasIdRouteImport
       parentRoute: typeof PainelEmpresasRoute
     }
+    '/painel/anuncios/novo': {
+      id: '/painel/anuncios/novo'
+      path: '/novo'
+      fullPath: '/painel/anuncios/novo'
+      preLoaderRoute: typeof PainelAnunciosNovoRouteImport
+      parentRoute: typeof PainelAnunciosRoute
+    }
     '/admin/push/templates': {
       id: '/admin/push/templates'
       path: '/templates'
@@ -1247,6 +1266,18 @@ const MarketplaceRouteWithChildren = MarketplaceRoute._addFileChildren(
   MarketplaceRouteChildren,
 )
 
+interface PainelAnunciosRouteChildren {
+  PainelAnunciosNovoRoute: typeof PainelAnunciosNovoRoute
+}
+
+const PainelAnunciosRouteChildren: PainelAnunciosRouteChildren = {
+  PainelAnunciosNovoRoute: PainelAnunciosNovoRoute,
+}
+
+const PainelAnunciosRouteWithChildren = PainelAnunciosRoute._addFileChildren(
+  PainelAnunciosRouteChildren,
+)
+
 interface PainelEmpresasRouteChildren {
   PainelEmpresasIdRoute: typeof PainelEmpresasIdRoute
   PainelEmpresasNovaRoute: typeof PainelEmpresasNovaRoute
@@ -1273,7 +1304,7 @@ const PainelNotificacoesRouteWithChildren =
   PainelNotificacoesRoute._addFileChildren(PainelNotificacoesRouteChildren)
 
 interface PainelRouteChildren {
-  PainelAnunciosRoute: typeof PainelAnunciosRoute
+  PainelAnunciosRoute: typeof PainelAnunciosRouteWithChildren
   PainelAvaliacoesRoute: typeof PainelAvaliacoesRoute
   PainelEmpresasRoute: typeof PainelEmpresasRouteWithChildren
   PainelFavoritosRoute: typeof PainelFavoritosRoute
@@ -1285,7 +1316,7 @@ interface PainelRouteChildren {
 }
 
 const PainelRouteChildren: PainelRouteChildren = {
-  PainelAnunciosRoute: PainelAnunciosRoute,
+  PainelAnunciosRoute: PainelAnunciosRouteWithChildren,
   PainelAvaliacoesRoute: PainelAvaliacoesRoute,
   PainelEmpresasRoute: PainelEmpresasRouteWithChildren,
   PainelFavoritosRoute: PainelFavoritosRoute,
