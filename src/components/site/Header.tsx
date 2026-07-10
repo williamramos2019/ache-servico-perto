@@ -185,8 +185,9 @@ export function Header() {
             </Link>
           )}
           <Link to="/planos">
-            <Button size="sm" className="btn-shine press-scale rounded-full bg-accent px-4 text-accent-foreground shadow-sm transition-all hover:-translate-y-0.5 hover:bg-accent/90 hover:shadow-md">
-              {site.header.cta_label}
+            <Button size="sm" className="btn-shine press-scale rounded-full bg-accent px-3 text-accent-foreground shadow-sm transition-all hover:-translate-y-0.5 hover:bg-accent/90 hover:shadow-md sm:px-4">
+              <span className="sm:hidden">Anunciar</span>
+              <span className="hidden sm:inline">{site.header.cta_label}</span>
             </Button>
           </Link>
           <Button
