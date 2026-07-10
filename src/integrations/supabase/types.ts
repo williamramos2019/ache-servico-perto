@@ -1860,28 +1860,37 @@ export type Database = {
       }
       reviews: {
         Row: {
+          author_name: string | null
           comment: string | null
           company_id: string
           created_at: string
           id: string
           rating: number
-          user_id: string
+          review_date: string | null
+          source: string
+          user_id: string | null
         }
         Insert: {
+          author_name?: string | null
           comment?: string | null
           company_id: string
           created_at?: string
           id?: string
           rating: number
-          user_id: string
+          review_date?: string | null
+          source?: string
+          user_id?: string | null
         }
         Update: {
+          author_name?: string | null
           comment?: string | null
           company_id?: string
           created_at?: string
           id?: string
           rating?: number
-          user_id?: string
+          review_date?: string | null
+          source?: string
+          user_id?: string | null
         }
         Relationships: [
           {

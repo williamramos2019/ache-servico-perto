@@ -58,25 +58,35 @@ export function ReviewsSection({ companyId }: { companyId: string }) {
         {list.length === 0 ? (
           <p className="text-sm text-muted-foreground">Seja o primeiro a avaliar esta empresa.</p>
         ) : (
-          list.map((r) => (
-            <div key={r.id} className="border-t border-border pt-4 first:border-t-0 first:pt-0">
-              <div className="flex items-center gap-2">
-                <div className="flex">
-                  {[1, 2, 3, 4, 5].map((n) => (
-                    <Star
-                      key={n}
-                      className={`h-4 w-4 ${n <= r.rating ? "fill-accent text-accent" : "text-muted-foreground/30"}`}
-                    />
-                  ))}
+          list.map((r) => {
+            const displayName = r.author_name ?? "Cliente";
+            const isGoogle = r.source === "google";
+            const date = r.review_date ?? r.created_at;
+            return (
+              <div key={r.id} className="border-t border-border pt-4 first:border-t-0 first:pt-0">
+                <div className="flex flex-wrap items-center gap-2">
+                  <div className="flex">
+                    {[1, 2, 3, 4, 5].map((n) => (
+                      <Star
+                        key={n}
+                        className={`h-4 w-4 ${n <= r.rating ? "fill-accent text-accent" : "text-muted-foreground/30"}`}
+                      />
+                    ))}
+                  </div>
+                  <span className="text-sm font-medium">{displayName}</span>
+                  {isGoogle ? (
+                    <span className="rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-blue-600 dark:bg-blue-950/40">
+                      Google
+                    </span>
+                  ) : null}
+                  <span className="text-xs text-muted-foreground">
+                    · {new Date(date).toLocaleDateString("pt-BR")}
+                  </span>
                 </div>
-                <span className="text-sm font-medium">Cliente</span>
-                <span className="text-xs text-muted-foreground">
-                  · {new Date(r.created_at).toLocaleDateString("pt-BR")}
-                </span>
+                {r.comment ? <p className="mt-2 text-sm text-foreground/90">{r.comment}</p> : null}
               </div>
-              {r.comment ? <p className="mt-2 text-sm text-foreground/90">{r.comment}</p> : null}
-            </div>
-          ))
+            );
+          })
         )}
       </div>
 

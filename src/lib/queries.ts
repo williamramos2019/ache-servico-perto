@@ -187,8 +187,9 @@ export async function fetchCompanyBySlug(slug: string) {
 export async function fetchCompanyReviews(companyId: string) {
   const { data, error } = await supabase
     .from("reviews")
-    .select("id, rating, comment, created_at, user_id")
+    .select("id, rating, comment, created_at, user_id, author_name, source, review_date")
     .eq("company_id", companyId)
+    .order("review_date", { ascending: false, nullsFirst: false })
     .order("created_at", { ascending: false });
   if (error) throw error;
   return data ?? [];
