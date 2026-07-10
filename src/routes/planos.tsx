@@ -27,52 +27,42 @@ export const Route = createFileRoute("/planos")({
 const PLANS = [
   {
     id: "basico",
-    name: "Começar",
-    price: "Grátis",
-    subtitle: "Para começar a receber clientes hoje",
+    name: "Grátis",
+    price: "R$ 0",
+    subtitle: "Comece a receber clientes hoje",
     cta: "Criar meu perfil grátis",
     icon: Star,
     accent: false,
     features: [
-      "Perfil completo no app da cidade",
-      "Fotos, contato e localização no mapa",
-      "Receba avaliações de clientes reais",
+      "Perfil no app da cidade",
+      "Até 3 fotos",
+      "Até 2 categorias e 2 projetos",
+      "Até 3 perguntas frequentes",
       "WhatsApp e ligação com 1 toque",
-    ],
-  },
-  {
-    id: "profissional",
-    name: "Profissional",
-    price: "R$ 49/mês",
-    subtitle: "Para quem quer aparecer primeiro",
-    cta: "Quero aparecer primeiro",
-    icon: Zap,
-    accent: true,
-    features: [
-      "Tudo do plano Grátis",
-      "Selo Verificado (dobra a taxa de contato)",
-      "Prioridade nas buscas da cidade",
-      "Galeria de fotos ilimitada",
-      "Estatísticas de visitas e cliques",
+      "Receba avaliações de clientes reais",
     ],
   },
   {
     id: "premium",
     name: "Premium",
     price: "R$ 149/mês",
-    subtitle: "Para dominar a categoria na sua cidade",
-    cta: "Falar com consultor",
+    subtitle: "Todos os benefícios que fazem o cliente escolher você",
+    cta: "Assinar Premium",
     icon: Crown,
-    accent: false,
+    accent: true,
     features: [
-      "Tudo do Profissional",
-      "Selo Premium em todas as listas",
-      "Destaque fixo na home",
+      "Selo Verificado automático",
+      "Selos Top atendimento, Especialista e Entrega garantida",
+      "Prioridade nas buscas e destaque na home",
+      "Fotos, projetos, categorias e FAQs ilimitados",
+      "Banner no perfil da empresa",
+      "Estatísticas avançadas de visitas e cliques",
       "Consultor dedicado por WhatsApp",
-      "Campanhas patrocinadas de divulgação",
+      "Card destacado nas listagens",
     ],
   },
 ] as const;
+
 
 const schema = z.object({
   company_name: z.string().trim().min(1).max(200),
@@ -118,7 +108,7 @@ function PlanosPage() {
       </section>
 
       <section className="container mx-auto px-4 py-12">
-        <div className="grid gap-6 md:grid-cols-3">
+        <div className="mx-auto grid max-w-4xl gap-6 md:grid-cols-2">
           {PLANS.map((p) => {
             const Icon = p.icon;
             return (
