@@ -16,7 +16,7 @@ import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { useCurrentUserId } from "@/lib/favorites";
 import {
-  formatBRL, timeAgo, toListing, CONDITION_LABEL, waUrlBuild, type Listing,
+  formatBRL, timeAgo, toListing, CONDITION_LABEL, type Listing,
 } from "@/lib/marketplace";
 
 function waUrl(phone: string, msg: string) {

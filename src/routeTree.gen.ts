@@ -38,6 +38,7 @@ import { Route as PainelLeadsRouteImport } from './routes/painel.leads'
 import { Route as PainelFavoritosRouteImport } from './routes/painel.favoritos'
 import { Route as PainelEmpresasRouteImport } from './routes/painel.empresas'
 import { Route as PainelAvaliacoesRouteImport } from './routes/painel.avaliacoes'
+import { Route as MarketplaceSlugRouteImport } from './routes/marketplace.$slug'
 import { Route as EventosSlugRouteImport } from './routes/eventos.$slug'
 import { Route as EmpresaSlugRouteImport } from './routes/empresa.$slug'
 import { Route as CidadesSlugRouteImport } from './routes/cidades.$slug'
@@ -212,6 +213,11 @@ const PainelAvaliacoesRoute = PainelAvaliacoesRouteImport.update({
   path: '/avaliacoes',
   getParentRoute: () => PainelRoute,
 } as any)
+const MarketplaceSlugRoute = MarketplaceSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => MarketplaceRoute,
+} as any)
 const EventosSlugRoute = EventosSlugRouteImport.update({
   id: '/eventos/$slug',
   path: '/eventos/$slug',
@@ -363,7 +369,7 @@ export interface FileRoutesByFullPath {
   '/emergencia': typeof EmergenciaRoute
   '/empregos': typeof EmpregosRoute
   '/favoritos': typeof FavoritosRoute
-  '/marketplace': typeof MarketplaceRoute
+  '/marketplace': typeof MarketplaceRouteWithChildren
   '/o-que-fazer': typeof OQueFazerRoute
   '/painel': typeof PainelRouteWithChildren
   '/planos': typeof PlanosRoute
@@ -392,6 +398,7 @@ export interface FileRoutesByFullPath {
   '/cidades/$slug': typeof CidadesSlugRoute
   '/empresa/$slug': typeof EmpresaSlugRoute
   '/eventos/$slug': typeof EventosSlugRoute
+  '/marketplace/$slug': typeof MarketplaceSlugRoute
   '/painel/avaliacoes': typeof PainelAvaliacoesRoute
   '/painel/empresas': typeof PainelEmpresasRouteWithChildren
   '/painel/favoritos': typeof PainelFavoritosRoute
@@ -421,7 +428,7 @@ export interface FileRoutesByTo {
   '/emergencia': typeof EmergenciaRoute
   '/empregos': typeof EmpregosRoute
   '/favoritos': typeof FavoritosRoute
-  '/marketplace': typeof MarketplaceRoute
+  '/marketplace': typeof MarketplaceRouteWithChildren
   '/o-que-fazer': typeof OQueFazerRoute
   '/planos': typeof PlanosRoute
   '/promocoes': typeof PromocoesRoute
@@ -448,6 +455,7 @@ export interface FileRoutesByTo {
   '/cidades/$slug': typeof CidadesSlugRoute
   '/empresa/$slug': typeof EmpresaSlugRoute
   '/eventos/$slug': typeof EventosSlugRoute
+  '/marketplace/$slug': typeof MarketplaceSlugRoute
   '/painel/avaliacoes': typeof PainelAvaliacoesRoute
   '/painel/empresas': typeof PainelEmpresasRouteWithChildren
   '/painel/favoritos': typeof PainelFavoritosRoute
@@ -479,7 +487,7 @@ export interface FileRoutesById {
   '/emergencia': typeof EmergenciaRoute
   '/empregos': typeof EmpregosRoute
   '/favoritos': typeof FavoritosRoute
-  '/marketplace': typeof MarketplaceRoute
+  '/marketplace': typeof MarketplaceRouteWithChildren
   '/o-que-fazer': typeof OQueFazerRoute
   '/painel': typeof PainelRouteWithChildren
   '/planos': typeof PlanosRoute
@@ -508,6 +516,7 @@ export interface FileRoutesById {
   '/cidades/$slug': typeof CidadesSlugRoute
   '/empresa/$slug': typeof EmpresaSlugRoute
   '/eventos/$slug': typeof EventosSlugRoute
+  '/marketplace/$slug': typeof MarketplaceSlugRoute
   '/painel/avaliacoes': typeof PainelAvaliacoesRoute
   '/painel/empresas': typeof PainelEmpresasRouteWithChildren
   '/painel/favoritos': typeof PainelFavoritosRoute
@@ -569,6 +578,7 @@ export interface FileRouteTypes {
     | '/cidades/$slug'
     | '/empresa/$slug'
     | '/eventos/$slug'
+    | '/marketplace/$slug'
     | '/painel/avaliacoes'
     | '/painel/empresas'
     | '/painel/favoritos'
@@ -625,6 +635,7 @@ export interface FileRouteTypes {
     | '/cidades/$slug'
     | '/empresa/$slug'
     | '/eventos/$slug'
+    | '/marketplace/$slug'
     | '/painel/avaliacoes'
     | '/painel/empresas'
     | '/painel/favoritos'
@@ -684,6 +695,7 @@ export interface FileRouteTypes {
     | '/cidades/$slug'
     | '/empresa/$slug'
     | '/eventos/$slug'
+    | '/marketplace/$slug'
     | '/painel/avaliacoes'
     | '/painel/empresas'
     | '/painel/favoritos'
@@ -715,7 +727,7 @@ export interface RootRouteChildren {
   EmergenciaRoute: typeof EmergenciaRoute
   EmpregosRoute: typeof EmpregosRoute
   FavoritosRoute: typeof FavoritosRoute
-  MarketplaceRoute: typeof MarketplaceRoute
+  MarketplaceRoute: typeof MarketplaceRouteWithChildren
   OQueFazerRoute: typeof OQueFazerRoute
   PainelRoute: typeof PainelRouteWithChildren
   PlanosRoute: typeof PlanosRoute
@@ -939,6 +951,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/painel/avaliacoes'
       preLoaderRoute: typeof PainelAvaliacoesRouteImport
       parentRoute: typeof PainelRoute
+    }
+    '/marketplace/$slug': {
+      id: '/marketplace/$slug'
+      path: '/$slug'
+      fullPath: '/marketplace/$slug'
+      preLoaderRoute: typeof MarketplaceSlugRouteImport
+      parentRoute: typeof MarketplaceRoute
     }
     '/eventos/$slug': {
       id: '/eventos/$slug'
@@ -1197,6 +1216,18 @@ const AdminRouteChildren: AdminRouteChildren = {
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
+interface MarketplaceRouteChildren {
+  MarketplaceSlugRoute: typeof MarketplaceSlugRoute
+}
+
+const MarketplaceRouteChildren: MarketplaceRouteChildren = {
+  MarketplaceSlugRoute: MarketplaceSlugRoute,
+}
+
+const MarketplaceRouteWithChildren = MarketplaceRoute._addFileChildren(
+  MarketplaceRouteChildren,
+)
+
 interface PainelEmpresasRouteChildren {
   PainelEmpresasIdRoute: typeof PainelEmpresasIdRoute
   PainelEmpresasNovaRoute: typeof PainelEmpresasNovaRoute
@@ -1256,7 +1287,7 @@ const rootRouteChildren: RootRouteChildren = {
   EmergenciaRoute: EmergenciaRoute,
   EmpregosRoute: EmpregosRoute,
   FavoritosRoute: FavoritosRoute,
-  MarketplaceRoute: MarketplaceRoute,
+  MarketplaceRoute: MarketplaceRouteWithChildren,
   OQueFazerRoute: OQueFazerRoute,
   PainelRoute: PainelRouteWithChildren,
   PlanosRoute: PlanosRoute,
