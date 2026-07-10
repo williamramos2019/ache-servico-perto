@@ -77,7 +77,51 @@ export function registerServiceWorker() {
       refreshing = true;
       window.location.reload();
     });
+
+    // Play alert sound when the SW asks (high-priority push while a tab is open)
+    navigator.serviceWorker.addEventListener("message", (event) => {
+      const d = event.data as { type?: string; url?: string } | undefined;
+      if (!d || d.type !== "PLAY_ALERT_SOUND") return;
+      try {
+        const a = new Audio(d.url || "/alert.mp3");
+        a.volume = 1;
+        void a.play().catch(() => {});
+      } catch {}
+    });
   });
+}
+
+// ---------------- High-Alert test ----------------
+
+export async function fireHighAlertTest(): Promise<"ok" | "denied" | "unsupported"> {
+  const perm = await requestNotificationPermission();
+  if (perm === "unsupported") return "unsupported";
+  if (perm !== "granted") return "denied";
+  // Play the sound directly — user gesture allows autoplay here.
+  try {
+    const a = new Audio("/alert.mp3");
+    a.volume = 1;
+    void a.play().catch(() => {});
+  } catch {}
+  if ("vibrate" in navigator) {
+    try { navigator.vibrate([300, 100, 300, 100, 500]); } catch {}
+  }
+  if ("serviceWorker" in navigator) {
+    const reg = await navigator.serviceWorker.ready;
+    await reg.showNotification("Novo Alerta Crítico!", {
+      body: "Este é um teste de alerta de alta prioridade com som e vibração.",
+      icon: "/icons/icon-192.png",
+      badge: "/icons/badge-72.png",
+      tag: `agendaaqui-high-test-${Date.now()}`,
+      renotify: true,
+      requireInteraction: true,
+      vibrate: [300, 100, 300, 100, 500],
+      data: { url: "/", priority: "high", sound: "/alert.mp3" },
+    } as NotificationOptions);
+    return "ok";
+  }
+  new Notification("Novo Alerta Crítico!", { body: "Teste de alerta crítico.", icon: "/icons/icon-192.png" });
+  return "ok";
 }
 
 // ---------------- Notifications ----------------
