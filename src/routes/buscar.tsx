@@ -243,10 +243,10 @@ function ChipLink({
     <Link
       to={to}
       search={params as never}
-      className={`inline-flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition ${
+      className={`inline-flex shrink-0 items-center gap-1.5 rounded-full border px-4 py-2 text-xs font-semibold whitespace-nowrap transition-all duration-200 ${
         active
-          ? "border-primary bg-primary text-primary-foreground shadow-sm"
-          : "border-border bg-card text-foreground hover:bg-muted"
+          ? "border-primary-dark bg-primary-dark text-primary-foreground shadow-sm"
+          : "border-border bg-card text-muted-foreground hover:border-primary/40 hover:bg-background hover:text-foreground"
       }`}
     >
       {icon}

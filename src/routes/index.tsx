@@ -101,21 +101,23 @@ function Home() {
       </section>
 
       {/* EMERGENCY CTA */}
-      <section className="container mx-auto -mt-7 px-4 md:-mt-9">
+      <section className="container mx-auto -mt-8 px-4 md:-mt-10">
         <Link
           to="/emergencia"
-          className="group btn-shine focus-ring flex items-center justify-between gap-4 rounded-2xl border border-destructive/30 bg-gradient-to-r from-destructive to-red-600 text-destructive-foreground px-5 py-4 shadow-[0_16px_40px_-16px_rgb(220_38_38/0.55)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_20px_48px_-16px_rgb(220_38_38/0.65)] active:translate-y-0"
+          className="group focus-ring flex flex-col items-start justify-between gap-4 rounded-2xl border border-border border-l-[6px] border-l-destructive bg-card p-5 shadow-elevated transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_24px_60px_-24px_rgb(220_38_38/0.35)] sm:flex-row sm:items-center"
         >
-          <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/20 ring-1 ring-white/25 transition-transform duration-300 group-hover:scale-105">
+          <div className="flex items-center gap-4">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-destructive/10 text-destructive transition-transform duration-300 group-hover:scale-105">
               <Siren className="h-6 w-6" />
             </div>
-            <div>
-              <div className="font-display text-lg font-bold">Emergência — 24 horas</div>
-              <div className="text-xs text-destructive-foreground/90">Um toque liga direto para SAMU, Bombeiros, Polícia e serviços urgentes</div>
+            <div className="min-w-0">
+              <div className="font-display text-lg font-bold text-foreground">Plantão e Emergência 24h</div>
+              <div className="mt-0.5 text-sm text-muted-foreground">Acesso rápido a SAMU, Bombeiros, Polícia, hospitais e farmácias de plantão.</div>
             </div>
           </div>
-          <ArrowRight className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
+          <div className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-destructive px-4 py-2 text-sm font-semibold text-destructive-foreground shadow-sm transition-transform duration-300 group-hover:translate-x-0.5">
+            Ver números <ArrowRight className="h-4 w-4" />
+          </div>
         </Link>
       </section>
 
