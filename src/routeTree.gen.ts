@@ -34,10 +34,13 @@ import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as PainelRankingRouteImport } from './routes/painel.ranking'
 import { Route as PainelPerfilRouteImport } from './routes/painel.perfil'
 import { Route as PainelNotificacoesRouteImport } from './routes/painel.notificacoes'
+import { Route as PainelMensagensRouteImport } from './routes/painel.mensagens'
 import { Route as PainelLeadsRouteImport } from './routes/painel.leads'
 import { Route as PainelFavoritosRouteImport } from './routes/painel.favoritos'
 import { Route as PainelEmpresasRouteImport } from './routes/painel.empresas'
 import { Route as PainelAvaliacoesRouteImport } from './routes/painel.avaliacoes'
+import { Route as PainelAnunciosRouteImport } from './routes/painel.anuncios'
+import { Route as MarketplaceSlugRouteImport } from './routes/marketplace.$slug'
 import { Route as EventosSlugRouteImport } from './routes/eventos.$slug'
 import { Route as EmpresaSlugRouteImport } from './routes/empresa.$slug'
 import { Route as CidadesSlugRouteImport } from './routes/cidades.$slug'
@@ -61,10 +64,12 @@ import { Route as AdminPushIndexRouteImport } from './routes/admin.push.index'
 import { Route as PainelNotificacoesPreferenciasRouteImport } from './routes/painel.notificacoes.preferencias'
 import { Route as PainelEmpresasNovaRouteImport } from './routes/painel.empresas.nova'
 import { Route as PainelEmpresasIdRouteImport } from './routes/painel.empresas.$id'
+import { Route as PainelAnunciosNovoRouteImport } from './routes/painel.anuncios.novo'
 import { Route as AdminPushTemplatesRouteImport } from './routes/admin.push.templates'
 import { Route as AdminPushNovoRouteImport } from './routes/admin.push.novo'
 import { Route as AdminPushHistoricoRouteImport } from './routes/admin.push.historico'
 import { Route as AdminPushIdRouteImport } from './routes/admin.push.$id'
+import { Route as PainelAnunciosIdEditarRouteImport } from './routes/painel.anuncios.$id.editar'
 import { Route as ApiPublicPushTrackRouteImport } from './routes/api/public/push/track'
 
 const TransporteRoute = TransporteRouteImport.update({
@@ -192,6 +197,11 @@ const PainelNotificacoesRoute = PainelNotificacoesRouteImport.update({
   path: '/notificacoes',
   getParentRoute: () => PainelRoute,
 } as any)
+const PainelMensagensRoute = PainelMensagensRouteImport.update({
+  id: '/mensagens',
+  path: '/mensagens',
+  getParentRoute: () => PainelRoute,
+} as any)
 const PainelLeadsRoute = PainelLeadsRouteImport.update({
   id: '/leads',
   path: '/leads',
@@ -211,6 +221,16 @@ const PainelAvaliacoesRoute = PainelAvaliacoesRouteImport.update({
   id: '/avaliacoes',
   path: '/avaliacoes',
   getParentRoute: () => PainelRoute,
+} as any)
+const PainelAnunciosRoute = PainelAnunciosRouteImport.update({
+  id: '/anuncios',
+  path: '/anuncios',
+  getParentRoute: () => PainelRoute,
+} as any)
+const MarketplaceSlugRoute = MarketplaceSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => MarketplaceRoute,
 } as any)
 const EventosSlugRoute = EventosSlugRouteImport.update({
   id: '/eventos/$slug',
@@ -328,6 +348,11 @@ const PainelEmpresasIdRoute = PainelEmpresasIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => PainelEmpresasRoute,
 } as any)
+const PainelAnunciosNovoRoute = PainelAnunciosNovoRouteImport.update({
+  id: '/novo',
+  path: '/novo',
+  getParentRoute: () => PainelAnunciosRoute,
+} as any)
 const AdminPushTemplatesRoute = AdminPushTemplatesRouteImport.update({
   id: '/templates',
   path: '/templates',
@@ -348,6 +373,11 @@ const AdminPushIdRoute = AdminPushIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => AdminPushRoute,
 } as any)
+const PainelAnunciosIdEditarRoute = PainelAnunciosIdEditarRouteImport.update({
+  id: '/$id/editar',
+  path: '/$id/editar',
+  getParentRoute: () => PainelAnunciosRoute,
+} as any)
 const ApiPublicPushTrackRoute = ApiPublicPushTrackRouteImport.update({
   id: '/api/public/push/track',
   path: '/api/public/push/track',
@@ -363,7 +393,7 @@ export interface FileRoutesByFullPath {
   '/emergencia': typeof EmergenciaRoute
   '/empregos': typeof EmpregosRoute
   '/favoritos': typeof FavoritosRoute
-  '/marketplace': typeof MarketplaceRoute
+  '/marketplace': typeof MarketplaceRouteWithChildren
   '/o-que-fazer': typeof OQueFazerRoute
   '/painel': typeof PainelRouteWithChildren
   '/planos': typeof PlanosRoute
@@ -392,10 +422,13 @@ export interface FileRoutesByFullPath {
   '/cidades/$slug': typeof CidadesSlugRoute
   '/empresa/$slug': typeof EmpresaSlugRoute
   '/eventos/$slug': typeof EventosSlugRoute
+  '/marketplace/$slug': typeof MarketplaceSlugRoute
+  '/painel/anuncios': typeof PainelAnunciosRouteWithChildren
   '/painel/avaliacoes': typeof PainelAvaliacoesRoute
   '/painel/empresas': typeof PainelEmpresasRouteWithChildren
   '/painel/favoritos': typeof PainelFavoritosRoute
   '/painel/leads': typeof PainelLeadsRoute
+  '/painel/mensagens': typeof PainelMensagensRoute
   '/painel/notificacoes': typeof PainelNotificacoesRouteWithChildren
   '/painel/perfil': typeof PainelPerfilRoute
   '/painel/ranking': typeof PainelRankingRoute
@@ -407,11 +440,13 @@ export interface FileRoutesByFullPath {
   '/admin/push/historico': typeof AdminPushHistoricoRoute
   '/admin/push/novo': typeof AdminPushNovoRoute
   '/admin/push/templates': typeof AdminPushTemplatesRoute
+  '/painel/anuncios/novo': typeof PainelAnunciosNovoRoute
   '/painel/empresas/$id': typeof PainelEmpresasIdRoute
   '/painel/empresas/nova': typeof PainelEmpresasNovaRoute
   '/painel/notificacoes/preferencias': typeof PainelNotificacoesPreferenciasRoute
   '/admin/push/': typeof AdminPushIndexRoute
   '/api/public/push/track': typeof ApiPublicPushTrackRoute
+  '/painel/anuncios/$id/editar': typeof PainelAnunciosIdEditarRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -421,7 +456,7 @@ export interface FileRoutesByTo {
   '/emergencia': typeof EmergenciaRoute
   '/empregos': typeof EmpregosRoute
   '/favoritos': typeof FavoritosRoute
-  '/marketplace': typeof MarketplaceRoute
+  '/marketplace': typeof MarketplaceRouteWithChildren
   '/o-que-fazer': typeof OQueFazerRoute
   '/planos': typeof PlanosRoute
   '/promocoes': typeof PromocoesRoute
@@ -448,10 +483,13 @@ export interface FileRoutesByTo {
   '/cidades/$slug': typeof CidadesSlugRoute
   '/empresa/$slug': typeof EmpresaSlugRoute
   '/eventos/$slug': typeof EventosSlugRoute
+  '/marketplace/$slug': typeof MarketplaceSlugRoute
+  '/painel/anuncios': typeof PainelAnunciosRouteWithChildren
   '/painel/avaliacoes': typeof PainelAvaliacoesRoute
   '/painel/empresas': typeof PainelEmpresasRouteWithChildren
   '/painel/favoritos': typeof PainelFavoritosRoute
   '/painel/leads': typeof PainelLeadsRoute
+  '/painel/mensagens': typeof PainelMensagensRoute
   '/painel/notificacoes': typeof PainelNotificacoesRouteWithChildren
   '/painel/perfil': typeof PainelPerfilRoute
   '/painel/ranking': typeof PainelRankingRoute
@@ -463,11 +501,13 @@ export interface FileRoutesByTo {
   '/admin/push/historico': typeof AdminPushHistoricoRoute
   '/admin/push/novo': typeof AdminPushNovoRoute
   '/admin/push/templates': typeof AdminPushTemplatesRoute
+  '/painel/anuncios/novo': typeof PainelAnunciosNovoRoute
   '/painel/empresas/$id': typeof PainelEmpresasIdRoute
   '/painel/empresas/nova': typeof PainelEmpresasNovaRoute
   '/painel/notificacoes/preferencias': typeof PainelNotificacoesPreferenciasRoute
   '/admin/push': typeof AdminPushIndexRoute
   '/api/public/push/track': typeof ApiPublicPushTrackRoute
+  '/painel/anuncios/$id/editar': typeof PainelAnunciosIdEditarRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -479,7 +519,7 @@ export interface FileRoutesById {
   '/emergencia': typeof EmergenciaRoute
   '/empregos': typeof EmpregosRoute
   '/favoritos': typeof FavoritosRoute
-  '/marketplace': typeof MarketplaceRoute
+  '/marketplace': typeof MarketplaceRouteWithChildren
   '/o-que-fazer': typeof OQueFazerRoute
   '/painel': typeof PainelRouteWithChildren
   '/planos': typeof PlanosRoute
@@ -508,10 +548,13 @@ export interface FileRoutesById {
   '/cidades/$slug': typeof CidadesSlugRoute
   '/empresa/$slug': typeof EmpresaSlugRoute
   '/eventos/$slug': typeof EventosSlugRoute
+  '/marketplace/$slug': typeof MarketplaceSlugRoute
+  '/painel/anuncios': typeof PainelAnunciosRouteWithChildren
   '/painel/avaliacoes': typeof PainelAvaliacoesRoute
   '/painel/empresas': typeof PainelEmpresasRouteWithChildren
   '/painel/favoritos': typeof PainelFavoritosRoute
   '/painel/leads': typeof PainelLeadsRoute
+  '/painel/mensagens': typeof PainelMensagensRoute
   '/painel/notificacoes': typeof PainelNotificacoesRouteWithChildren
   '/painel/perfil': typeof PainelPerfilRoute
   '/painel/ranking': typeof PainelRankingRoute
@@ -523,11 +566,13 @@ export interface FileRoutesById {
   '/admin/push/historico': typeof AdminPushHistoricoRoute
   '/admin/push/novo': typeof AdminPushNovoRoute
   '/admin/push/templates': typeof AdminPushTemplatesRoute
+  '/painel/anuncios/novo': typeof PainelAnunciosNovoRoute
   '/painel/empresas/$id': typeof PainelEmpresasIdRoute
   '/painel/empresas/nova': typeof PainelEmpresasNovaRoute
   '/painel/notificacoes/preferencias': typeof PainelNotificacoesPreferenciasRoute
   '/admin/push/': typeof AdminPushIndexRoute
   '/api/public/push/track': typeof ApiPublicPushTrackRoute
+  '/painel/anuncios/$id/editar': typeof PainelAnunciosIdEditarRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -569,10 +614,13 @@ export interface FileRouteTypes {
     | '/cidades/$slug'
     | '/empresa/$slug'
     | '/eventos/$slug'
+    | '/marketplace/$slug'
+    | '/painel/anuncios'
     | '/painel/avaliacoes'
     | '/painel/empresas'
     | '/painel/favoritos'
     | '/painel/leads'
+    | '/painel/mensagens'
     | '/painel/notificacoes'
     | '/painel/perfil'
     | '/painel/ranking'
@@ -584,11 +632,13 @@ export interface FileRouteTypes {
     | '/admin/push/historico'
     | '/admin/push/novo'
     | '/admin/push/templates'
+    | '/painel/anuncios/novo'
     | '/painel/empresas/$id'
     | '/painel/empresas/nova'
     | '/painel/notificacoes/preferencias'
     | '/admin/push/'
     | '/api/public/push/track'
+    | '/painel/anuncios/$id/editar'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -625,10 +675,13 @@ export interface FileRouteTypes {
     | '/cidades/$slug'
     | '/empresa/$slug'
     | '/eventos/$slug'
+    | '/marketplace/$slug'
+    | '/painel/anuncios'
     | '/painel/avaliacoes'
     | '/painel/empresas'
     | '/painel/favoritos'
     | '/painel/leads'
+    | '/painel/mensagens'
     | '/painel/notificacoes'
     | '/painel/perfil'
     | '/painel/ranking'
@@ -640,11 +693,13 @@ export interface FileRouteTypes {
     | '/admin/push/historico'
     | '/admin/push/novo'
     | '/admin/push/templates'
+    | '/painel/anuncios/novo'
     | '/painel/empresas/$id'
     | '/painel/empresas/nova'
     | '/painel/notificacoes/preferencias'
     | '/admin/push'
     | '/api/public/push/track'
+    | '/painel/anuncios/$id/editar'
   id:
     | '__root__'
     | '/'
@@ -684,10 +739,13 @@ export interface FileRouteTypes {
     | '/cidades/$slug'
     | '/empresa/$slug'
     | '/eventos/$slug'
+    | '/marketplace/$slug'
+    | '/painel/anuncios'
     | '/painel/avaliacoes'
     | '/painel/empresas'
     | '/painel/favoritos'
     | '/painel/leads'
+    | '/painel/mensagens'
     | '/painel/notificacoes'
     | '/painel/perfil'
     | '/painel/ranking'
@@ -699,11 +757,13 @@ export interface FileRouteTypes {
     | '/admin/push/historico'
     | '/admin/push/novo'
     | '/admin/push/templates'
+    | '/painel/anuncios/novo'
     | '/painel/empresas/$id'
     | '/painel/empresas/nova'
     | '/painel/notificacoes/preferencias'
     | '/admin/push/'
     | '/api/public/push/track'
+    | '/painel/anuncios/$id/editar'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -715,7 +775,7 @@ export interface RootRouteChildren {
   EmergenciaRoute: typeof EmergenciaRoute
   EmpregosRoute: typeof EmpregosRoute
   FavoritosRoute: typeof FavoritosRoute
-  MarketplaceRoute: typeof MarketplaceRoute
+  MarketplaceRoute: typeof MarketplaceRouteWithChildren
   OQueFazerRoute: typeof OQueFazerRoute
   PainelRoute: typeof PainelRouteWithChildren
   PlanosRoute: typeof PlanosRoute
@@ -912,6 +972,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PainelNotificacoesRouteImport
       parentRoute: typeof PainelRoute
     }
+    '/painel/mensagens': {
+      id: '/painel/mensagens'
+      path: '/mensagens'
+      fullPath: '/painel/mensagens'
+      preLoaderRoute: typeof PainelMensagensRouteImport
+      parentRoute: typeof PainelRoute
+    }
     '/painel/leads': {
       id: '/painel/leads'
       path: '/leads'
@@ -939,6 +1006,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/painel/avaliacoes'
       preLoaderRoute: typeof PainelAvaliacoesRouteImport
       parentRoute: typeof PainelRoute
+    }
+    '/painel/anuncios': {
+      id: '/painel/anuncios'
+      path: '/anuncios'
+      fullPath: '/painel/anuncios'
+      preLoaderRoute: typeof PainelAnunciosRouteImport
+      parentRoute: typeof PainelRoute
+    }
+    '/marketplace/$slug': {
+      id: '/marketplace/$slug'
+      path: '/$slug'
+      fullPath: '/marketplace/$slug'
+      preLoaderRoute: typeof MarketplaceSlugRouteImport
+      parentRoute: typeof MarketplaceRoute
     }
     '/eventos/$slug': {
       id: '/eventos/$slug'
@@ -1101,6 +1182,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PainelEmpresasIdRouteImport
       parentRoute: typeof PainelEmpresasRoute
     }
+    '/painel/anuncios/novo': {
+      id: '/painel/anuncios/novo'
+      path: '/novo'
+      fullPath: '/painel/anuncios/novo'
+      preLoaderRoute: typeof PainelAnunciosNovoRouteImport
+      parentRoute: typeof PainelAnunciosRoute
+    }
     '/admin/push/templates': {
       id: '/admin/push/templates'
       path: '/templates'
@@ -1128,6 +1216,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/push/$id'
       preLoaderRoute: typeof AdminPushIdRouteImport
       parentRoute: typeof AdminPushRoute
+    }
+    '/painel/anuncios/$id/editar': {
+      id: '/painel/anuncios/$id/editar'
+      path: '/$id/editar'
+      fullPath: '/painel/anuncios/$id/editar'
+      preLoaderRoute: typeof PainelAnunciosIdEditarRouteImport
+      parentRoute: typeof PainelAnunciosRoute
     }
     '/api/public/push/track': {
       id: '/api/public/push/track'
@@ -1197,6 +1292,32 @@ const AdminRouteChildren: AdminRouteChildren = {
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
+interface MarketplaceRouteChildren {
+  MarketplaceSlugRoute: typeof MarketplaceSlugRoute
+}
+
+const MarketplaceRouteChildren: MarketplaceRouteChildren = {
+  MarketplaceSlugRoute: MarketplaceSlugRoute,
+}
+
+const MarketplaceRouteWithChildren = MarketplaceRoute._addFileChildren(
+  MarketplaceRouteChildren,
+)
+
+interface PainelAnunciosRouteChildren {
+  PainelAnunciosNovoRoute: typeof PainelAnunciosNovoRoute
+  PainelAnunciosIdEditarRoute: typeof PainelAnunciosIdEditarRoute
+}
+
+const PainelAnunciosRouteChildren: PainelAnunciosRouteChildren = {
+  PainelAnunciosNovoRoute: PainelAnunciosNovoRoute,
+  PainelAnunciosIdEditarRoute: PainelAnunciosIdEditarRoute,
+}
+
+const PainelAnunciosRouteWithChildren = PainelAnunciosRoute._addFileChildren(
+  PainelAnunciosRouteChildren,
+)
+
 interface PainelEmpresasRouteChildren {
   PainelEmpresasIdRoute: typeof PainelEmpresasIdRoute
   PainelEmpresasNovaRoute: typeof PainelEmpresasNovaRoute
@@ -1223,10 +1344,12 @@ const PainelNotificacoesRouteWithChildren =
   PainelNotificacoesRoute._addFileChildren(PainelNotificacoesRouteChildren)
 
 interface PainelRouteChildren {
+  PainelAnunciosRoute: typeof PainelAnunciosRouteWithChildren
   PainelAvaliacoesRoute: typeof PainelAvaliacoesRoute
   PainelEmpresasRoute: typeof PainelEmpresasRouteWithChildren
   PainelFavoritosRoute: typeof PainelFavoritosRoute
   PainelLeadsRoute: typeof PainelLeadsRoute
+  PainelMensagensRoute: typeof PainelMensagensRoute
   PainelNotificacoesRoute: typeof PainelNotificacoesRouteWithChildren
   PainelPerfilRoute: typeof PainelPerfilRoute
   PainelRankingRoute: typeof PainelRankingRoute
@@ -1234,10 +1357,12 @@ interface PainelRouteChildren {
 }
 
 const PainelRouteChildren: PainelRouteChildren = {
+  PainelAnunciosRoute: PainelAnunciosRouteWithChildren,
   PainelAvaliacoesRoute: PainelAvaliacoesRoute,
   PainelEmpresasRoute: PainelEmpresasRouteWithChildren,
   PainelFavoritosRoute: PainelFavoritosRoute,
   PainelLeadsRoute: PainelLeadsRoute,
+  PainelMensagensRoute: PainelMensagensRoute,
   PainelNotificacoesRoute: PainelNotificacoesRouteWithChildren,
   PainelPerfilRoute: PainelPerfilRoute,
   PainelRankingRoute: PainelRankingRoute,
@@ -1256,7 +1381,7 @@ const rootRouteChildren: RootRouteChildren = {
   EmergenciaRoute: EmergenciaRoute,
   EmpregosRoute: EmpregosRoute,
   FavoritosRoute: FavoritosRoute,
-  MarketplaceRoute: MarketplaceRoute,
+  MarketplaceRoute: MarketplaceRouteWithChildren,
   OQueFazerRoute: OQueFazerRoute,
   PainelRoute: PainelRouteWithChildren,
   PlanosRoute: PlanosRoute,
@@ -1278,13 +1403,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
