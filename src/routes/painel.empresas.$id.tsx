@@ -246,10 +246,44 @@ function EditarEmpresa() {
               <div><Label>WhatsApp</Label><Input value={form.whatsapp ?? ""} onChange={(e) => set("whatsapp", e.target.value)} /></div>
               <div><Label>E-mail</Label><Input type="email" value={form.email ?? ""} onChange={(e) => set("email", e.target.value)} /></div>
               <div><Label>Website</Label><Input value={form.website ?? ""} onChange={(e) => set("website", e.target.value)} placeholder="https://" /></div>
-              <div><Label>Instagram</Label><Input value={form.instagram ?? ""} onChange={(e) => set("instagram", e.target.value)} placeholder="@usuario" /></div>
-              <div><Label>Facebook</Label><Input value={form.facebook ?? ""} onChange={(e) => set("facebook", e.target.value)} /></div>
-              <div><Label>TikTok</Label><Input value={form.tiktok ?? ""} onChange={(e) => set("tiktok", e.target.value)} placeholder="@usuario" /></div>
-              <div><Label>YouTube</Label><Input value={form.youtube ?? ""} onChange={(e) => set("youtube", e.target.value)} placeholder="@canal ou URL" /></div>
+              {(() => {
+                const plan = (company.data as { plan?: string } | undefined)?.plan;
+                const premium = isPremium(plan);
+                const SOCIALS = ["instagram", "facebook", "tiktok", "youtube"] as const;
+                const filled = SOCIALS.filter((k) => ((form[k] as string | undefined) ?? "").trim().length > 0);
+                const lockOthers = !premium && filled.length >= 1;
+                const socialField = (k: typeof SOCIALS[number], label: string, placeholder?: string) => {
+                  const value = (form[k] as string | undefined) ?? "";
+                  const disabled = lockOthers && !filled.includes(k);
+                  return (
+                    <div>
+                      <Label className="flex items-center justify-between">
+                        <span>{label}</span>
+                        {disabled && <span className="text-[10px] font-normal text-muted-foreground">Premium para adicionar mais</span>}
+                      </Label>
+                      <Input
+                        value={value}
+                        onChange={(e) => set(k, e.target.value)}
+                        placeholder={placeholder}
+                        disabled={disabled}
+                      />
+                    </div>
+                  );
+                };
+                return (
+                  <>
+                    {socialField("instagram", "Instagram", "@usuario")}
+                    {socialField("facebook", "Facebook")}
+                    {socialField("tiktok", "TikTok", "@usuario")}
+                    {socialField("youtube", "YouTube", "@canal ou URL")}
+                    {!premium && (
+                      <div className="sm:col-span-2 -mt-1 text-[11px] text-muted-foreground">
+                        Plano Grátis vincula 1 rede social. <Link to="/planos" className="font-semibold text-accent hover:underline">Assine o Premium</Link> para liberar todas.
+                      </div>
+                    )}
+                  </>
+                );
+              })()}
               <div><Label>Ano de fundação</Label><Input type="number" value={form.founded_year ?? ""} onChange={(e) => set("founded_year", e.target.value ? Number(e.target.value) : null)} placeholder="2012" /></div>
               <div>
                 <Label>Faixa de preço</Label>
