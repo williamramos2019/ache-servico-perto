@@ -5,6 +5,7 @@ import { panelStats, listMyCompanies } from "@/lib/panel";
 import { Building2, Mail, Star, Eye, Heart, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { EnableNotifications } from "@/components/site/EnableNotifications";
+import { ProfileCompleteness } from "@/components/panel/ProfileCompleteness";
 
 export const Route = createFileRoute("/painel/")({
   component: PanelHome,
@@ -70,6 +71,21 @@ function PanelHome() {
           )}
         </div>
       </div>
+
+      {(companies.data ?? []).length > 0 ? (
+        <div className="mt-8">
+          <h2 className="font-display text-lg font-bold">Otimize seus perfis</h2>
+          <p className="text-sm text-muted-foreground">Quanto mais completo, melhor você aparece na busca.</p>
+          <div className="mt-3 grid gap-3 lg:grid-cols-2">
+            {(companies.data ?? []).slice(0, 4).map((c) => (
+              <div key={c.id}>
+                <div className="mb-1 text-sm font-medium truncate">{c.name}</div>
+                <ProfileCompleteness company={c as Record<string, unknown>} companyId={c.id} compact />
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
