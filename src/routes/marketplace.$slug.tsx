@@ -70,7 +70,7 @@ export const Route = createFileRoute("/marketplace/$slug")({
 });
 
 function ListingDetail() {
-  const { listing } = Route.useLoaderData();
+  const { listing } = Route.useLoaderData() as { listing: Listing | null };
   const navigate = useNavigate();
   const userId = useCurrentUserId();
   const [activeImg, setActiveImg] = useState(0);
