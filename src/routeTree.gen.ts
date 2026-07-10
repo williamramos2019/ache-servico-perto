@@ -38,6 +38,7 @@ import { Route as PainelLeadsRouteImport } from './routes/painel.leads'
 import { Route as PainelFavoritosRouteImport } from './routes/painel.favoritos'
 import { Route as PainelEmpresasRouteImport } from './routes/painel.empresas'
 import { Route as PainelAvaliacoesRouteImport } from './routes/painel.avaliacoes'
+import { Route as PainelAnunciosRouteImport } from './routes/painel.anuncios'
 import { Route as MarketplaceSlugRouteImport } from './routes/marketplace.$slug'
 import { Route as EventosSlugRouteImport } from './routes/eventos.$slug'
 import { Route as EmpresaSlugRouteImport } from './routes/empresa.$slug'
@@ -211,6 +212,11 @@ const PainelEmpresasRoute = PainelEmpresasRouteImport.update({
 const PainelAvaliacoesRoute = PainelAvaliacoesRouteImport.update({
   id: '/avaliacoes',
   path: '/avaliacoes',
+  getParentRoute: () => PainelRoute,
+} as any)
+const PainelAnunciosRoute = PainelAnunciosRouteImport.update({
+  id: '/anuncios',
+  path: '/anuncios',
   getParentRoute: () => PainelRoute,
 } as any)
 const MarketplaceSlugRoute = MarketplaceSlugRouteImport.update({
@@ -399,6 +405,7 @@ export interface FileRoutesByFullPath {
   '/empresa/$slug': typeof EmpresaSlugRoute
   '/eventos/$slug': typeof EventosSlugRoute
   '/marketplace/$slug': typeof MarketplaceSlugRoute
+  '/painel/anuncios': typeof PainelAnunciosRoute
   '/painel/avaliacoes': typeof PainelAvaliacoesRoute
   '/painel/empresas': typeof PainelEmpresasRouteWithChildren
   '/painel/favoritos': typeof PainelFavoritosRoute
@@ -456,6 +463,7 @@ export interface FileRoutesByTo {
   '/empresa/$slug': typeof EmpresaSlugRoute
   '/eventos/$slug': typeof EventosSlugRoute
   '/marketplace/$slug': typeof MarketplaceSlugRoute
+  '/painel/anuncios': typeof PainelAnunciosRoute
   '/painel/avaliacoes': typeof PainelAvaliacoesRoute
   '/painel/empresas': typeof PainelEmpresasRouteWithChildren
   '/painel/favoritos': typeof PainelFavoritosRoute
@@ -517,6 +525,7 @@ export interface FileRoutesById {
   '/empresa/$slug': typeof EmpresaSlugRoute
   '/eventos/$slug': typeof EventosSlugRoute
   '/marketplace/$slug': typeof MarketplaceSlugRoute
+  '/painel/anuncios': typeof PainelAnunciosRoute
   '/painel/avaliacoes': typeof PainelAvaliacoesRoute
   '/painel/empresas': typeof PainelEmpresasRouteWithChildren
   '/painel/favoritos': typeof PainelFavoritosRoute
@@ -579,6 +588,7 @@ export interface FileRouteTypes {
     | '/empresa/$slug'
     | '/eventos/$slug'
     | '/marketplace/$slug'
+    | '/painel/anuncios'
     | '/painel/avaliacoes'
     | '/painel/empresas'
     | '/painel/favoritos'
@@ -636,6 +646,7 @@ export interface FileRouteTypes {
     | '/empresa/$slug'
     | '/eventos/$slug'
     | '/marketplace/$slug'
+    | '/painel/anuncios'
     | '/painel/avaliacoes'
     | '/painel/empresas'
     | '/painel/favoritos'
@@ -696,6 +707,7 @@ export interface FileRouteTypes {
     | '/empresa/$slug'
     | '/eventos/$slug'
     | '/marketplace/$slug'
+    | '/painel/anuncios'
     | '/painel/avaliacoes'
     | '/painel/empresas'
     | '/painel/favoritos'
@@ -950,6 +962,13 @@ declare module '@tanstack/react-router' {
       path: '/avaliacoes'
       fullPath: '/painel/avaliacoes'
       preLoaderRoute: typeof PainelAvaliacoesRouteImport
+      parentRoute: typeof PainelRoute
+    }
+    '/painel/anuncios': {
+      id: '/painel/anuncios'
+      path: '/anuncios'
+      fullPath: '/painel/anuncios'
+      preLoaderRoute: typeof PainelAnunciosRouteImport
       parentRoute: typeof PainelRoute
     }
     '/marketplace/$slug': {
@@ -1254,6 +1273,7 @@ const PainelNotificacoesRouteWithChildren =
   PainelNotificacoesRoute._addFileChildren(PainelNotificacoesRouteChildren)
 
 interface PainelRouteChildren {
+  PainelAnunciosRoute: typeof PainelAnunciosRoute
   PainelAvaliacoesRoute: typeof PainelAvaliacoesRoute
   PainelEmpresasRoute: typeof PainelEmpresasRouteWithChildren
   PainelFavoritosRoute: typeof PainelFavoritosRoute
@@ -1265,6 +1285,7 @@ interface PainelRouteChildren {
 }
 
 const PainelRouteChildren: PainelRouteChildren = {
+  PainelAnunciosRoute: PainelAnunciosRoute,
   PainelAvaliacoesRoute: PainelAvaliacoesRoute,
   PainelEmpresasRoute: PainelEmpresasRouteWithChildren,
   PainelFavoritosRoute: PainelFavoritosRoute,
