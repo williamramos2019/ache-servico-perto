@@ -57,9 +57,14 @@ function AuthPage() {
     });
     setLoading(false);
     if (error) return toast.error(error.message);
-    if (data.session) toast.success("Conta criada. Já pode começar!");
-    else toast.success("Falta pouco — confirme seu e-mail para ativar o cadastro.");
+    if (data.session) {
+      toast.success("Conta criada! Vamos cadastrar sua empresa.");
+      window.location.href = "/painel/empresas/nova";
+    } else {
+      toast.success("Falta pouco — confirme seu e-mail para ativar o cadastro.");
+    }
   }
+
 
   async function forgotPassword() {
     if (!email) return toast.error("Digite seu e-mail para receber o link de recuperação.");
