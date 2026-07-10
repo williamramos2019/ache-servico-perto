@@ -101,7 +101,7 @@ function Home() {
       </section>
 
       {/* EMERGENCY CTA */}
-      <section className="container mx-auto -mt-8 px-4 md:-mt-10">
+      <section className="container relative z-10 mx-auto -mt-8 px-4 md:-mt-10">
         <Link
           to="/emergencia"
           className="group focus-ring flex flex-col items-start justify-between gap-4 rounded-2xl border border-border border-l-[6px] border-l-destructive bg-card p-5 shadow-elevated transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_24px_60px_-24px_rgb(220_38_38/0.35)] sm:flex-row sm:items-center"
