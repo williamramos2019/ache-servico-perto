@@ -89,20 +89,21 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-border/70 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/70">
-      <div className="container mx-auto flex h-16 items-center justify-between gap-4 px-4">
-        <Link to="/" className="flex items-center gap-2.5 group" aria-label={`${site.brand.name} — Início`}>
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary-dark text-primary-foreground shadow-sm transition-transform group-hover:scale-105">
+      <div className="container mx-auto flex h-16 items-center justify-between gap-2 px-3 sm:gap-4 sm:px-4">
+        <Link to="/" className="flex min-w-0 flex-1 items-center gap-2.5 group lg:flex-initial" aria-label={`${site.brand.name} — Início`}>
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary-dark text-primary-foreground shadow-sm transition-transform group-hover:scale-105">
             <MapPin className="h-5 w-5" />
           </div>
-          <div className="leading-tight">
-            <div className="font-display text-lg font-extrabold tracking-tight text-foreground">
+          <div className="min-w-0 leading-tight">
+            <div className="truncate font-display text-lg font-extrabold tracking-tight text-foreground">
               {site.brand.name}
             </div>
-            <div className="hidden sm:block text-[10px] uppercase tracking-[0.14em] text-muted-foreground whitespace-nowrap">
+            <div className="hidden sm:block text-[10px] uppercase tracking-[0.14em] text-muted-foreground truncate">
               {site.brand.tagline}
             </div>
           </div>
         </Link>
+
 
         <nav className="hidden items-center gap-0.5 lg:flex">
           {NAV.map((n) => {
@@ -144,7 +145,7 @@ export function Header() {
         </nav>
 
 
-        <div className="flex items-center gap-1.5">
+        <div className="flex shrink-0 items-center gap-1 sm:gap-1.5">
           <div className="hidden md:inline-flex"><CityPickerDialog /></div>
           {isAdmin ? (
             <Link to="/admin" className="hidden lg:inline-flex" aria-label={site.header.admin_label}>
