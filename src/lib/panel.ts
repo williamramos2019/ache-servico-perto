@@ -97,7 +97,9 @@ export type CompanyPatch = Partial<{
   promotions: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   financing_info: any;
+  hours: Record<string, string> | null;
 }>;
+
 
 export async function updateMyCompany(id: string, patch: CompanyPatch) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

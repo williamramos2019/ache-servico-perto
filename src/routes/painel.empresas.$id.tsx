@@ -16,6 +16,8 @@ import { DIFFERENTIAL_OPTIONS } from "@/components/site/CompanyProfileSections";
 import { ChevronLeft, Trash2, ExternalLink, Crown } from "lucide-react";
 import { ProfileCompleteness } from "@/components/panel/ProfileCompleteness";
 import { PremiumLock } from "@/components/panel/PremiumLock";
+import { HoursEditor, type HoursValue } from "@/components/panel/HoursEditor";
+
 import { isPremium } from "@/lib/plans";
 
 
@@ -203,11 +205,13 @@ function EditarEmpresa() {
           <TabsList className="w-full justify-start overflow-x-auto">
             <TabsTrigger value="perfil">Perfil</TabsTrigger>
             <TabsTrigger value="midia">Mídia</TabsTrigger>
+            <TabsTrigger value="horarios">Horários</TabsTrigger>
             <TabsTrigger value="reputacao">Reputação</TabsTrigger>
             <TabsTrigger value="cobertura">Cobertura</TabsTrigger>
             <TabsTrigger value="cert">Certificações</TabsTrigger>
             <TabsTrigger value="promo">Promoções</TabsTrigger>
           </TabsList>
+
 
           {/* -------- Perfil -------- */}
           <TabsContent value="perfil" className="mt-4 rounded-xl border border-border bg-card p-5">
@@ -309,6 +313,36 @@ function EditarEmpresa() {
                 : "No plano Grátis você tem Logo e até 3 fotos. Faça upgrade para desbloquear banner, vídeo, tour 360° e materiais em PDF."}
             </p>
           </TabsContent>
+
+          {/* -------- Horários de funcionamento (Premium) -------- */}
+          <TabsContent value="horarios" className="mt-4 rounded-xl border border-border bg-card p-5">
+            {(() => {
+              const plan = (company.data as { plan?: string } | undefined)?.plan;
+              if (!isPremium(plan)) {
+                return (
+                  <div className="rounded-lg border border-dashed border-accent/40 bg-accent/5 p-6 text-center">
+                    <Crown className="mx-auto h-8 w-8 text-accent" />
+                    <h3 className="mt-2 font-semibold">Horários de funcionamento é um recurso Premium</h3>
+                    <p className="mt-1 text-sm text-muted-foreground">Mostre quando sua empresa está aberta. Clientes veem "Aberto agora" em tempo real no seu perfil.</p>
+                    <Link to="/planos" className="mt-3 inline-flex items-center gap-1 rounded-full bg-accent px-4 py-1.5 text-sm font-semibold text-accent-foreground hover:bg-accent/90">
+                      <Crown className="h-4 w-4" /> Fazer upgrade
+                    </Link>
+                  </div>
+                );
+              }
+              return (
+                <>
+                  <div className="mb-3">
+                    <h3 className="font-semibold">Horários de funcionamento</h3>
+                    <p className="text-xs text-muted-foreground">Defina os dias e horários. Os clientes veem status "Aberto agora" ou "Fechado" em tempo real.</p>
+                  </div>
+                  <HoursEditor value={(form.hours as HoursValue) ?? null} onChange={(v: HoursValue) => set("hours", v)} />
+                </>
+              );
+            })()}
+          </TabsContent>
+
+
 
 
           {/* -------- Reputação e atendimento -------- */}
