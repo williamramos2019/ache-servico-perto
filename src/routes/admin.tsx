@@ -1,7 +1,7 @@
 import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { useAdmin } from "@/hooks/use-admin";
 import { SiteLayout } from "@/components/site/SiteLayout";
-import { LayoutDashboard, Building2, BadgePercent, Settings, Mail, Landmark, Siren, MapPin, Newspaper, CalendarDays, Menu as MenuIcon, Type, Bell, Bug } from "lucide-react";
+import { LayoutDashboard, Building2, BadgePercent, Settings, Mail, Landmark, Siren, MapPin, Newspaper, CalendarDays, Menu as MenuIcon, Type, Bell, Bug, Copy } from "lucide-react";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({ meta: [{ title: "Painel Admin — AgendaAqui" }, { name: "robots", content: "noindex" }] }),

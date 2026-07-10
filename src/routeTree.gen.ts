@@ -51,6 +51,7 @@ import { Route as AdminLeadsRouteImport } from './routes/admin.leads'
 import { Route as AdminEventosRouteImport } from './routes/admin.eventos'
 import { Route as AdminEmpresasRouteImport } from './routes/admin.empresas'
 import { Route as AdminEmergenciaRouteImport } from './routes/admin.emergencia'
+import { Route as AdminDuplicadosRouteImport } from './routes/admin.duplicados'
 import { Route as AdminConfiguracoesRouteImport } from './routes/admin.configuracoes'
 import { Route as AdminCidadesRouteImport } from './routes/admin.cidades'
 import { Route as AdminBlogRouteImport } from './routes/admin.blog'
@@ -274,6 +275,11 @@ const AdminEmergenciaRoute = AdminEmergenciaRouteImport.update({
   path: '/emergencia',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminDuplicadosRoute = AdminDuplicadosRouteImport.update({
+  id: '/duplicados',
+  path: '/duplicados',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminConfiguracoesRoute = AdminConfiguracoesRouteImport.update({
   id: '/configuracoes',
   path: '/configuracoes',
@@ -357,6 +363,7 @@ export interface FileRoutesByFullPath {
   '/admin/blog': typeof AdminBlogRoute
   '/admin/cidades': typeof AdminCidadesRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
+  '/admin/duplicados': typeof AdminDuplicadosRoute
   '/admin/emergencia': typeof AdminEmergenciaRoute
   '/admin/empresas': typeof AdminEmpresasRoute
   '/admin/eventos': typeof AdminEventosRoute
@@ -411,6 +418,7 @@ export interface FileRoutesByTo {
   '/admin/blog': typeof AdminBlogRoute
   '/admin/cidades': typeof AdminCidadesRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
+  '/admin/duplicados': typeof AdminDuplicadosRoute
   '/admin/emergencia': typeof AdminEmergenciaRoute
   '/admin/empresas': typeof AdminEmpresasRoute
   '/admin/eventos': typeof AdminEventosRoute
@@ -467,6 +475,7 @@ export interface FileRoutesById {
   '/admin/blog': typeof AdminBlogRoute
   '/admin/cidades': typeof AdminCidadesRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
+  '/admin/duplicados': typeof AdminDuplicadosRoute
   '/admin/emergencia': typeof AdminEmergenciaRoute
   '/admin/empresas': typeof AdminEmpresasRoute
   '/admin/eventos': typeof AdminEventosRoute
@@ -525,6 +534,7 @@ export interface FileRouteTypes {
     | '/admin/blog'
     | '/admin/cidades'
     | '/admin/configuracoes'
+    | '/admin/duplicados'
     | '/admin/emergencia'
     | '/admin/empresas'
     | '/admin/eventos'
@@ -579,6 +589,7 @@ export interface FileRouteTypes {
     | '/admin/blog'
     | '/admin/cidades'
     | '/admin/configuracoes'
+    | '/admin/duplicados'
     | '/admin/emergencia'
     | '/admin/empresas'
     | '/admin/eventos'
@@ -634,6 +645,7 @@ export interface FileRouteTypes {
     | '/admin/blog'
     | '/admin/cidades'
     | '/admin/configuracoes'
+    | '/admin/duplicados'
     | '/admin/emergencia'
     | '/admin/empresas'
     | '/admin/eventos'
@@ -994,6 +1006,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminEmergenciaRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/duplicados': {
+      id: '/admin/duplicados'
+      path: '/duplicados'
+      fullPath: '/admin/duplicados'
+      preLoaderRoute: typeof AdminDuplicadosRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/configuracoes': {
       id: '/admin/configuracoes'
       path: '/configuracoes'
@@ -1105,6 +1124,7 @@ interface AdminRouteChildren {
   AdminBlogRoute: typeof AdminBlogRoute
   AdminCidadesRoute: typeof AdminCidadesRoute
   AdminConfiguracoesRoute: typeof AdminConfiguracoesRoute
+  AdminDuplicadosRoute: typeof AdminDuplicadosRoute
   AdminEmergenciaRoute: typeof AdminEmergenciaRoute
   AdminEmpresasRoute: typeof AdminEmpresasRoute
   AdminEventosRoute: typeof AdminEventosRoute
@@ -1122,6 +1142,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminBlogRoute: AdminBlogRoute,
   AdminCidadesRoute: AdminCidadesRoute,
   AdminConfiguracoesRoute: AdminConfiguracoesRoute,
+  AdminDuplicadosRoute: AdminDuplicadosRoute,
   AdminEmergenciaRoute: AdminEmergenciaRoute,
   AdminEmpresasRoute: AdminEmpresasRoute,
   AdminEventosRoute: AdminEventosRoute,
