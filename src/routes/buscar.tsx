@@ -100,7 +100,8 @@ function BuscarPage() {
 
           {/* Category chip strip */}
           <div className="mt-3 -mx-4 overflow-x-auto px-4 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-            <div className="flex gap-2 pb-1">
+            <div className="flex items-center gap-2 pb-1">
+              <span className="mr-1 hidden shrink-0 text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground sm:inline">Explorar</span>
               <ChipLink active={!category} to="/buscar" params={{ ...search, category: undefined }}>Todas</ChipLink>
               {(cats.data ?? []).map((c) => (
                 <ChipLink
