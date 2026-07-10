@@ -7,6 +7,7 @@ import {
   Calendar,
   Briefcase,
   Building2,
+  Compass,
   Heart,
   Home,
   LayoutDashboard,
