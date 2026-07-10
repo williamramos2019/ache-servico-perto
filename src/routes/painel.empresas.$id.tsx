@@ -17,6 +17,7 @@ import { ChevronLeft, Trash2, ExternalLink, Crown } from "lucide-react";
 import { ProfileCompleteness } from "@/components/panel/ProfileCompleteness";
 import { PremiumLock } from "@/components/panel/PremiumLock";
 import { HoursEditor, type HoursValue } from "@/components/panel/HoursEditor";
+import { CompanyImageUpload } from "@/components/panel/CompanyImageUpload";
 
 import { isPremium } from "@/lib/plans";
 
