@@ -13,6 +13,7 @@ import { Route as TransporteRouteImport } from './routes/transporte'
 import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ServicosPublicosRouteImport } from './routes/servicos-publicos'
+import { Route as ReputacaoRouteImport } from './routes/reputacao'
 import { Route as PromocoesRouteImport } from './routes/promocoes'
 import { Route as PlanosRouteImport } from './routes/planos'
 import { Route as PainelRouteImport } from './routes/painel'
@@ -81,6 +82,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
 const ServicosPublicosRoute = ServicosPublicosRouteImport.update({
   id: '/servicos-publicos',
   path: '/servicos-publicos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReputacaoRoute = ReputacaoRouteImport.update({
+  id: '/reputacao',
+  path: '/reputacao',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PromocoesRoute = PromocoesRouteImport.update({
@@ -343,6 +349,7 @@ export interface FileRoutesByFullPath {
   '/painel': typeof PainelRouteWithChildren
   '/planos': typeof PlanosRoute
   '/promocoes': typeof PromocoesRoute
+  '/reputacao': typeof ReputacaoRoute
   '/servicos-publicos': typeof ServicosPublicosRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
@@ -396,6 +403,7 @@ export interface FileRoutesByTo {
   '/marketplace': typeof MarketplaceRoute
   '/planos': typeof PlanosRoute
   '/promocoes': typeof PromocoesRoute
+  '/reputacao': typeof ReputacaoRoute
   '/servicos-publicos': typeof ServicosPublicosRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
@@ -451,6 +459,7 @@ export interface FileRoutesById {
   '/painel': typeof PainelRouteWithChildren
   '/planos': typeof PlanosRoute
   '/promocoes': typeof PromocoesRoute
+  '/reputacao': typeof ReputacaoRoute
   '/servicos-publicos': typeof ServicosPublicosRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
@@ -508,6 +517,7 @@ export interface FileRouteTypes {
     | '/painel'
     | '/planos'
     | '/promocoes'
+    | '/reputacao'
     | '/servicos-publicos'
     | '/sitemap.xml'
     | '/sobre'
@@ -561,6 +571,7 @@ export interface FileRouteTypes {
     | '/marketplace'
     | '/planos'
     | '/promocoes'
+    | '/reputacao'
     | '/servicos-publicos'
     | '/sitemap.xml'
     | '/sobre'
@@ -615,6 +626,7 @@ export interface FileRouteTypes {
     | '/painel'
     | '/planos'
     | '/promocoes'
+    | '/reputacao'
     | '/servicos-publicos'
     | '/sitemap.xml'
     | '/sobre'
@@ -671,6 +683,7 @@ export interface RootRouteChildren {
   PainelRoute: typeof PainelRouteWithChildren
   PlanosRoute: typeof PlanosRoute
   PromocoesRoute: typeof PromocoesRoute
+  ReputacaoRoute: typeof ReputacaoRoute
   ServicosPublicosRoute: typeof ServicosPublicosRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SobreRoute: typeof SobreRoute
@@ -713,6 +726,13 @@ declare module '@tanstack/react-router' {
       path: '/servicos-publicos'
       fullPath: '/servicos-publicos'
       preLoaderRoute: typeof ServicosPublicosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reputacao': {
+      id: '/reputacao'
+      path: '/reputacao'
+      fullPath: '/reputacao'
+      preLoaderRoute: typeof ReputacaoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/promocoes': {
@@ -1178,6 +1198,7 @@ const rootRouteChildren: RootRouteChildren = {
   PainelRoute: PainelRouteWithChildren,
   PlanosRoute: PlanosRoute,
   PromocoesRoute: PromocoesRoute,
+  ReputacaoRoute: ReputacaoRoute,
   ServicosPublicosRoute: ServicosPublicosRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SobreRoute: SobreRoute,
