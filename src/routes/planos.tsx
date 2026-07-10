@@ -108,7 +108,7 @@ function PlanosPage() {
       </section>
 
       <section className="container mx-auto px-4 py-12">
-        <div className="grid gap-6 md:grid-cols-3">
+        <div className="mx-auto grid max-w-4xl gap-6 md:grid-cols-2">
           {PLANS.map((p) => {
             const Icon = p.icon;
             return (
