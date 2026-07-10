@@ -117,6 +117,16 @@ function EditarEmpresa() {
 
   async function save(e: React.FormEvent) {
     e.preventDefault();
+    const plan = (company.data as { plan?: string } | undefined)?.plan;
+    if (!isPremium(plan)) {
+      const socials = (["instagram", "facebook", "tiktok", "youtube"] as const).filter(
+        (k) => ((form[k] as string | undefined) ?? "").trim().length > 0,
+      );
+      if (socials.length > 1) {
+        toast.error("Plano Grátis permite vincular apenas 1 rede social. Faça upgrade para o Premium para adicionar todas.");
+        return;
+      }
+    }
     setSaving(true);
     try {
       await updateMyCompany(id, form);
