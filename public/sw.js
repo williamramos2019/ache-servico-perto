@@ -1,5 +1,5 @@
 /* AgendaAqui Service Worker — PWA offline + push notifications */
-const VERSION = 'v1.1.0';
+const VERSION = 'v1.2.0';
 const STATIC_CACHE = `static-${VERSION}`;
 const RUNTIME_CACHE = `runtime-${VERSION}`;
 const IMAGE_CACHE = `images-${VERSION}`;
