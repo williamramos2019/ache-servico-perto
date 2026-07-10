@@ -154,7 +154,7 @@ export function BugReportButton() {
           description: description.trim(),
           page_url: window.location.href,
           page_title: document.title,
-          city_id: cityId,
+          city_id: null,
           device: collectDeviceInfo(),
           console_logs: buffers.logs,
           network_logs: buffers.net,
