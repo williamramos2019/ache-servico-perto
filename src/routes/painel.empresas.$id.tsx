@@ -262,17 +262,54 @@ function EditarEmpresa() {
 
           {/* -------- Mídia -------- */}
           <TabsContent value="midia" className="mt-4 rounded-xl border border-border bg-card p-5">
+            {(() => { const plan = (company.data as { plan?: string } | undefined)?.plan; return (
             <div className="grid gap-4 sm:grid-cols-2">
               <div><Label>Logo (URL)</Label><Input value={form.logo_url ?? ""} onChange={(e) => set("logo_url", e.target.value)} placeholder="https://" /></div>
-              <div><Label>Banner (URL)</Label><Input value={form.banner_url ?? ""} onChange={(e) => set("banner_url", e.target.value)} placeholder="https://" /></div>
-              <div className="sm:col-span-2"><Label>Vídeo (YouTube)</Label><Input value={form.video_url ?? ""} onChange={(e) => set("video_url", e.target.value)} placeholder="https://youtube.com/…" /></div>
-              <div className="sm:col-span-2"><Label>Tour 360° (embed URL)</Label><Input value={form.tour_360_url ?? ""} onChange={(e) => set("tour_360_url", e.target.value)} placeholder="https://…" /></div>
-              <div><Label>Catálogo (URL)</Label><Input value={form.catalog_url ?? ""} onChange={(e) => set("catalog_url", e.target.value)} placeholder="https://…pdf" /></div>
-              <div><Label>Tabela de preços (URL)</Label><Input value={form.pricebook_url ?? ""} onChange={(e) => set("pricebook_url", e.target.value)} placeholder="https://…pdf" /></div>
-              <div className="sm:col-span-2"><Label>Portfólio em PDF (URL)</Label><Input value={form.portfolio_pdf_url ?? ""} onChange={(e) => set("portfolio_pdf_url", e.target.value)} placeholder="https://…pdf" /></div>
+              <div>
+                <Label>Banner (URL)</Label>
+                <PremiumLock plan={plan} label="Banner é Premium">
+                  <Input value={form.banner_url ?? ""} onChange={(e) => set("banner_url", e.target.value)} placeholder="https://" disabled={!isPremium(plan)} />
+                </PremiumLock>
+              </div>
+              <div className="sm:col-span-2">
+                <Label>Vídeo (YouTube)</Label>
+                <PremiumLock plan={plan} label="Vídeo é Premium">
+                  <Input value={form.video_url ?? ""} onChange={(e) => set("video_url", e.target.value)} placeholder="https://youtube.com/…" disabled={!isPremium(plan)} />
+                </PremiumLock>
+              </div>
+              <div className="sm:col-span-2">
+                <Label>Tour 360° (embed URL)</Label>
+                <PremiumLock plan={plan} label="Tour 360° é Premium">
+                  <Input value={form.tour_360_url ?? ""} onChange={(e) => set("tour_360_url", e.target.value)} placeholder="https://…" disabled={!isPremium(plan)} />
+                </PremiumLock>
+              </div>
+              <div>
+                <Label>Catálogo (URL)</Label>
+                <PremiumLock plan={plan} label="Catálogo é Premium">
+                  <Input value={form.catalog_url ?? ""} onChange={(e) => set("catalog_url", e.target.value)} placeholder="https://…pdf" disabled={!isPremium(plan)} />
+                </PremiumLock>
+              </div>
+              <div>
+                <Label>Tabela de preços (URL)</Label>
+                <PremiumLock plan={plan} label="Tabela de preços é Premium">
+                  <Input value={form.pricebook_url ?? ""} onChange={(e) => set("pricebook_url", e.target.value)} placeholder="https://…pdf" disabled={!isPremium(plan)} />
+                </PremiumLock>
+              </div>
+              <div className="sm:col-span-2">
+                <Label>Portfólio em PDF (URL)</Label>
+                <PremiumLock plan={plan} label="Portfólio PDF é Premium">
+                  <Input value={form.portfolio_pdf_url ?? ""} onChange={(e) => set("portfolio_pdf_url", e.target.value)} placeholder="https://…pdf" disabled={!isPremium(plan)} />
+                </PremiumLock>
+              </div>
             </div>
-            <p className="mt-4 text-xs text-muted-foreground">A galeria de fotos é gerenciada em breve pela aba Mídia dedicada.</p>
+            ); })()}
+            <p className="mt-4 text-xs text-muted-foreground">
+              {isPremium((company.data as { plan?: string } | undefined)?.plan)
+                ? "A galeria de fotos é gerenciada em breve pela aba Mídia dedicada."
+                : "No plano Grátis você tem Logo e até 3 fotos. Faça upgrade para desbloquear banner, vídeo, tour 360° e materiais em PDF."}
+            </p>
           </TabsContent>
+
 
           {/* -------- Reputação e atendimento -------- */}
           <TabsContent value="reputacao" className="mt-4 rounded-xl border border-border bg-card p-5">
