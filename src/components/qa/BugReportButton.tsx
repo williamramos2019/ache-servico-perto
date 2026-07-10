@@ -168,6 +168,7 @@ export function BugReportButton() {
           extra: {
             path: window.location.pathname,
             authed: !!user,
+            city_slug: city,
           },
         },
       });
