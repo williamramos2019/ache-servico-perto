@@ -30,6 +30,7 @@ import { Route as PainelIndexRouteImport } from './routes/painel.index'
 import { Route as EventosIndexRouteImport } from './routes/eventos.index'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as PainelRankingRouteImport } from './routes/painel.ranking'
 import { Route as PainelPerfilRouteImport } from './routes/painel.perfil'
 import { Route as PainelNotificacoesRouteImport } from './routes/painel.notificacoes'
 import { Route as PainelLeadsRouteImport } from './routes/painel.leads'
@@ -169,6 +170,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AdminRoute,
+} as any)
+const PainelRankingRoute = PainelRankingRouteImport.update({
+  id: '/ranking',
+  path: '/ranking',
+  getParentRoute: () => PainelRoute,
 } as any)
 const PainelPerfilRoute = PainelPerfilRouteImport.update({
   id: '/perfil',
@@ -385,6 +391,7 @@ export interface FileRoutesByFullPath {
   '/painel/leads': typeof PainelLeadsRoute
   '/painel/notificacoes': typeof PainelNotificacoesRouteWithChildren
   '/painel/perfil': typeof PainelPerfilRoute
+  '/painel/ranking': typeof PainelRankingRoute
   '/admin/': typeof AdminIndexRoute
   '/blog/': typeof BlogIndexRoute
   '/eventos/': typeof EventosIndexRoute
@@ -439,6 +446,7 @@ export interface FileRoutesByTo {
   '/painel/leads': typeof PainelLeadsRoute
   '/painel/notificacoes': typeof PainelNotificacoesRouteWithChildren
   '/painel/perfil': typeof PainelPerfilRoute
+  '/painel/ranking': typeof PainelRankingRoute
   '/admin': typeof AdminIndexRoute
   '/blog': typeof BlogIndexRoute
   '/eventos': typeof EventosIndexRoute
@@ -497,6 +505,7 @@ export interface FileRoutesById {
   '/painel/leads': typeof PainelLeadsRoute
   '/painel/notificacoes': typeof PainelNotificacoesRouteWithChildren
   '/painel/perfil': typeof PainelPerfilRoute
+  '/painel/ranking': typeof PainelRankingRoute
   '/admin/': typeof AdminIndexRoute
   '/blog/': typeof BlogIndexRoute
   '/eventos/': typeof EventosIndexRoute
@@ -556,6 +565,7 @@ export interface FileRouteTypes {
     | '/painel/leads'
     | '/painel/notificacoes'
     | '/painel/perfil'
+    | '/painel/ranking'
     | '/admin/'
     | '/blog/'
     | '/eventos/'
@@ -610,6 +620,7 @@ export interface FileRouteTypes {
     | '/painel/leads'
     | '/painel/notificacoes'
     | '/painel/perfil'
+    | '/painel/ranking'
     | '/admin'
     | '/blog'
     | '/eventos'
@@ -667,6 +678,7 @@ export interface FileRouteTypes {
     | '/painel/leads'
     | '/painel/notificacoes'
     | '/painel/perfil'
+    | '/painel/ranking'
     | '/admin/'
     | '/blog/'
     | '/eventos/'
@@ -858,6 +870,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
+    }
+    '/painel/ranking': {
+      id: '/painel/ranking'
+      path: '/ranking'
+      fullPath: '/painel/ranking'
+      preLoaderRoute: typeof PainelRankingRouteImport
+      parentRoute: typeof PainelRoute
     }
     '/painel/perfil': {
       id: '/painel/perfil'
@@ -1190,6 +1209,7 @@ interface PainelRouteChildren {
   PainelLeadsRoute: typeof PainelLeadsRoute
   PainelNotificacoesRoute: typeof PainelNotificacoesRouteWithChildren
   PainelPerfilRoute: typeof PainelPerfilRoute
+  PainelRankingRoute: typeof PainelRankingRoute
   PainelIndexRoute: typeof PainelIndexRoute
 }
 
@@ -1200,6 +1220,7 @@ const PainelRouteChildren: PainelRouteChildren = {
   PainelLeadsRoute: PainelLeadsRoute,
   PainelNotificacoesRoute: PainelNotificacoesRouteWithChildren,
   PainelPerfilRoute: PainelPerfilRoute,
+  PainelRankingRoute: PainelRankingRoute,
   PainelIndexRoute: PainelIndexRoute,
 }
 
