@@ -100,7 +100,8 @@ function BuscarPage() {
 
           {/* Category chip strip */}
           <div className="mt-3 -mx-4 overflow-x-auto px-4 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-            <div className="flex gap-2 pb-1">
+            <div className="flex items-center gap-2 pb-1">
+              <span className="mr-1 hidden shrink-0 text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground sm:inline">Explorar</span>
               <ChipLink active={!category} to="/buscar" params={{ ...search, category: undefined }}>Todas</ChipLink>
               {(cats.data ?? []).map((c) => (
                 <ChipLink
@@ -243,10 +244,10 @@ function ChipLink({
     <Link
       to={to}
       search={params as never}
-      className={`inline-flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition ${
+      className={`inline-flex shrink-0 items-center gap-1.5 rounded-full border px-4 py-2 text-xs font-semibold whitespace-nowrap transition-all duration-200 ${
         active
-          ? "border-primary bg-primary text-primary-foreground shadow-sm"
-          : "border-border bg-card text-foreground hover:bg-muted"
+          ? "border-primary-dark bg-primary-dark text-primary-foreground shadow-sm"
+          : "border-border bg-card text-muted-foreground hover:border-primary/40 hover:bg-background hover:text-foreground"
       }`}
     >
       {icon}
