@@ -93,8 +93,8 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
     title: "Fale com a gente",
     subtitle: "Sugestões, parcerias ou algo travando? Respondemos em até 24h.",
     email: "contato@agendaaqui.online",
-    whatsapp_url: "https://wa.me/5531999999999",
-    whatsapp_label: "WhatsApp em horário comercial",
+    whatsapp_url: "https://wa.me/55319980252882",
+    whatsapp_label: "WhatsApp: +55 31 99802-52882 (horário comercial)",
   },
 };
 
