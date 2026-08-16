@@ -17,6 +17,7 @@ import { QuoteDialog } from "@/components/site/QuoteDialog";
 import { CompanyCard, toCompanyCardData } from "@/components/site/CompanyCard";
 import { companyBySlugQueryOptions, fetchCompanyReviews, fetchSimilarCompanies, fetchCitiesByIds } from "@/lib/queries";
 import { FavoriteButton } from "@/components/site/FavoriteButton";
+import { ClaimCompanyDialog } from "@/components/site/ClaimCompanyDialog";
 import { telUrl, waUrl } from "@/lib/format";
 import {
   QualityBars, CertificationsGrid, DifferentialsGrid, CoverageArea, SocialLinksExtra,
@@ -77,6 +78,7 @@ type Company = {
   promotions: Array<{ title?: string; description?: string }> | null;
   financing_info: { installments?: number; label?: string } | null;
   is_verified: boolean | null;
+  owner_id: string | null;
 };
 
 const WEEK_ORDER = ["seg", "ter", "qua", "qui", "sex", "sab", "dom"];
