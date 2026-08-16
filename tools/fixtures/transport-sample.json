@@ -1,0 +1,22 @@
+{
+  "source_type": "other",
+  "lines": [
+    {
+      "code": "TEST-01",
+      "name": "Linha fictícia de teste AgendaAqui",
+      "city_slug": "sao-jose-da-lapa",
+      "type": "municipal",
+      "operator_name": "Operadora de teste",
+      "fare": "R$ 0,00",
+      "status": "unknown",
+      "schedules": [
+        { "direction": "ida", "day_type": "weekday", "departure_time": "08:00" },
+        { "direction": "ida", "day_type": "weekday", "departure_time": "18:00" }
+      ],
+      "stops": [
+        { "sequence": 1, "name": "Ponto de teste Centro" },
+        { "sequence": 2, "name": "Ponto de teste Bairro" }
+      ]
+    }
+  ]
+}

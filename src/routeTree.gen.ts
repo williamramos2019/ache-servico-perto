@@ -30,6 +30,7 @@ import { Route as PainelIndexRouteImport } from './routes/painel.index'
 import { Route as EventosIndexRouteImport } from './routes/eventos.index'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as TransporteSlugRouteImport } from './routes/transporte.$slug'
 import { Route as PainelRankingRouteImport } from './routes/painel.ranking'
 import { Route as PainelPerfilRouteImport } from './routes/painel.perfil'
 import { Route as PainelNotificacoesRouteImport } from './routes/painel.notificacoes'
@@ -45,6 +46,7 @@ import { Route as EmpresaSlugRouteImport } from './routes/empresa.$slug'
 import { Route as CidadesSlugRouteImport } from './routes/cidades.$slug'
 import { Route as CategoriaSlugRouteImport } from './routes/categoria.$slug'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
+import { Route as AdminTransporteRouteImport } from './routes/admin.transporte'
 import { Route as AdminTextosRouteImport } from './routes/admin.textos'
 import { Route as AdminServicosPublicosRouteImport } from './routes/admin.servicos-publicos'
 import { Route as AdminReivindicacoesRouteImport } from './routes/admin.reivindicacoes'
@@ -53,6 +55,7 @@ import { Route as AdminPushRouteImport } from './routes/admin.push'
 import { Route as AdminPlanosRouteImport } from './routes/admin.planos'
 import { Route as AdminMenuRouteImport } from './routes/admin.menu'
 import { Route as AdminLeadsRouteImport } from './routes/admin.leads'
+import { Route as AdminImportsRouteImport } from './routes/admin.imports'
 import { Route as AdminEventosRouteImport } from './routes/admin.eventos'
 import { Route as AdminEmpresasRouteImport } from './routes/admin.empresas'
 import { Route as AdminEmergenciaRouteImport } from './routes/admin.emergencia'
@@ -176,6 +179,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
+const TransporteSlugRoute = TransporteSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => TransporteRoute,
+} as any)
 const PainelRankingRoute = PainelRankingRouteImport.update({
   id: '/ranking',
   path: '/ranking',
@@ -251,6 +259,11 @@ const BlogSlugRoute = BlogSlugRouteImport.update({
   path: '/blog/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminTransporteRoute = AdminTransporteRouteImport.update({
+  id: '/transporte',
+  path: '/transporte',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminTextosRoute = AdminTextosRouteImport.update({
   id: '/textos',
   path: '/textos',
@@ -289,6 +302,11 @@ const AdminMenuRoute = AdminMenuRouteImport.update({
 const AdminLeadsRoute = AdminLeadsRouteImport.update({
   id: '/leads',
   path: '/leads',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminImportsRoute = AdminImportsRouteImport.update({
+  id: '/imports',
+  path: '/imports',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminEventosRoute = AdminEventosRouteImport.update({
@@ -395,7 +413,7 @@ export interface FileRoutesByFullPath {
   '/reputacao': typeof ReputacaoRoute
   '/servicos-publicos': typeof ServicosPublicosRoute
   '/sobre': typeof SobreRoute
-  '/transporte': typeof TransporteRoute
+  '/transporte': typeof TransporteRouteWithChildren
   '/admin/blog': typeof AdminBlogRoute
   '/admin/cidades': typeof AdminCidadesRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
@@ -403,6 +421,7 @@ export interface FileRoutesByFullPath {
   '/admin/emergencia': typeof AdminEmergenciaRoute
   '/admin/empresas': typeof AdminEmpresasRoute
   '/admin/eventos': typeof AdminEventosRoute
+  '/admin/imports': typeof AdminImportsRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/menu': typeof AdminMenuRoute
   '/admin/planos': typeof AdminPlanosRoute
@@ -411,6 +430,7 @@ export interface FileRoutesByFullPath {
   '/admin/reivindicacoes': typeof AdminReivindicacoesRoute
   '/admin/servicos-publicos': typeof AdminServicosPublicosRoute
   '/admin/textos': typeof AdminTextosRoute
+  '/admin/transporte': typeof AdminTransporteRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/categoria/$slug': typeof CategoriaSlugRoute
   '/cidades/$slug': typeof CidadesSlugRoute
@@ -426,6 +446,7 @@ export interface FileRoutesByFullPath {
   '/painel/notificacoes': typeof PainelNotificacoesRouteWithChildren
   '/painel/perfil': typeof PainelPerfilRoute
   '/painel/ranking': typeof PainelRankingRoute
+  '/transporte/$slug': typeof TransporteSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/blog/': typeof BlogIndexRoute
   '/eventos/': typeof EventosIndexRoute
@@ -456,7 +477,7 @@ export interface FileRoutesByTo {
   '/reputacao': typeof ReputacaoRoute
   '/servicos-publicos': typeof ServicosPublicosRoute
   '/sobre': typeof SobreRoute
-  '/transporte': typeof TransporteRoute
+  '/transporte': typeof TransporteRouteWithChildren
   '/admin/blog': typeof AdminBlogRoute
   '/admin/cidades': typeof AdminCidadesRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
@@ -464,6 +485,7 @@ export interface FileRoutesByTo {
   '/admin/emergencia': typeof AdminEmergenciaRoute
   '/admin/empresas': typeof AdminEmpresasRoute
   '/admin/eventos': typeof AdminEventosRoute
+  '/admin/imports': typeof AdminImportsRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/menu': typeof AdminMenuRoute
   '/admin/planos': typeof AdminPlanosRoute
@@ -471,6 +493,7 @@ export interface FileRoutesByTo {
   '/admin/reivindicacoes': typeof AdminReivindicacoesRoute
   '/admin/servicos-publicos': typeof AdminServicosPublicosRoute
   '/admin/textos': typeof AdminTextosRoute
+  '/admin/transporte': typeof AdminTransporteRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/categoria/$slug': typeof CategoriaSlugRoute
   '/cidades/$slug': typeof CidadesSlugRoute
@@ -486,6 +509,7 @@ export interface FileRoutesByTo {
   '/painel/notificacoes': typeof PainelNotificacoesRouteWithChildren
   '/painel/perfil': typeof PainelPerfilRoute
   '/painel/ranking': typeof PainelRankingRoute
+  '/transporte/$slug': typeof TransporteSlugRoute
   '/admin': typeof AdminIndexRoute
   '/blog': typeof BlogIndexRoute
   '/eventos': typeof EventosIndexRoute
@@ -519,7 +543,7 @@ export interface FileRoutesById {
   '/reputacao': typeof ReputacaoRoute
   '/servicos-publicos': typeof ServicosPublicosRoute
   '/sobre': typeof SobreRoute
-  '/transporte': typeof TransporteRoute
+  '/transporte': typeof TransporteRouteWithChildren
   '/admin/blog': typeof AdminBlogRoute
   '/admin/cidades': typeof AdminCidadesRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
@@ -527,6 +551,7 @@ export interface FileRoutesById {
   '/admin/emergencia': typeof AdminEmergenciaRoute
   '/admin/empresas': typeof AdminEmpresasRoute
   '/admin/eventos': typeof AdminEventosRoute
+  '/admin/imports': typeof AdminImportsRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/menu': typeof AdminMenuRoute
   '/admin/planos': typeof AdminPlanosRoute
@@ -535,6 +560,7 @@ export interface FileRoutesById {
   '/admin/reivindicacoes': typeof AdminReivindicacoesRoute
   '/admin/servicos-publicos': typeof AdminServicosPublicosRoute
   '/admin/textos': typeof AdminTextosRoute
+  '/admin/transporte': typeof AdminTransporteRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/categoria/$slug': typeof CategoriaSlugRoute
   '/cidades/$slug': typeof CidadesSlugRoute
@@ -550,6 +576,7 @@ export interface FileRoutesById {
   '/painel/notificacoes': typeof PainelNotificacoesRouteWithChildren
   '/painel/perfil': typeof PainelPerfilRoute
   '/painel/ranking': typeof PainelRankingRoute
+  '/transporte/$slug': typeof TransporteSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/blog/': typeof BlogIndexRoute
   '/eventos/': typeof EventosIndexRoute
@@ -592,6 +619,7 @@ export interface FileRouteTypes {
     | '/admin/emergencia'
     | '/admin/empresas'
     | '/admin/eventos'
+    | '/admin/imports'
     | '/admin/leads'
     | '/admin/menu'
     | '/admin/planos'
@@ -600,6 +628,7 @@ export interface FileRouteTypes {
     | '/admin/reivindicacoes'
     | '/admin/servicos-publicos'
     | '/admin/textos'
+    | '/admin/transporte'
     | '/blog/$slug'
     | '/categoria/$slug'
     | '/cidades/$slug'
@@ -615,6 +644,7 @@ export interface FileRouteTypes {
     | '/painel/notificacoes'
     | '/painel/perfil'
     | '/painel/ranking'
+    | '/transporte/$slug'
     | '/admin/'
     | '/blog/'
     | '/eventos/'
@@ -653,6 +683,7 @@ export interface FileRouteTypes {
     | '/admin/emergencia'
     | '/admin/empresas'
     | '/admin/eventos'
+    | '/admin/imports'
     | '/admin/leads'
     | '/admin/menu'
     | '/admin/planos'
@@ -660,6 +691,7 @@ export interface FileRouteTypes {
     | '/admin/reivindicacoes'
     | '/admin/servicos-publicos'
     | '/admin/textos'
+    | '/admin/transporte'
     | '/blog/$slug'
     | '/categoria/$slug'
     | '/cidades/$slug'
@@ -675,6 +707,7 @@ export interface FileRouteTypes {
     | '/painel/notificacoes'
     | '/painel/perfil'
     | '/painel/ranking'
+    | '/transporte/$slug'
     | '/admin'
     | '/blog'
     | '/eventos'
@@ -715,6 +748,7 @@ export interface FileRouteTypes {
     | '/admin/emergencia'
     | '/admin/empresas'
     | '/admin/eventos'
+    | '/admin/imports'
     | '/admin/leads'
     | '/admin/menu'
     | '/admin/planos'
@@ -723,6 +757,7 @@ export interface FileRouteTypes {
     | '/admin/reivindicacoes'
     | '/admin/servicos-publicos'
     | '/admin/textos'
+    | '/admin/transporte'
     | '/blog/$slug'
     | '/categoria/$slug'
     | '/cidades/$slug'
@@ -738,6 +773,7 @@ export interface FileRouteTypes {
     | '/painel/notificacoes'
     | '/painel/perfil'
     | '/painel/ranking'
+    | '/transporte/$slug'
     | '/admin/'
     | '/blog/'
     | '/eventos/'
@@ -771,7 +807,7 @@ export interface RootRouteChildren {
   ReputacaoRoute: typeof ReputacaoRoute
   ServicosPublicosRoute: typeof ServicosPublicosRoute
   SobreRoute: typeof SobreRoute
-  TransporteRoute: typeof TransporteRoute
+  TransporteRoute: typeof TransporteRouteWithChildren
   BlogSlugRoute: typeof BlogSlugRoute
   CategoriaSlugRoute: typeof CategoriaSlugRoute
   CidadesSlugRoute: typeof CidadesSlugRoute
@@ -930,6 +966,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/transporte/$slug': {
+      id: '/transporte/$slug'
+      path: '/$slug'
+      fullPath: '/transporte/$slug'
+      preLoaderRoute: typeof TransporteSlugRouteImport
+      parentRoute: typeof TransporteRoute
+    }
     '/painel/ranking': {
       id: '/painel/ranking'
       path: '/ranking'
@@ -1035,6 +1078,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/transporte': {
+      id: '/admin/transporte'
+      path: '/transporte'
+      fullPath: '/admin/transporte'
+      preLoaderRoute: typeof AdminTransporteRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/textos': {
       id: '/admin/textos'
       path: '/textos'
@@ -1089,6 +1139,13 @@ declare module '@tanstack/react-router' {
       path: '/leads'
       fullPath: '/admin/leads'
       preLoaderRoute: typeof AdminLeadsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/imports': {
+      id: '/admin/imports'
+      path: '/imports'
+      fullPath: '/admin/imports'
+      preLoaderRoute: typeof AdminImportsRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/eventos': {
@@ -1241,6 +1298,7 @@ interface AdminRouteChildren {
   AdminEmergenciaRoute: typeof AdminEmergenciaRoute
   AdminEmpresasRoute: typeof AdminEmpresasRoute
   AdminEventosRoute: typeof AdminEventosRoute
+  AdminImportsRoute: typeof AdminImportsRoute
   AdminLeadsRoute: typeof AdminLeadsRoute
   AdminMenuRoute: typeof AdminMenuRoute
   AdminPlanosRoute: typeof AdminPlanosRoute
@@ -1249,6 +1307,7 @@ interface AdminRouteChildren {
   AdminReivindicacoesRoute: typeof AdminReivindicacoesRoute
   AdminServicosPublicosRoute: typeof AdminServicosPublicosRoute
   AdminTextosRoute: typeof AdminTextosRoute
+  AdminTransporteRoute: typeof AdminTransporteRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
@@ -1260,6 +1319,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminEmergenciaRoute: AdminEmergenciaRoute,
   AdminEmpresasRoute: AdminEmpresasRoute,
   AdminEventosRoute: AdminEventosRoute,
+  AdminImportsRoute: AdminImportsRoute,
   AdminLeadsRoute: AdminLeadsRoute,
   AdminMenuRoute: AdminMenuRoute,
   AdminPlanosRoute: AdminPlanosRoute,
@@ -1268,6 +1328,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminReivindicacoesRoute: AdminReivindicacoesRoute,
   AdminServicosPublicosRoute: AdminServicosPublicosRoute,
   AdminTextosRoute: AdminTextosRoute,
+  AdminTransporteRoute: AdminTransporteRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 
@@ -1353,6 +1414,18 @@ const PainelRouteChildren: PainelRouteChildren = {
 const PainelRouteWithChildren =
   PainelRoute._addFileChildren(PainelRouteChildren)
 
+interface TransporteRouteChildren {
+  TransporteSlugRoute: typeof TransporteSlugRoute
+}
+
+const TransporteRouteChildren: TransporteRouteChildren = {
+  TransporteSlugRoute: TransporteSlugRoute,
+}
+
+const TransporteRouteWithChildren = TransporteRoute._addFileChildren(
+  TransporteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
@@ -1370,7 +1443,7 @@ const rootRouteChildren: RootRouteChildren = {
   ReputacaoRoute: ReputacaoRoute,
   ServicosPublicosRoute: ServicosPublicosRoute,
   SobreRoute: SobreRoute,
-  TransporteRoute: TransporteRoute,
+  TransporteRoute: TransporteRouteWithChildren,
   BlogSlugRoute: BlogSlugRoute,
   CategoriaSlugRoute: CategoriaSlugRoute,
   CidadesSlugRoute: CidadesSlugRoute,
