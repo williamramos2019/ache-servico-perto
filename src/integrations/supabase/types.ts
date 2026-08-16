@@ -492,6 +492,71 @@ export type Database = {
           },
         ]
       }
+      company_claims: {
+        Row: {
+          admin_notes: string | null
+          company_id: string
+          created_at: string
+          document: string | null
+          email: string
+          full_name: string
+          id: string
+          message: string | null
+          phone: string
+          proof_url: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          role_in_company: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          company_id: string
+          created_at?: string
+          document?: string | null
+          email: string
+          full_name: string
+          id?: string
+          message?: string | null
+          phone: string
+          proof_url?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          role_in_company?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          admin_notes?: string | null
+          company_id?: string
+          created_at?: string
+          document?: string | null
+          email?: string
+          full_name?: string
+          id?: string
+          message?: string | null
+          phone?: string
+          proof_url?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          role_in_company?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_claims_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       company_faqs: {
         Row: {
           answer: string
@@ -2245,6 +2310,10 @@ export type Database = {
       }
     }
     Functions: {
+      approve_company_claim: {
+        Args: { _claim_id: string; _notes?: string }
+        Returns: undefined
+      }
       get_weekly_ranking: {
         Args: never
         Returns: {
@@ -2280,6 +2349,10 @@ export type Database = {
       }
       refresh_company_rating: {
         Args: { _company_id: string }
+        Returns: undefined
+      }
+      reject_company_claim: {
+        Args: { _claim_id: string; _notes?: string }
         Returns: undefined
       }
       show_limit: { Args: never; Returns: number }
