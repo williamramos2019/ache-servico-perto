@@ -633,8 +633,22 @@ function CompanyPage() {
               </div>
             </section>
 
+            {/* Claim this company */}
+            {!company.owner_id && (
+              <section className="rounded-xl border border-border bg-card p-5">
+                <h3 className="font-display text-lg font-bold">Este perfil ainda não tem dono</h3>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Assuma o controle para editar informações, responder avaliações e receber orçamentos.
+                </p>
+                <div className="mt-3">
+                  <ClaimCompanyDialog companyId={company.id} companyName={company.name} />
+                </div>
+              </section>
+            )}
+
             {/* Active promotion */}
             <PromotionBanner promotions={company.promotions} financing={company.financing_info} />
+
 
             {/* Social channels extra */}
             {(company.instagram || company.facebook || company.tiktok || company.youtube || company.website) && (
