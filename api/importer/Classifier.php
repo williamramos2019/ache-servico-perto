@@ -67,7 +67,6 @@ function importer_classify(string $name, ?string $cnae, ?string $cnaeDescription
         '742' => 'fotografia',
         '79' => 'turismo',
         '812' => 'higienizacao',
-        '81' => 'higienizacao',
     ];
 
     if (is_string($code) && $code !== '') {
@@ -107,7 +106,6 @@ function importer_classify(string $name, ?string $cnae, ?string $cnaeDescription
         'fotografia' => ['foto', 'estudio', 'estúdio fotograf'],
         'turismo' => ['turismo', 'agencia de viagem', 'agência de viagem'],
         'higienizacao' => ['higienizacao', 'higienização', 'limpeza de sofa', 'limpeza de sofá'],
-        'empresas' => ['comercio', 'comércio', 'loja'],
     ];
 
     foreach ($keywords as $slug => $words) {

@@ -69,7 +69,10 @@ DEPLOY/
       001_create_migrations.sql
       002_auth.sql
       003_companies.sql
+      … até 012_transport.sql (quando essa fase estiver autorizada)
     tools/migrate.php
+    tools/import-companies.php          ← CLI only; nunca pela web
+    storage/imports/                    ← JSON/CSV locais; Apache Deny from all
     storage/rate-limit/                 ← vazia, gravável, 0700
       .htaccess
       .gitignore

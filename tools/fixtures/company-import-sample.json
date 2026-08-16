@@ -1,5 +1,5 @@
 {
-  "_comment": "Fixture de teste. Empresas fictícias, não usar em produção.",
+  "_comment": "Fixture técnico. Empresas fictícias TESTE — não usar em produção e não inserir no banco real.",
   "empresas": [
     {
       "cnpj": "11222333000181",
@@ -18,7 +18,7 @@
     {
       "cnpj": "00000000000191",
       "razao_social": "FORA DA CIDADE TESTE SA",
-      "nome_fantasia": "Loja Outro Município",
+      "nome_fantasia": "Loja Outro Município Teste",
       "cnae_fiscal": "4711302",
       "codigo_municipio": "3550308",
       "uf": "SP",
@@ -31,7 +31,7 @@
     {
       "cnpj": "11111111111111",
       "razao_social": "CNPJ INVALIDO TESTE",
-      "nome_fantasia": "Inválida",
+      "nome_fantasia": "Inválida Teste",
       "cnae_fiscal": "5611201",
       "codigo_municipio": "3162955",
       "uf": "MG",
@@ -44,6 +44,19 @@
       "cnae_fiscal": "4771701",
       "codigo_municipio": "3162955",
       "uf": "MG",
+      "situacao_cadastral": "ATIVA"
+    },
+    {
+      "cnpj": "11222333000181",
+      "razao_social": "EMPRESA TESTE IMPORTACAO VESPASIANO LTDA",
+      "nome_fantasia": "Farmácia Teste Importação Vespasiano",
+      "cnae_fiscal": "4771701",
+      "codigo_municipio": "3171204",
+      "uf": "MG",
+      "logradouro": "Rua Teste Vespasiano",
+      "numero": "10",
+      "bairro": "Centro",
+      "cep": "33200000",
       "situacao_cadastral": "ATIVA"
     }
   ]

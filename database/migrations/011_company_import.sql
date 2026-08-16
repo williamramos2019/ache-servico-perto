@@ -1,4 +1,8 @@
 -- Incremental importer metadata. Does not DROP or rewrite existing company rows.
+-- MySQL/MariaDB: UNIQUE on companies.cnpj allows multiple NULLs (cadastros manuais sem CNPJ).
+-- origin DEFAULT 'manual' aplica-se às ~209 empresas já existentes; importação nova usa 'imported' no PHP.
+-- last_external_id / last_batch permitem retomar sem depender só de offset.
+-- CHAR(36) UUID, InnoDB, utf8mb4 — igual às migrations 001–010.
 
 ALTER TABLE `companies`
   ADD COLUMN `cnpj` CHAR(14) NULL AFTER `slug`,
@@ -27,6 +31,8 @@ CREATE TABLE IF NOT EXISTS `company_import_runs` (
   `total_duplicates` INT NOT NULL DEFAULT 0,
   `total_rejected` INT NOT NULL DEFAULT 0,
   `total_skipped` INT NOT NULL DEFAULT 0,
+  `last_external_id` VARCHAR(128) NULL,
+  `last_batch` INT NOT NULL DEFAULT 0,
   `error_message` TEXT NULL,
   `importer_version` VARCHAR(32) NOT NULL DEFAULT '1',
   `created_at` DATETIME(3) NOT NULL,

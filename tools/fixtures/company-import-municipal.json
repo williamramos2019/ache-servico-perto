@@ -1,0 +1,16 @@
+{
+  "_comment": "Fixture municipal técnico. Não representa empresas reais.",
+  "empresas": [
+    {
+      "external_id": "mun-teste-001",
+      "nome": "Padaria Teste Municipal SJL",
+      "razao_social": "PADARIA TESTE MUNICIPAL SJL LTDA",
+      "codigo_municipio": "3162955",
+      "uf": "MG",
+      "logradouro": "Rua Fixture Municipal",
+      "numero": "1",
+      "bairro": "Centro",
+      "cep": "33350000"
+    }
+  ]
+}

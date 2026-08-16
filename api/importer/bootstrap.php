@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 require_once dirname(__DIR__) . '/bootstrap/auth.php';
 
-const IMPORTER_VERSION = '1';
+const IMPORTER_VERSION = '2';
 const IMPORTER_BATCH_SIZE = 100;
+const IMPORTER_BRASILAPI_MAX = 50;
+const IMPORTER_BRASILAPI_SLEEP_US = 400000;
+const IMPORTER_BRASILAPI_TIMEOUT = 10;
+const IMPORTER_BRASILAPI_RETRIES = 2;
 const IMPORTER_ALLOWED_CITIES = [
     'sao-jose-da-lapa' => '3162955',
     'vespasiano' => '3171204',
@@ -46,6 +50,31 @@ function importer_city_ibge(string $citySlug): string
     }
 
     return IMPORTER_ALLOWED_CITIES[$citySlug];
+}
+
+function importer_ibge_is_allowed(string $ibge): bool
+{
+    return in_array($ibge, array_values(IMPORTER_ALLOWED_CITIES), true);
+}
+
+function importer_city_slug_from_ibge(string $ibge): ?string
+{
+    $map = array_flip(IMPORTER_ALLOWED_CITIES);
+
+    return $map[$ibge] ?? null;
+}
+
+function importer_abort_if_not_cli(): void
+{
+    if (PHP_SAPI === 'cli') {
+        return;
+    }
+    if (!headers_sent()) {
+        http_response_code(403);
+        header('Content-Type: text/plain; charset=utf-8');
+    }
+    echo "Forbidden\n";
+    exit(1);
 }
 
 /**

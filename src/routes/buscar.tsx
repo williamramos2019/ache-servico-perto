@@ -134,6 +134,7 @@ function BuscarPage() {
             sort={sort} setSort={(v) => setParam("sort", v)}
             minRating={minRating} setMinRating={(v) => setParam("minRating", v === 0 ? undefined : v)}
             plan={plan} setPlan={(v) => setParam("plan", v === "all" ? undefined : v)}
+            premium={premium} setPremium={(v) => setParam("premium", v ? true : undefined)}
             city={city} setCity={(v) => setParam("city", v || "todas")}
             cities={cities.data ?? []}
             verified={verified} setVerified={(v) => setParam("verified", v ? true : undefined)}
@@ -173,6 +174,7 @@ function BuscarPage() {
                       sort={sort} setSort={(v) => setParam("sort", v)}
                       minRating={minRating} setMinRating={(v) => setParam("minRating", v === 0 ? undefined : v)}
                       plan={plan} setPlan={(v) => setParam("plan", v === "all" ? undefined : v)}
+                      premium={premium} setPremium={(v) => setParam("premium", v ? true : undefined)}
                       city={city} setCity={(v) => setParam("city", v || "todas")}
                       cities={cities.data ?? []}
                       verified={verified} setVerified={(v) => setParam("verified", v ? true : undefined)}

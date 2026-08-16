@@ -5,8 +5,59 @@ declare(strict_types=1);
 const IMPORTER_PROTECTED_COLUMNS = [
     'owner_id', 'plan', 'plan_expires_at', 'featured', 'is_verified',
     'rating', 'review_count', 'views_count', 'whatsapp', 'logo_url', 'banner_url',
-    'video_url', 'hours', 'status',
+    'video_url', 'hours', 'status', 'origin', 'description', 'tagline',
 ];
+
+/**
+ * Public fields that --update may fill only when the current value is empty.
+ *
+ * @param array<string, mixed> $existing
+ * @param array<string, mixed> $record
+ * @return array<string, mixed>
+ */
+function importer_allowed_fill(array $existing, array $record): array
+{
+    $fillable = [
+        'cnpj' => $record['cnpj'] ?? null,
+        'legal_name' => $record['legal_name'] ?? null,
+        'cnae_primary' => $record['cnae_primary'] ?? null,
+        'neighborhood' => $record['neighborhood'] ?? null,
+        'address' => $record['address'] ?? null,
+        'zip' => $record['zip'] ?? null,
+        'email' => $record['email'] ?? null,
+        'phone' => $record['phone'] ?? null,
+    ];
+    $out = [];
+    foreach ($fillable as $col => $value) {
+        if (in_array($col, IMPORTER_PROTECTED_COLUMNS, true)) {
+            continue;
+        }
+        if ($value === null || $value === '') {
+            continue;
+        }
+        $current = $existing[$col] ?? null;
+        if ($current !== null && trim((string) $current) !== '') {
+            continue;
+        }
+        $out[$col] = $value;
+    }
+
+    return $out;
+}
+
+/**
+ * @param array<string, mixed> $row
+ * @return array<string, mixed>
+ */
+function importer_protected_snapshot(array $row): array
+{
+    $snap = [];
+    foreach (IMPORTER_PROTECTED_COLUMNS as $col) {
+        $snap[$col] = $row[$col] ?? null;
+    }
+
+    return $snap;
+}
 
 /**
  * @param array<string, mixed> $record
@@ -21,9 +72,13 @@ function importer_persist_company(
     ?string $categoryId,
     bool $allowUpdate,
     bool $dryRun,
-    ?array $existing
+    ?array $existing,
+    string $match = 'none'
 ): array {
     if ($existing !== null) {
+        if (($match ?? '') === 'name_city_candidate') {
+            return ['action' => 'candidate', 'company_id' => (string) $existing['id']];
+        }
         if (!$allowUpdate) {
             return ['action' => 'duplicate', 'company_id' => (string) $existing['id']];
         }
@@ -37,10 +92,10 @@ function importer_persist_company(
 
     $id = auth_uuid();
     $now = auth_now();
-    $slug = importer_unique_slug($pdo, importer_slugify((string) $record['name'], $citySlug));
     if ($dryRun) {
         return ['action' => 'insert', 'company_id' => $id];
     }
+    $slug = importer_unique_slug($pdo, importer_slugify((string) $record['name'], $citySlug));
 
     $stmt = $pdo->prepare(
         'INSERT INTO companies (
@@ -97,24 +152,8 @@ function importer_fill_empty_fields(PDO $pdo, array $existing, array $record, ?s
 {
     $set = [];
     $params = [':id' => (string) $existing['id'], ':updated_at' => auth_now()];
-    $fillable = [
-        'cnpj' => $record['cnpj'] ?? null,
-        'legal_name' => $record['legal_name'] ?? null,
-        'cnae_primary' => $record['cnae_primary'] ?? null,
-        'neighborhood' => $record['neighborhood'] ?? null,
-        'address' => $record['address'] ?? null,
-        'zip' => $record['zip'] ?? null,
-        'email' => $record['email'] ?? null,
-        'phone' => $record['phone'] ?? null,
-    ];
+    $fillable = importer_allowed_fill($existing, $record);
     foreach ($fillable as $col => $value) {
-        if ($value === null || $value === '') {
-            continue;
-        }
-        $current = $existing[$col] ?? null;
-        if ($current !== null && trim((string) $current) !== '') {
-            continue;
-        }
         $set[] = "`$col` = :$col";
         $params[":$col"] = $value;
     }

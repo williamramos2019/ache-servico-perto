@@ -24,8 +24,12 @@ function importer_validate_record(array $record, string $cityIbge, string $sourc
         $errors[] = 'CNPJ inválido.';
     }
     $ibge = $record['ibge'] ?? null;
-    if (is_string($ibge) && $ibge !== '' && $ibge !== $cityIbge) {
-        $errors[] = 'Município fora da cidade alvo.';
+    if (is_string($ibge) && $ibge !== '') {
+        if (!importer_ibge_is_allowed($ibge)) {
+            $errors[] = 'Município fora do escopo (somente IBGE 3162955 e 3171204).';
+        } elseif ($ibge !== $cityIbge) {
+            $errors[] = 'Município fora da cidade alvo.';
+        }
     }
     if ($sourceType === 'receita' && (!is_string($ibge) || $ibge === '')) {
         $errors[] = 'Código IBGE do município ausente.';

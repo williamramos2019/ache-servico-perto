@@ -22,6 +22,10 @@ storage/imports/**
 !storage/imports/.gitkeep
 !storage/imports/.htaccess
 !storage/imports/README.txt
+!storage/imports/receita/
+!storage/imports/receita/README.txt
+!storage/imports/municipal/
+!storage/imports/municipal/README.txt
 dist-ssr
 .output
 .vinxi

@@ -6,16 +6,27 @@ declare(strict_types=1);
  * Importador controlado de empresas (CLI only).
  *
  *   php tools/import-companies.php --help
- *   php tools/import-companies.php --source=receita --city=sjl --file=sjl.json --dry-run
- *   php tools/import-companies.php --source=municipal --city=vespasiano --file=vesp.csv --limit=100
+ *   php tools/import-companies.php --source receita --city sjl --file receita/arquivo.json --dry-run
+ *   php tools/import-companies.php --source=receita --city=vespasiano --file=receita/vesp.json --limit=100
+ *   php tools/import-companies.php --source receita --city sjl --file receita/arquivo.json --resume
  */
 
-if (PHP_SAPI !== 'cli') {
-    fwrite(STDERR, "Este importador só pode ser executado pela linha de comando.\n");
-    exit(1);
-}
+importer_cli_guard();
 
 require dirname(__DIR__) . '/api/importer/bootstrap.php';
+
+function importer_cli_guard(): void
+{
+    if (PHP_SAPI === 'cli') {
+        return;
+    }
+    if (!headers_sent()) {
+        http_response_code(403);
+        header('Content-Type: text/plain; charset=utf-8');
+    }
+    echo "Forbidden\n";
+    exit(1);
+}
 
 function import_companies_help(): void
 {
@@ -23,70 +34,43 @@ function import_companies_help(): void
 Importador de empresas — AgendaAqui
 
 Uso:
-  php tools/import-companies.php --source=receita --city=sjl --file=arquivo.json --dry-run
-  php tools/import-companies.php --source=municipal --city=vespasiano --file=vesp.json --limit=50
+  php tools/import-companies.php --source receita --city sjl --file receita/arquivo.json --dry-run
+  php tools/import-companies.php --source municipal --city vespasiano --file municipal/vesp.csv --limit=50
+  php tools/import-companies.php --source receita --city sjl --file receita/arquivo.json --resume
 
 Opções:
-  --source=receita|municipal   Fonte do arquivo (BrasilAPI não coleta; use --enrich)
-  --city=sjl|vespasiano        Cidade alvo (IBGE 3162955 / 3171204)
-  --file=nome.json             Arquivo dentro de storage/imports
-  --dry-run                    Simula, não grava no banco
+  --source receita|municipal   Fonte do arquivo (BrasilAPI não coleta; use --enrich)
+  --city sjl|vespasiano        Cidade alvo (IBGE 3162955 / 3171204)
+  --file nome.json             Arquivo relativo a storage/imports/
+  --dry-run                    Somente leitura: não grava empresas nem marca importação concluída
   --limit=N                    Processa no máximo N registros
-  --update                     Preenche campos vazios em duplicatas (nunca sobrescreve dono/plano)
-  --enrich                     Complementa vazios via BrasilAPI (máx. 50, com pausa)
+  --resume                     Retoma pulando CNPJ/external_id já importados
+  --resume=UUID                Continua o run_id indicado (não usar run dry-run)
+  --update                     Preenche campos públicos vazios só em match exato de CNPJ/fonte
+  --enrich                     Complementa vazios via BrasilAPI (timeout, retry, rate limit)
   --help                       Esta ajuda
 
-O arquivo precisa estar em storage/imports. Caminhos com .. são recusados.
-Sem arquivo real de CNPJ/cadastro municipal, não inventamos empresas.
+Regras:
+  - Somente CLI. Via navegador responde 403.
+  - Arquivo em storage/imports (ex.: storage/imports/receita/). Caminhos com .. são recusados.
+  - Município só pelos códigos IBGE 3162955 (SJL) e 3171204 (Vespasiano).
+  - Empresas existentes: owner, plano, destaque, verificação, rating, WhatsApp, fotos e descrição não são sobrescritos.
+  - origin das empresas já cadastradas não muda. Novas importadas recebem origin=imported.
+  - Sem arquivo real da Receita, não inventamos empresas e não há carga real.
 
 TXT;
 }
 
-$opts = [
-    'source' => '',
-    'city' => '',
-    'file' => '',
-    'dry_run' => false,
-    'limit' => null,
-    'update' => false,
-    'enrich' => false,
-];
-
-foreach (array_slice($argv, 1) as $arg) {
-    if ($arg === '--help' || $arg === '-h') {
-        import_companies_help();
-        exit(0);
-    }
-    if ($arg === '--dry-run') {
-        $opts['dry_run'] = true;
-        continue;
-    }
-    if ($arg === '--update') {
-        $opts['update'] = true;
-        continue;
-    }
-    if ($arg === '--enrich') {
-        $opts['enrich'] = true;
-        continue;
-    }
-    if (str_starts_with($arg, '--source=')) {
-        $opts['source'] = substr($arg, 9);
-        continue;
-    }
-    if (str_starts_with($arg, '--city=')) {
-        $opts['city'] = substr($arg, 7);
-        continue;
-    }
-    if (str_starts_with($arg, '--file=')) {
-        $opts['file'] = substr($arg, 7);
-        continue;
-    }
-    if (str_starts_with($arg, '--limit=')) {
-        $opts['limit'] = max(1, (int) substr($arg, 8));
-        continue;
-    }
-    fwrite(STDERR, "Opção desconhecida: $arg\n");
+try {
+    $opts = importer_parse_argv($argv);
+} catch (InvalidArgumentException $e) {
+    fwrite(STDERR, $e->getMessage() . PHP_EOL);
     exit(1);
+}
+
+if ($opts['help']) {
+    import_companies_help();
+    exit(0);
 }
 
 if ($opts['source'] === '' || $opts['city'] === '' || $opts['file'] === '') {
