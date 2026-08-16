@@ -35,7 +35,7 @@ export function SearchBar({ defaultQ = "", defaultCity = "todas" }: { defaultQ?:
         <input
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          placeholder="O que você procura? Ex: eletricista, gráfica..."
+          placeholder={`O que você precisa? Ex: higienização, eletricista, academia...`}
           className="w-full bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
         />
       </div>

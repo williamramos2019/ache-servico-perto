@@ -9,6 +9,19 @@ lerna-debug.log*
 
 node_modules
 dist
+deploy-hostgator/
+deploy-hostgator-*.zip
+AGENDAQUI-INSTALAR.zip
+deploy-oneclick-stage/
+load-env.php
+installed.lock
+uploads/**
+!uploads/.gitkeep
+!uploads/.htaccess
+storage/imports/**
+!storage/imports/.gitkeep
+!storage/imports/.htaccess
+!storage/imports/README.txt
 dist-ssr
 .output
 .vinxi

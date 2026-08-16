@@ -6,7 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { supabase } from "@/integrations/supabase/client";
+import { phpPost } from "@/lib/php-api";
 
 const schema = z.object({
   name: z.string().trim().min(2, "Informe seu nome").max(100),
@@ -23,14 +23,13 @@ export function QuoteDialog({ companyId, companyName }: { companyId: string; com
     mutationFn: async () => {
       const parsed = schema.safeParse(form);
       if (!parsed.success) throw new Error(parsed.error.issues[0].message);
-      const { error } = await supabase.from("leads").insert({
+      await phpPost("/api/leads/create.php", {
         company_id: companyId,
         name: parsed.data.name,
         phone: parsed.data.phone,
         email: parsed.data.email || null,
         message: parsed.data.message || null,
       });
-      if (error) throw error;
     },
     onSuccess: () => {
       toast.success("Solicitação enviada! A empresa entrará em contato.");

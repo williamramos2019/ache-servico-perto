@@ -8,19 +8,22 @@ import { CompanyCard, toCompanyCardData } from "@/components/site/CompanyCard";
 import { CategoryIcon } from "@/components/site/CategoryIcon";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetFooter } from "@/components/ui/sheet";
 import { categoriesQueryOptions, citiesQueryOptions, searchCompanies, suggestCompanies } from "@/lib/queries";
+import { useSelectedCity } from "@/hooks/useSelectedCity";
 
 const searchSchema = z.object({
   q: z.string().optional(),
   city: z.string().optional(),
   category: z.string().optional(),
-  sort: z.enum(["relevance", "rating", "name", "newest"]).optional(),
+  sort: z.enum(["relevance", "rating", "name", "newest", "reviews"]).optional(),
   minRating: z.coerce.number().min(0).max(5).optional(),
   premium: z.coerce.boolean().optional(),
   plan: z.enum(["all", "free", "premium", "featured"]).optional(),
+  verified: z.coerce.boolean().optional(),
+  hasWhatsapp: z.coerce.boolean().optional(),
+  openNow: z.coerce.boolean().optional(),
 });
 
 const PAGE_SIZE = 12;
@@ -44,16 +47,18 @@ export const Route = createFileRoute("/buscar")({
 
 function BuscarPage() {
   const search = Route.useSearch();
-  const { q, city, category, sort = "relevance", minRating = 0, premium = false, plan = "all" } = search;
+  const { q, city: cityParam, category, sort = "relevance", minRating = 0, premium = false, plan = "all", verified = false, hasWhatsapp = false, openNow = false } = search;
   const navigate = useNavigate();
+  const { city: selectedCity } = useSelectedCity();
+  const city = cityParam === "todas" ? undefined : (cityParam ?? selectedCity);
 
   const cats = useQuery(categoriesQueryOptions);
   const cities = useQuery(citiesQueryOptions);
 
   const results = useInfiniteQuery({
-    queryKey: ["search-inf", q ?? "", city ?? "", category ?? "", sort, minRating, premium, plan],
+    queryKey: ["search-inf", q ?? "", city ?? "", category ?? "", sort, minRating, premium, plan, verified, hasWhatsapp, openNow],
     queryFn: ({ pageParam }) =>
-      searchCompanies({ q, city, category, sort, minRating, premiumOnly: premium, plan, page: pageParam as number, limit: PAGE_SIZE }),
+      searchCompanies({ q, city, category, sort, minRating, premiumOnly: premium, plan, verified, hasWhatsapp, openNow, page: pageParam as number, limit: PAGE_SIZE }),
     getNextPageParam: (last, all) => (last.hasMore ? all.length : undefined),
     initialPageParam: 0,
   });
@@ -70,11 +75,14 @@ function BuscarPage() {
 
   const activeChips = [
     q ? { label: `"${q}"`, onClear: () => setParam("q", undefined) } : null,
-    city ? { label: cities.data?.find((c) => c.slug === city)?.name ?? city, onClear: () => setParam("city", undefined) } : null,
+    city ? { label: cities.data?.find((c) => c.slug === city)?.name ?? city, onClear: () => setParam("city", "todas") } : null,
     category ? { label: cats.data?.find((c) => c.slug === category)?.name ?? category, onClear: () => setParam("category", undefined) } : null,
     plan !== "all" ? { label: plan === "featured" ? "Destaque" : plan === "premium" ? "Premium" : "Grátis", onClear: () => setParam("plan", undefined) } : null,
     minRating > 0 ? { label: `${minRating}+ estrelas`, onClear: () => setParam("minRating", undefined) } : null,
     premium ? { label: "Somente Premium", onClear: () => setParam("premium", undefined) } : null,
+    verified ? { label: "Verificada", onClear: () => setParam("verified", undefined) } : null,
+    hasWhatsapp ? { label: "WhatsApp", onClear: () => setParam("hasWhatsapp", undefined) } : null,
+    openNow ? { label: "Aberto agora", onClear: () => setParam("openNow", undefined) } : null,
   ].filter(Boolean) as { label: string; onClear: () => void }[];
 
   // Infinite scroll sentinel
@@ -125,24 +133,29 @@ function BuscarPage() {
           <FiltersPanel
             sort={sort} setSort={(v) => setParam("sort", v)}
             minRating={minRating} setMinRating={(v) => setParam("minRating", v === 0 ? undefined : v)}
-            premium={premium} setPremium={(v) => setParam("premium", v ? true : undefined)}
             plan={plan} setPlan={(v) => setParam("plan", v === "all" ? undefined : v)}
-            city={city} setCity={(v) => setParam("city", v || undefined)}
+            city={city} setCity={(v) => setParam("city", v || "todas")}
             cities={cities.data ?? []}
+            verified={verified} setVerified={(v) => setParam("verified", v ? true : undefined)}
+            hasWhatsapp={hasWhatsapp} setHasWhatsapp={(v) => setParam("hasWhatsapp", v ? true : undefined)}
+            openNow={openNow} setOpenNow={(v) => setParam("openNow", v ? true : undefined)}
           />
         </aside>
 
         <div className="min-w-0">
           {/* Results toolbar */}
           <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-            <div className="text-sm text-muted-foreground">
-              {results.isLoading ? "Buscando…" : (
-                <>
-                  <span className="font-medium text-foreground">{total ?? items.length}</span>{" "}
-                  {(total ?? items.length) === 1 ? "empresa encontrada" : "empresas encontradas"}
-                  {q && <> para <span className="font-medium text-foreground">“{q}”</span></>}
-                </>
-              )}
+            <div>
+              <p className="text-lg font-semibold text-foreground">
+                {results.isLoading ? "Buscando…" : results.isError ? "Não foi possível buscar agora" : (
+                  <>Encontramos {total ?? items.length} {(total ?? items.length) === 1 ? "empresa" : "empresas"}</>
+                )}
+              </p>
+              {q && !results.isLoading && !results.isError ? (
+                <p className="text-sm text-muted-foreground">para “{q}”{city ? ` em ${cities.data?.find((c) => c.slug === city)?.name ?? city}` : ""}</p>
+              ) : city && !results.isLoading && !results.isError ? (
+                <p className="text-sm text-muted-foreground">em {cities.data?.find((c) => c.slug === city)?.name ?? city}</p>
+              ) : null}
             </div>
             <div className="flex items-center gap-2">
               {/* Mobile filter drawer */}
@@ -159,10 +172,12 @@ function BuscarPage() {
                     <FiltersPanel
                       sort={sort} setSort={(v) => setParam("sort", v)}
                       minRating={minRating} setMinRating={(v) => setParam("minRating", v === 0 ? undefined : v)}
-                      premium={premium} setPremium={(v) => setParam("premium", v ? true : undefined)}
                       plan={plan} setPlan={(v) => setParam("plan", v === "all" ? undefined : v)}
-                      city={city} setCity={(v) => setParam("city", v || undefined)}
+                      city={city} setCity={(v) => setParam("city", v || "todas")}
                       cities={cities.data ?? []}
+                      verified={verified} setVerified={(v) => setParam("verified", v ? true : undefined)}
+                      hasWhatsapp={hasWhatsapp} setHasWhatsapp={(v) => setParam("hasWhatsapp", v ? true : undefined)}
+                      openNow={openNow} setOpenNow={(v) => setParam("openNow", v ? true : undefined)}
                     />
                   </div>
                   <SheetFooter className="mt-6"><Button variant="ghost" onClick={clearAll} className="w-full">Limpar filtros</Button></SheetFooter>
@@ -170,15 +185,16 @@ function BuscarPage() {
               </Sheet>
 
               {/* Sort (compact) */}
-              <div className="hidden items-center gap-1 sm:flex">
+              <div className="flex items-center gap-1">
                 <ArrowUpDown className="h-4 w-4 text-muted-foreground" />
                 <Select value={sort} onValueChange={(v) => setParam("sort", v as typeof sort)}>
                   <SelectTrigger className="h-9 w-[180px]"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="relevance">Relevância</SelectItem>
-                    <SelectItem value="rating">Melhor avaliados</SelectItem>
-                    <SelectItem value="name">Nome (A–Z)</SelectItem>
+                    <SelectItem value="rating">Mais bem avaliadas</SelectItem>
+                    <SelectItem value="reviews">Mais avaliadas</SelectItem>
                     <SelectItem value="newest">Mais recentes</SelectItem>
+                    <SelectItem value="name">Nome (A–Z)</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -204,16 +220,22 @@ function BuscarPage() {
                 <div key={i} className="h-72 animate-pulse rounded-2xl bg-muted" />
               ))}
             </div>
+          ) : results.isError ? (
+            <div className="rounded-2xl border border-dashed border-border bg-card p-12 text-center">
+              <p className="text-lg font-semibold">Erro temporário na busca</p>
+              <p className="mt-1 text-sm text-muted-foreground">Tente de novo em instantes. Nada foi perdido.</p>
+              <Button variant="outline" size="sm" className="mt-4" onClick={() => results.refetch()}>Tentar novamente</Button>
+            </div>
           ) : items.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-border bg-card p-12 text-center">
               <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-muted"><Search className="h-6 w-6 text-muted-foreground" /></div>
-              <p className="mt-3 text-lg font-semibold">Nenhuma empresa encontrada</p>
-              <p className="mt-1 text-sm text-muted-foreground">Tente remover alguns filtros ou usar termos diferentes.</p>
+              <p className="mt-3 text-lg font-semibold">Nenhuma empresa encontrada.</p>
+              <p className="mt-1 text-sm text-muted-foreground">Experimente outra categoria ou cidade.</p>
               {activeChips.length > 0 && <Button variant="outline" size="sm" onClick={clearAll} className="mt-4">Limpar filtros</Button>}
             </div>
           ) : (
             <>
-              <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+              <div className="grid gap-5 sm:grid-cols-1 xl:grid-cols-2">
                 {items.map((co) => (
                   <CompanyCard key={co.id} company={toCompanyCardData(co)} />
                 ))}
@@ -257,8 +279,8 @@ function ChipLink({
 }
 
 function FiltersPanel(props: {
-  sort: "relevance" | "rating" | "name" | "newest";
-  setSort: (v: "relevance" | "rating" | "name" | "newest") => void;
+  sort: "relevance" | "rating" | "name" | "newest" | "reviews";
+  setSort: (v: "relevance" | "rating" | "name" | "newest" | "reviews") => void;
   minRating: number;
   setMinRating: (v: number) => void;
   premium: boolean;
@@ -268,6 +290,12 @@ function FiltersPanel(props: {
   city: string | undefined;
   setCity: (v: string) => void;
   cities: { id: string; name: string; slug: string }[];
+  verified: boolean;
+  setVerified: (v: boolean) => void;
+  hasWhatsapp: boolean;
+  setHasWhatsapp: (v: boolean) => void;
+  openNow: boolean;
+  setOpenNow: (v: boolean) => void;
 }) {
   return (
     <div className="space-y-6">
@@ -277,22 +305,56 @@ function FiltersPanel(props: {
           <SelectTrigger><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="relevance">Relevância</SelectItem>
-            <SelectItem value="rating">Melhor avaliados</SelectItem>
-            <SelectItem value="name">Nome (A–Z)</SelectItem>
+            <SelectItem value="rating">Mais bem avaliadas</SelectItem>
+            <SelectItem value="reviews">Mais avaliadas</SelectItem>
             <SelectItem value="newest">Mais recentes</SelectItem>
+            <SelectItem value="name">Nome (A–Z)</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
       <div>
         <h3 className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Cidade</h3>
-        <Select value={props.city ?? "todas"} onValueChange={(v) => props.setCity(v === "todas" ? "" : v)}>
+        <Select value={props.city ?? "todas"} onValueChange={(v) => props.setCity(v === "todas" ? "todas" : v)}>
           <SelectTrigger><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="todas">Todas as cidades</SelectItem>
             {props.cities.map((c) => <SelectItem key={c.id} value={c.slug}>{c.name}</SelectItem>)}
           </SelectContent>
         </Select>
+      </div>
+
+      <div>
+        <h3 className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Avaliação</h3>
+        <div className="grid grid-cols-4 gap-1.5">
+          {[0, 3, 4, 4.5].map((r) => (
+            <button
+              key={r}
+              type="button"
+              onClick={() => props.setMinRating(r)}
+              className={`inline-flex items-center justify-center gap-1 rounded-md border px-2 py-1.5 text-xs font-medium transition ${
+                props.minRating === r ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:bg-muted"
+              }`}
+            >
+              {r === 0 ? "Qualquer" : <><Star className="h-3 w-3 fill-current" />{r}+</>}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <label className="flex items-center gap-2 rounded-md border border-border bg-card p-3 text-sm">
+          <Checkbox id="openNow" checked={props.openNow} onCheckedChange={(v) => props.setOpenNow(!!v)} />
+          Aberto agora
+        </label>
+        <label className="flex items-center gap-2 rounded-md border border-border bg-card p-3 text-sm">
+          <Checkbox id="hasWhatsapp" checked={props.hasWhatsapp} onCheckedChange={(v) => props.setHasWhatsapp(!!v)} />
+          Com WhatsApp
+        </label>
+        <label className="flex items-center gap-2 rounded-md border border-border bg-card p-3 text-sm">
+          <Checkbox id="verified" checked={props.verified} onCheckedChange={(v) => props.setVerified(!!v)} />
+          Verificada
+        </label>
       </div>
 
       <div>
@@ -306,6 +368,7 @@ function FiltersPanel(props: {
           ] as const).map((p) => (
             <button
               key={p.v}
+              type="button"
               onClick={() => props.setPlan(p.v)}
               className={`inline-flex items-center justify-center gap-1 rounded-md border px-2 py-1.5 text-xs font-medium transition ${
                 props.plan === p.v ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:bg-muted"
@@ -316,28 +379,6 @@ function FiltersPanel(props: {
             </button>
           ))}
         </div>
-      </div>
-
-      <div>
-        <h3 className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Avaliação mínima</h3>
-        <div className="grid grid-cols-4 gap-1.5">
-          {[0, 3, 4, 4.5].map((r) => (
-            <button
-              key={r}
-              onClick={() => props.setMinRating(r)}
-              className={`inline-flex items-center justify-center gap-1 rounded-md border px-2 py-1.5 text-xs font-medium transition ${
-                props.minRating === r ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:bg-muted"
-              }`}
-            >
-              {r === 0 ? "Qualquer" : <><Star className="h-3 w-3 fill-current" />{r}+</>}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="flex items-center gap-2 rounded-md border border-border bg-card p-3">
-        <Checkbox id="premium" checked={props.premium} onCheckedChange={(v) => props.setPremium(!!v)} />
-        <Label htmlFor="premium" className="cursor-pointer text-sm">Somente empresas Premium</Label>
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { phpGet, phpPost } from "@/lib/php-api";
 
 export type SiteContent = {
   brand: { name: string; tagline: string };
@@ -113,26 +113,17 @@ function deepMerge<T>(base: T, override: unknown): T {
 }
 
 export async function fetchSiteContent(): Promise<SiteContent> {
-  const { data, error } = await supabase
-    .from("system_settings")
-    .select("value")
-    .eq("key", "site_content")
-    .maybeSingle();
-  if (error || !data?.value) return DEFAULT_SITE_CONTENT;
-  return deepMerge(DEFAULT_SITE_CONTENT, data.value);
+  try {
+    const data = await phpGet<{ value: unknown }>("/api/content/index.php?op=setting&key=site_content");
+    if (!data.value) return DEFAULT_SITE_CONTENT;
+    return deepMerge(DEFAULT_SITE_CONTENT, data.value);
+  } catch {
+    return DEFAULT_SITE_CONTENT;
+  }
 }
 
 export async function saveSiteContent(content: SiteContent): Promise<void> {
-  const { error } = await supabase.from("system_settings").upsert(
-    {
-      key: "site_content",
-      value: content as never,
-      is_public: true,
-      updated_at: new Date().toISOString(),
-    },
-    { onConflict: "key" },
-  );
-  if (error) throw error;
+  await phpPost("/api/content/index.php", { op: "setting_save", key: "site_content", value: content });
 }
 
 export function useSiteContent(): SiteContent {

@@ -8,12 +8,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { supabase } from "@/integrations/supabase/client";
 import { useCurrentUserId } from "@/lib/favorites";
 import {
-  fetchCategories, uploadListingImage, slugify, MAX_IMAGES,
+  fetchCategories, uploadListingImage, MAX_IMAGES, saveListing, fetchListingById,
   type Listing, type ListingCondition,
 } from "@/lib/marketplace";
+import { phpGet } from "@/lib/php-api";
 
 export type ListingFormValues = {
   title: string;
@@ -49,9 +49,8 @@ export function ListingForm({
   const cities = useQuery({
     queryKey: ["mk", "cities"],
     queryFn: async (): Promise<CityRow[]> => {
-      const { data, error } = await supabase.from("cities").select("id,name").eq("is_active", true).order("name");
-      if (error) throw error;
-      return (data ?? []) as CityRow[];
+      const data = await phpGet<{ cities: CityRow[] }>("/api/catalog/index.php?op=cities&all=1");
+      return data.cities ?? [];
     },
   });
 
@@ -96,34 +95,27 @@ export function ListingForm({
     if (!parsed.success) { toast.error(parsed.error.issues[0]?.message ?? "Erro de validação"); return; }
     if (v.images.length === 0) { toast.error("Adicione ao menos 1 foto."); return; }
 
-    setSaving(true);
     const priceNum = v.price ? Number(v.price.replace(",", ".")) : null;
-    const payload = {
-      user_id: userId,
-      title: v.title.trim(),
-      description: v.description.trim() || null,
-      price: priceNum,
-      condition: v.condition,
-      category_slug: v.category_slug,
-      city_id: v.city_id,
-      neighborhood: v.neighborhood.trim() || null,
-      contact_phone: v.contact_phone.trim() || null,
-      images: v.images,
-    };
-
-    if (existingId) {
-      const { error } = await supabase.from("listings").update(payload).eq("id", existingId);
-      setSaving(false);
-      if (error) { toast.error(error.message); return; }
-      toast.success("Anúncio atualizado.");
+    setSaving(true);
+    try {
+      await saveListing({
+        id: existingId,
+        title: v.title.trim(),
+        description: v.description.trim() || null,
+        price: priceNum,
+        condition: v.condition,
+        category_slug: v.category_slug,
+        city_id: v.city_id,
+        neighborhood: v.neighborhood.trim() || null,
+        contact_phone: v.contact_phone.trim() || null,
+        images: v.images,
+      });
+      toast.success(existingId ? "Anúncio atualizado." : "Anúncio publicado!");
       navigate({ to: "/painel/anuncios" });
-    } else {
-      const slug = `${slugify(v.title)}-${Math.random().toString(36).slice(2, 7)}`;
-      const { error } = await supabase.from("listings").insert({ ...payload, slug });
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Não foi possível salvar.");
+    } finally {
       setSaving(false);
-      if (error) { toast.error(error.message); return; }
-      toast.success("Anúncio publicado!");
-      navigate({ to: "/painel/anuncios" });
     }
   }
 
@@ -226,9 +218,5 @@ export function ListingForm({
 
 // helper reused by edit route
 export async function fetchOwnListing(id: string): Promise<Listing | null> {
-  const { data } = await supabase.from("listings").select("*").eq("id", id).maybeSingle();
-  if (!data) return null;
-  const rawImages = (data as { images?: unknown }).images;
-  const images = Array.isArray(rawImages) ? (rawImages as unknown[]).filter((x): x is string => typeof x === "string") : [];
-  return { ...(data as unknown as Listing), images };
+  return fetchListingById(id);
 }

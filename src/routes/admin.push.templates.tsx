@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { supabase } from "@/integrations/supabase/client";
+import { phpGet } from "@/lib/php-api";
 import { Send } from "lucide-react";
 
 export const Route = createFileRoute("/admin/push/templates")({
@@ -14,8 +14,19 @@ function TemplatesPage() {
   const { data = [] } = useQuery({
     queryKey: ["notif-templates"],
     queryFn: async () => {
-      const { data } = await supabase.from("notification_templates").select("*").order("sort");
-      return (data ?? []) as Array<{ id: string; slug: string; name: string; category: string; emoji: string | null; color: string | null; title_template: string; body_template: string }>;
+      const data = await phpGet<{
+        templates: Array<{
+          id: string;
+          slug: string;
+          name: string;
+          category: string;
+          emoji: string | null;
+          color: string | null;
+          title_template: string;
+          body_template: string;
+        }>;
+      }>("/api/ops/index.php?op=templates");
+      return data.templates ?? [];
     },
   });
 

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useAdmin } from "@/hooks/use-admin";
 import { getMyProfile, upsertMyProfile } from "@/lib/panel";
-import { supabase } from "@/integrations/supabase/client";
+import { logoutSession } from "@/lib/php-auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,7 +16,11 @@ export const Route = createFileRoute("/painel/perfil")({
 function PanelPerfil() {
   const { userId } = useAdmin();
   const qc = useQueryClient();
-  const profile = useQuery({ queryKey: ["my-profile", userId], queryFn: () => getMyProfile(userId!), enabled: !!userId });
+  const profile = useQuery({
+    queryKey: ["my-profile", userId],
+    queryFn: () => getMyProfile(userId!),
+    enabled: !!userId,
+  });
   const [name, setName] = useState("");
   const [avatar, setAvatar] = useState("");
   const [saving, setSaving] = useState(false);
@@ -24,22 +28,26 @@ function PanelPerfil() {
 
   useEffect(() => {
     if (profile.data) {
-      const p = profile.data as { name: string | null; avatar_url: string | null };
+      const p = profile.data as {
+        name: string | null;
+        avatar_url: string | null;
+        email?: string | null;
+      };
       setName(p.name ?? "");
       setAvatar(p.avatar_url ?? "");
+      if (p.email) setEmail(p.email);
     }
   }, [profile.data]);
-
-  useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => setEmail(data.user?.email ?? null));
-  }, []);
 
   async function save(e: React.FormEvent) {
     e.preventDefault();
     if (!userId) return;
     setSaving(true);
     try {
-      await upsertMyProfile(userId, { name: name.trim() || null, avatar_url: avatar.trim() || null });
+      await upsertMyProfile(userId, {
+        name: name.trim() || null,
+        avatar_url: avatar.trim() || null,
+      });
       toast.success("Perfil atualizado");
       qc.invalidateQueries({ queryKey: ["my-profile"] });
     } catch (err) {
@@ -50,7 +58,7 @@ function PanelPerfil() {
   }
 
   async function signOut() {
-    await supabase.auth.signOut();
+    await logoutSession();
     toast.success("Você saiu");
   }
 
@@ -70,12 +78,23 @@ function PanelPerfil() {
         </div>
         <div>
           <Label htmlFor="avatar">Foto (URL)</Label>
-          <Input id="avatar" value={avatar} onChange={(e) => setAvatar(e.target.value)} placeholder="https://" />
-          {avatar ? <img src={avatar} alt="" className="mt-2 h-16 w-16 rounded-full object-cover" /> : null}
+          <Input
+            id="avatar"
+            value={avatar}
+            onChange={(e) => setAvatar(e.target.value)}
+            placeholder="https://"
+          />
+          {avatar ? (
+            <img src={avatar} alt="" className="mt-2 h-16 w-16 rounded-full object-cover" />
+          ) : null}
         </div>
         <div className="flex justify-between pt-2">
-          <Button type="button" variant="ghost" onClick={signOut}>Sair da conta</Button>
-          <Button type="submit" disabled={saving}>{saving ? "Salvando…" : "Salvar"}</Button>
+          <Button type="button" variant="ghost" onClick={signOut}>
+            Sair da conta
+          </Button>
+          <Button type="submit" disabled={saving}>
+            {saving ? "Salvando…" : "Salvar"}
+          </Button>
         </div>
       </form>
     </div>

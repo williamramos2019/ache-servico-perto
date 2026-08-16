@@ -1,0 +1,50 @@
+{
+  "_comment": "Fixture de teste. Empresas fictícias, não usar em produção.",
+  "empresas": [
+    {
+      "cnpj": "11222333000181",
+      "razao_social": "EMPRESA TESTE IMPORTACAO SJL LTDA",
+      "nome_fantasia": "Farmácia Teste Importação SJL",
+      "cnae_fiscal": "4771701",
+      "cnae_fiscal_descricao": "Comércio varejista de produtos farmacêuticos",
+      "codigo_municipio": "3162955",
+      "uf": "MG",
+      "logradouro": "Rua Teste",
+      "numero": "100",
+      "bairro": "Centro",
+      "cep": "33350000",
+      "situacao_cadastral": "ATIVA"
+    },
+    {
+      "cnpj": "00000000000191",
+      "razao_social": "FORA DA CIDADE TESTE SA",
+      "nome_fantasia": "Loja Outro Município",
+      "cnae_fiscal": "4711302",
+      "codigo_municipio": "3550308",
+      "uf": "SP",
+      "logradouro": "Av Paulista",
+      "numero": "1",
+      "bairro": "Bela Vista",
+      "cep": "01310100",
+      "situacao_cadastral": "ATIVA"
+    },
+    {
+      "cnpj": "11111111111111",
+      "razao_social": "CNPJ INVALIDO TESTE",
+      "nome_fantasia": "Inválida",
+      "cnae_fiscal": "5611201",
+      "codigo_municipio": "3162955",
+      "uf": "MG",
+      "situacao_cadastral": "ATIVA"
+    },
+    {
+      "cnpj": "11222333000181",
+      "razao_social": "EMPRESA TESTE IMPORTACAO SJL LTDA",
+      "nome_fantasia": "Farmácia Teste Importação SJL",
+      "cnae_fiscal": "4771701",
+      "codigo_municipio": "3162955",
+      "uf": "MG",
+      "situacao_cadastral": "ATIVA"
+    }
+  ]
+}

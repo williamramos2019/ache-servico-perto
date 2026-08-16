@@ -1,17 +1,14 @@
-import { supabase } from "@/integrations/supabase/client";
+import { fetchCurrentUser } from "@/lib/php-auth";
+import type { PhpUser } from "@/lib/php-api";
 
-export async function requireUser() {
-  const { data, error } = await supabase.auth.getUser();
-  if (error || !data.user) throw new Error("Unauthorized");
-  return { supabase, userId: data.user.id };
+export async function requireUser(): Promise<{ userId: string; user: PhpUser }> {
+  const user = await fetchCurrentUser();
+  if (!user) throw new Error("Unauthorized");
+  return { userId: user.id, user };
 }
 
-export async function requireAdmin() {
+export async function requireAdmin(): Promise<{ userId: string; user: PhpUser }> {
   const ctx = await requireUser();
-  const { data } = await ctx.supabase.rpc("has_role", {
-    _user_id: ctx.userId,
-    _role: "admin",
-  });
-  if (!data) throw new Error("Acesso restrito.");
+  if (!ctx.user.roles.includes("admin")) throw new Error("Acesso restrito.");
   return ctx;
 }

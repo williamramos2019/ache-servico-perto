@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { phpGet, phpPost } from "@/lib/php-api";
 import { requireUser } from "@/lib/spa-auth";
 
 const SubscribeSchema = z.object({
@@ -12,32 +13,15 @@ const SubscribeSchema = z.object({
 
 export async function subscribePush(opts: { data: unknown }) {
   const data = SubscribeSchema.parse(opts.data);
-  const { supabase, userId } = await requireUser();
-  const { error } = await supabase.from("push_subscriptions").upsert(
-    {
-      user_id: userId,
-      endpoint: data.endpoint,
-      p256dh: data.p256dh,
-      auth: data.auth,
-      user_agent: data.user_agent ?? null,
-      platform: data.platform ?? null,
-      is_pwa: data.is_pwa,
-      last_seen_at: new Date().toISOString(),
-    },
-    { onConflict: "endpoint" },
-  );
-  if (error) throw new Error(error.message);
+  await requireUser();
+  await phpPost("/api/ops/index.php", { op: "subscribe", ...data });
   return { ok: true };
 }
 
 export async function unsubscribePush(opts: { data: unknown }) {
   const data = z.object({ endpoint: z.string().url() }).parse(opts.data);
-  const { supabase, userId } = await requireUser();
-  await supabase
-    .from("push_subscriptions")
-    .delete()
-    .eq("user_id", userId)
-    .eq("endpoint", data.endpoint);
+  await requireUser();
+  await phpPost("/api/ops/index.php", { op: "unsubscribe", endpoint: data.endpoint });
   return { ok: true };
 }
 
@@ -57,25 +41,15 @@ const PrefsSchema = z.object({
 });
 
 export async function getMyPreferences(_opts?: { data?: unknown }) {
-  const { supabase, userId } = await requireUser();
-  const { data } = await supabase
-    .from("notification_preferences")
-    .select("*")
-    .eq("user_id", userId)
-    .maybeSingle();
-  return data ?? null;
+  await requireUser();
+  const data = await phpGet<{ prefs: Record<string, unknown> | null }>("/api/ops/index.php?op=prefs");
+  return data.prefs ?? null;
 }
 
 export async function savePreferences(opts: { data: unknown }) {
   const data = PrefsSchema.parse(opts.data);
-  const { supabase, userId } = await requireUser();
-  const { error } = await supabase
-    .from("notification_preferences")
-    .upsert(
-      { user_id: userId, ...data, updated_at: new Date().toISOString() },
-      { onConflict: "user_id" },
-    );
-  if (error) throw new Error(error.message);
+  await requireUser();
+  await phpPost("/api/ops/index.php", { op: "prefs_save", ...data });
   return { ok: true };
 }
 
@@ -87,46 +61,21 @@ export async function listMyInbox(opts?: { data?: unknown }) {
       limit: z.number().int().min(1).max(100).default(50),
     })
     .parse(opts?.data ?? {});
-  const { supabase, userId } = await requireUser();
-  let q = supabase
-    .from("push_inbox")
-    .select(
-      "id, received_at, read_at, favorite_at, archived_at, notification:push_notifications(id,title,body,icon_url,image_url,url,category,emoji,color,created_at)",
-    )
-    .eq("user_id", userId)
-    .order("received_at", { ascending: false })
-    .limit(data.limit);
-
-  if (data.tab === "unread") q = q.is("read_at", null).is("archived_at", null);
-  if (data.tab === "read") q = q.not("read_at", "is", null).is("archived_at", null);
-  if (data.tab === "favorites") q = q.not("favorite_at", "is", null);
-  if (data.tab === "archived") q = q.not("archived_at", "is", null);
-  else if (data.tab === "all") q = q.is("archived_at", null);
-
-  const { data: rows, error } = await q;
-  if (error) throw new Error(error.message);
-  let filtered = rows ?? [];
-  if (data.q) {
-    const t = data.q.toLowerCase();
-    filtered = filtered.filter((r) => {
-      const n = r.notification as { title?: string; body?: string } | null;
-      return (
-        n && ((n.title ?? "").toLowerCase().includes(t) || (n.body ?? "").toLowerCase().includes(t))
-      );
-    });
-  }
-  return filtered;
+  await requireUser();
+  const qs = new URLSearchParams({
+    op: "inbox",
+    tab: data.tab,
+    limit: String(data.limit),
+  });
+  if (data.q) qs.set("q", data.q);
+  const res = await phpGet<{ inbox: unknown[] }>(`/api/ops/index.php?${qs.toString()}`);
+  return res.inbox ?? [];
 }
 
 export async function unreadInboxCount(_opts?: { data?: unknown }) {
-  const { supabase, userId } = await requireUser();
-  const { count } = await supabase
-    .from("push_inbox")
-    .select("id", { count: "exact", head: true })
-    .eq("user_id", userId)
-    .is("read_at", null)
-    .is("archived_at", null);
-  return { count: count ?? 0 };
+  await requireUser();
+  const data = await phpGet<{ count: number }>("/api/ops/index.php?op=inbox_count");
+  return { count: data.count ?? 0 };
 }
 
 const InboxActionSchema = z.object({
@@ -136,44 +85,13 @@ const InboxActionSchema = z.object({
 
 export async function inboxAction(opts: { data: unknown }) {
   const data = InboxActionSchema.parse(opts.data);
-  const { supabase, userId } = await requireUser();
-  const now = new Date().toISOString();
-  if (data.action === "delete") {
-    const { error } = await supabase
-      .from("push_inbox")
-      .delete()
-      .eq("id", data.id)
-      .eq("user_id", userId);
-    if (error) throw new Error(error.message);
-    return { ok: true };
-  }
-  const patch: {
-    read_at?: string | null;
-    favorite_at?: string | null;
-    archived_at?: string | null;
-  } = {};
-  if (data.action === "read") patch.read_at = now;
-  if (data.action === "unread") patch.read_at = null;
-  if (data.action === "favorite") patch.favorite_at = now;
-  if (data.action === "unfavorite") patch.favorite_at = null;
-  if (data.action === "archive") patch.archived_at = now;
-  if (data.action === "unarchive") patch.archived_at = null;
-  const { error } = await supabase
-    .from("push_inbox")
-    .update(patch)
-    .eq("id", data.id)
-    .eq("user_id", userId);
-  if (error) throw new Error(error.message);
+  await requireUser();
+  await phpPost("/api/ops/index.php", { op: "inbox_action", ...data });
   return { ok: true };
 }
 
 export async function markAllRead(_opts?: { data?: unknown }) {
-  const { supabase, userId } = await requireUser();
-  const { error } = await supabase
-    .from("push_inbox")
-    .update({ read_at: new Date().toISOString() })
-    .eq("user_id", userId)
-    .is("read_at", null);
-  if (error) throw new Error(error.message);
+  await requireUser();
+  await phpPost("/api/ops/index.php", { op: "inbox_read_all" });
   return { ok: true };
 }

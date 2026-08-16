@@ -13,10 +13,11 @@ import {
   Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { supabase } from "@/integrations/supabase/client";
+import { fetchCitiesByIds } from "@/lib/queries";
 import { useCurrentUserId } from "@/lib/favorites";
 import {
-  formatBRL, timeAgo, toListing, CONDITION_LABEL, type Listing,
+  formatBRL, timeAgo, CONDITION_LABEL, type Listing,
+  fetchListingBySlug, fetchSellerProfile, fetchOtherListings, sendListingMessage, reportListing,
 } from "@/lib/marketplace";
 
 function waUrl(phone: string, msg: string) {
@@ -46,9 +47,8 @@ export const Route = createFileRoute("/marketplace/$slug")({
     };
   },
   loader: async ({ params }): Promise<{ listing: Listing | null }> => {
-    const { data } = await supabase
-      .from("listings").select("*").eq("slug", params.slug).eq("status", "ativo").maybeSingle();
-    return { listing: data ? toListing(data) : null };
+    const listing = await fetchListingBySlug(params.slug);
+    return { listing };
   },
   errorComponent: () => (
     <SiteLayout>
@@ -86,29 +86,22 @@ function ListingDetail() {
     queryKey: ["mk", "city", listing?.city_id],
     enabled: !!listing?.city_id,
     queryFn: async () => {
-      const { data } = await supabase.from("cities").select("name,slug").eq("id", listing!.city_id!).maybeSingle();
-      return data as { name: string; slug: string } | null;
+      const rows = await fetchCitiesByIds([listing!.city_id!]);
+      const row = rows[0];
+      return row ? { name: row.name, slug: row.slug } : null;
     },
   });
 
   const seller = useQuery({
     queryKey: ["mk", "seller", listing?.user_id],
     enabled: !!listing?.user_id,
-    queryFn: async () => {
-      const { data } = await supabase.from("profiles").select("name,avatar_url").eq("id", listing!.user_id).maybeSingle();
-      return data as { name: string | null; avatar_url: string | null } | null;
-    },
+    queryFn: () => fetchSellerProfile(listing!.user_id),
   });
 
   const otherListings = useQuery({
     queryKey: ["mk", "seller-listings", listing?.user_id, listing?.id],
     enabled: !!listing?.user_id,
-    queryFn: async () => {
-      const { data } = await supabase
-        .from("listings").select("*").eq("user_id", listing!.user_id).eq("status", "ativo")
-        .neq("id", listing!.id).limit(4);
-      return (data ?? []).map(toListing);
-    },
+    queryFn: () => fetchOtherListings(listing!.user_id, listing!.id),
   });
 
   if (!listing) return null;
@@ -118,26 +111,29 @@ function ListingDetail() {
     if (userId === listing!.user_id) { toast.error("Você não pode mandar mensagem no próprio anúncio."); return; }
     if (msg.trim().length < 2) { toast.error("Digite uma mensagem."); return; }
     setSending(true);
-    const { error } = await supabase.from("listing_messages").insert({
-      listing_id: listing!.id, buyer_id: userId, seller_id: listing!.user_id, sender_id: userId, body: msg.trim(),
-    });
-    setSending(false);
-    if (error) { toast.error(error.message); return; }
-    toast.success("Mensagem enviada!");
-    setMsgOpen(false);
-    navigate({ to: "/painel/mensagens" });
+    try {
+      await sendListingMessage({ listing_id: listing!.id, body: msg.trim() });
+      toast.success("Mensagem enviada!");
+      setMsgOpen(false);
+      navigate({ to: "/painel/mensagens" });
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Não foi possível enviar.");
+    } finally {
+      setSending(false);
+    }
   }
 
   async function submitReport() {
     if (!userId) { navigate({ to: "/auth" }); return; }
     if (reportReason.trim().length < 2) { toast.error("Informe o motivo."); return; }
-    const { error } = await supabase.from("listing_reports").insert({
-      listing_id: listing!.id, reporter_id: userId, reason: reportReason.trim(), notes: reportNotes.trim() || null,
-    });
-    if (error) { toast.error(error.message); return; }
-    toast.success("Denúncia enviada. Vamos analisar.");
-    setReportOpen(false);
-    setReportReason(""); setReportNotes("");
+    try {
+      await reportListing({ listing_id: listing!.id, reason: reportReason.trim(), notes: reportNotes.trim() || null });
+      toast.success("Denúncia enviada. Vamos analisar.");
+      setReportOpen(false);
+      setReportReason(""); setReportNotes("");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Não foi possível enviar.");
+    }
   }
 
   async function share() {

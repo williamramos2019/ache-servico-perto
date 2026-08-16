@@ -10,9 +10,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { supabase } from "@/integrations/supabase/client";
 import type { EventRow, ShowRow, EventCategory } from "@/lib/events";
-import { fetchEventCategories } from "@/lib/events";
+import { fetchEventCategories, fetchAllEvents, saveEvent as persistEvent, deleteEvent, fetchShowsForEvent, saveShow, deleteShow } from "@/lib/events";
 
 export const Route = createFileRoute("/admin/eventos")({
   head: () => ({ meta: [{ title: "Eventos — Admin AgendaAqui" }, { name: "robots", content: "noindex" }] }),
@@ -30,16 +29,13 @@ function toLocalInput(iso?: string | null) {
 }
 function fromLocalInput(v: string) { return v ? new Date(v).toISOString() : ""; }
 
-async function fetchAllEvents(): Promise<EventRow[]> {
-  const { data, error } = await (supabase.from("events") as any)
-    .select("*").order("start_at", { ascending: false });
-  if (error) throw error;
-  return (data ?? []) as EventRow[];
+async function fetchAllEventsPage(): Promise<EventRow[]> {
+  return fetchAllEvents();
 }
 
 function AdminEventos() {
   const qc = useQueryClient();
-  const events = useQuery({ queryKey: ["admin-events"], queryFn: fetchAllEvents });
+  const events = useQuery({ queryKey: ["admin-events"], queryFn: fetchAllEventsPage });
   const cats = useQuery({ queryKey: ["event-categories"], queryFn: fetchEventCategories });
   const [editing, setEditing] = useState<Partial<EventRow> | null>(null);
   const [expanded, setExpanded] = useState<string | null>(null);
@@ -62,22 +58,26 @@ function AdminEventos() {
       price_min: e.price_min ?? null,
       price_max: e.price_max ?? null,
     };
-    const q = e.id
-      ? (supabase.from("events") as any).update(payload).eq("id", e.id)
-      : (supabase.from("events") as any).insert(payload);
-    const { error } = await q;
-    if (error) return toast.error(error.message);
-    toast.success(e.id ? "Evento atualizado" : "Evento criado");
-    setEditing(null);
-    qc.invalidateQueries({ queryKey: ["admin-events"] });
-    qc.invalidateQueries({ queryKey: ["events"] });
+    try {
+      await persistEvent({ id: e.id, ...payload });
+      toast.success(e.id ? "Evento atualizado" : "Evento criado");
+      setEditing(null);
+      qc.invalidateQueries({ queryKey: ["admin-events"] });
+      qc.invalidateQueries({ queryKey: ["events"] });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Erro ao salvar");
+    }
   }
 
   async function removeEvent(e: EventRow) {
     if (!confirm(`Excluir "${e.title}"? Todos os shows serão removidos.`)) return;
-    const { error } = await (supabase.from("events") as any).delete().eq("id", e.id);
-    if (error) return toast.error(error.message);
-    toast.success("Evento excluído");
+    try {
+      await deleteEvent(e.id);
+      toast.success("Evento excluído");
+      qc.invalidateQueries({ queryKey: ["admin-events"] });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Erro ao excluir");
+    }
     qc.invalidateQueries({ queryKey: ["admin-events"] });
   }
 
@@ -227,11 +227,7 @@ function ShowsPanel({ eventId }: { eventId: string }) {
   const qc = useQueryClient();
   const shows = useQuery({
     queryKey: ["admin-event-shows", eventId],
-    queryFn: async (): Promise<ShowRow[]> => {
-      const { data, error } = await (supabase.from("shows") as any).select("*").eq("event_id", eventId).order("start_at");
-      if (error) throw error;
-      return (data ?? []) as ShowRow[];
-    },
+    queryFn: () => fetchShowsForEvent(eventId),
   });
   const [editing, setEditing] = useState<Partial<ShowRow> | null>(null);
 
@@ -250,22 +246,25 @@ function ShowsPanel({ eventId }: { eventId: string }) {
       ticket_price: s.ticket_price ?? null,
       sort: s.sort ?? 0,
     };
-    const q = s.id
-      ? (supabase.from("shows") as any).update(payload).eq("id", s.id)
-      : (supabase.from("shows") as any).insert(payload);
-    const { error } = await q;
-    if (error) return toast.error(error.message);
-    toast.success(s.id ? "Show atualizado" : "Show adicionado");
-    setEditing(null);
-    qc.invalidateQueries({ queryKey: ["admin-event-shows", eventId] });
+    try {
+      await saveShow({ id: s.id, ...payload });
+      toast.success(s.id ? "Show atualizado" : "Show adicionado");
+      setEditing(null);
+      qc.invalidateQueries({ queryKey: ["admin-event-shows", eventId] });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Erro ao salvar");
+    }
   }
 
   async function remove(s: ShowRow) {
     if (!confirm(`Remover "${s.artist_name}"?`)) return;
-    const { error } = await (supabase.from("shows") as any).delete().eq("id", s.id);
-    if (error) return toast.error(error.message);
-    toast.success("Show removido");
-    qc.invalidateQueries({ queryKey: ["admin-event-shows", eventId] });
+    try {
+      await deleteShow(s.id);
+      toast.success("Show removido");
+      qc.invalidateQueries({ queryKey: ["admin-event-shows", eventId] });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Erro ao remover");
+    }
   }
 
   return (

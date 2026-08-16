@@ -2,12 +2,11 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Plus, Edit, CheckCircle2, PauseCircle, PlayCircle, Trash2, Eye, ImageOff } from "lucide-react";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
 import { useCurrentUserId } from "@/lib/favorites";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { formatBRL, timeAgo, toListing, STATUS_LABEL, type Listing, type ListingStatus } from "@/lib/marketplace";
+import { formatBRL, timeAgo, STATUS_LABEL, type Listing, type ListingStatus, fetchMyListings, updateListingStatus, deleteListing } from "@/lib/marketplace";
 
 export const Route = createFileRoute("/painel/anuncios")({
   head: () => ({ meta: [{ title: "Meus anúncios — AgendaAqui" }, { name: "robots", content: "noindex" }] }),
@@ -21,28 +20,28 @@ function PainelAnuncios() {
   const q = useQuery({
     queryKey: ["mk", "mine", userId],
     enabled: !!userId,
-    queryFn: async (): Promise<Listing[]> => {
-      const { data, error } = await supabase
-        .from("listings").select("*").eq("user_id", userId!).neq("status", "removido")
-        .order("created_at", { ascending: false });
-      if (error) throw error;
-      return (data ?? []).map(toListing);
-    },
+    queryFn: fetchMyListings,
   });
 
   async function updateStatus(id: string, status: ListingStatus) {
-    const { error } = await supabase.from("listings").update({ status }).eq("id", id);
-    if (error) { toast.error(error.message); return; }
-    toast.success("Anúncio atualizado.");
-    qc.invalidateQueries({ queryKey: ["mk", "mine"] });
+    try {
+      await updateListingStatus(id, status);
+      toast.success("Anúncio atualizado.");
+      qc.invalidateQueries({ queryKey: ["mk", "mine"] });
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Erro");
+    }
   }
 
   async function remove(id: string) {
     if (!confirm("Excluir este anúncio? Esta ação não pode ser desfeita.")) return;
-    const { error } = await supabase.from("listings").delete().eq("id", id);
-    if (error) { toast.error(error.message); return; }
-    toast.success("Anúncio excluído.");
-    qc.invalidateQueries({ queryKey: ["mk", "mine"] });
+    try {
+      await deleteListing(id);
+      toast.success("Anúncio excluído.");
+      qc.invalidateQueries({ queryKey: ["mk", "mine"] });
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Erro");
+    }
   }
 
   if (!userId) {

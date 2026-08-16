@@ -7,15 +7,14 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { supabase } from "@/integrations/supabase/client";
+import { phpGet } from "@/lib/php-api";
 import {
   fetchCategories,
+  searchListings,
   formatBRL,
   timeAgo,
-  toListing,
   CONDITION_LABEL,
   type Listing,
-  type ListingCondition,
 } from "@/lib/marketplace";
 
 export const Route = createFileRoute("/marketplace")({
@@ -45,32 +44,15 @@ function MarketplacePage() {
   const cities = useQuery({
     queryKey: ["mk", "cities"],
     queryFn: async (): Promise<CityRow[]> => {
-      const { data, error } = await supabase
-        .from("cities").select("id,name,slug").eq("is_active", true).order("name");
-      if (error) throw error;
-      return (data ?? []) as CityRow[];
+      const data = await phpGet<{ cities: CityRow[] }>("/api/catalog/index.php?op=cities&all=1");
+      return data.cities ?? [];
     },
   });
 
   const listings = useQuery({
     queryKey: ["mk", "listings", { q, category, cityId, condition, sort }],
-    queryFn: async (): Promise<Listing[]> => {
-      let query = supabase
-        .from("listings")
-        .select("*")
-        .eq("status", "ativo")
-        .limit(60);
-      if (category !== "todas") query = query.eq("category_slug", category);
-      if (cityId !== "todas") query = query.eq("city_id", cityId);
-      if (condition !== "todas") query = query.eq("condition", condition as ListingCondition);
-      if (q.trim()) query = query.ilike("title", `%${q.trim()}%`);
-      if (sort === "preco-asc") query = query.order("price", { ascending: true, nullsFirst: false });
-      else if (sort === "preco-desc") query = query.order("price", { ascending: false, nullsFirst: false });
-      else query = query.order("created_at", { ascending: false });
-      const { data, error } = await query;
-      if (error) throw error;
-      return (data ?? []).map(toListing);
-    },
+    queryFn: (): Promise<Listing[]> =>
+      searchListings({ q, category, cityId, condition, sort }),
   });
 
   const cityMap = useMemo(() => {

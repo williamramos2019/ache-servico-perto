@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Send, Bell, Rocket, Star, Megaphone, Newspaper, Gift, CalendarDays, AlertTriangle, Users } from "lucide-react";
 import { sendPushNow } from "@/lib/admin-push.functions";
-import { supabase } from "@/integrations/supabase/client";
+import { phpGet } from "@/lib/php-api";
 
 export const Route = createFileRoute("/admin/push/novo")({
   head: () => ({ meta: [{ title: "Novo envio push — Admin" }, { name: "robots", content: "noindex" }] }),
@@ -61,15 +61,19 @@ function NovoPush() {
   const { data: cities = [] } = useQuery({
     queryKey: ["cities-list"],
     queryFn: async () => {
-      const { data } = await supabase.from("cities").select("id, name, state").order("name");
-      return (data ?? []) as Array<{ id: string; name: string; state: string }>;
+      const data = await phpGet<{ cities: Array<{ id: string; name: string; state: string }> }>(
+        "/api/catalog/index.php?op=cities&all=1",
+      );
+      return data.cities ?? [];
     },
   });
   const { data: categories = [] } = useQuery({
     queryKey: ["cats-list"],
     queryFn: async () => {
-      const { data } = await supabase.from("categories").select("id, name").order("name");
-      return (data ?? []) as Array<{ id: string; name: string }>;
+      const data = await phpGet<{ categories: Array<{ id: string; name: string }> }>(
+        "/api/catalog/index.php?op=categories",
+      );
+      return data.categories ?? [];
     },
   });
   const states = Array.from(new Set(cities.map((c) => c.state))).sort();

@@ -1,15 +1,35 @@
+Options -Indexes
+
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
 
-  # Existing files and directories (assets, PWA, uploads) are served as-is.
+  # Private paths must never reach the browser (one-click extract lives in the web root).
+  RewriteRule ^(database|tools|storage)(/|$) - [F,L]
+  RewriteRule ^load-env\.php$ - [F,L]
+  RewriteRule ^load-env\.example\.php$ - [F,L]
+  RewriteRule ^installed\.lock$ - [F,L]
+  RewriteRule ^README - [F,L]
+  RewriteRule ^deploy-hostgator - [F,L]
+
+  # Existing files and directories (assets, PWA, API PHP) are served as-is.
   RewriteCond %{REQUEST_FILENAME} -f [OR]
   RewriteCond %{REQUEST_FILENAME} -d
   RewriteRule ^ - [L]
 
-  # Future PHP API — never send /api/* to the SPA.
+  # PHP API — never send /api/* to the SPA.
   RewriteRule ^api(/|$) - [L]
 
   # SPA fallback for TanStack Router.
   RewriteRule ^ index.html [L]
 </IfModule>
+
+<FilesMatch "^(load-env\.php|load-env\.example\.php|installed\.lock)$">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
+</FilesMatch>

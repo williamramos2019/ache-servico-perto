@@ -1,4 +1,4 @@
-import { supabase } from "@/integrations/supabase/client";
+import { phpGet, phpPost } from "@/lib/php-api";
 
 export type NavItem = { to: string; label: string; danger?: boolean };
 
@@ -15,16 +15,16 @@ export const DEFAULT_NAV_ITEMS: NavItem[] = [
 ];
 
 export async function fetchNavItems(): Promise<NavItem[]> {
-  const { data, error } = await supabase
-    .from("system_settings")
-    .select("value")
-    .eq("key", "nav_items")
-    .maybeSingle();
-  if (error || !data?.value || !Array.isArray(data.value)) return DEFAULT_NAV_ITEMS;
-  const items = (data.value as unknown as NavItem[]).filter(
-    (i) => i && typeof i.to === "string" && typeof i.label === "string",
-  );
-  return items.length ? items : DEFAULT_NAV_ITEMS;
+  try {
+    const data = await phpGet<{ value: unknown }>("/api/content/index.php?op=setting&key=nav_items");
+    if (!data.value || !Array.isArray(data.value)) return DEFAULT_NAV_ITEMS;
+    const items = (data.value as NavItem[]).filter(
+      (i) => i && typeof i.to === "string" && typeof i.label === "string",
+    );
+    return items.length ? items : DEFAULT_NAV_ITEMS;
+  } catch {
+    return DEFAULT_NAV_ITEMS;
+  }
 }
 
 export async function saveNavItems(items: NavItem[]): Promise<void> {
@@ -35,11 +35,5 @@ export async function saveNavItems(items: NavItem[]): Promise<void> {
       ...(i.danger ? { danger: true } : {}),
     }))
     .filter((i) => i.to && i.label);
-  const { error } = await supabase
-    .from("system_settings")
-    .upsert(
-      { key: "nav_items", value: clean as never, is_public: true, updated_at: new Date().toISOString() },
-      { onConflict: "key" },
-    );
-  if (error) throw error;
+  await phpPost("/api/content/index.php", { op: "setting_save", key: "nav_items", value: clean });
 }

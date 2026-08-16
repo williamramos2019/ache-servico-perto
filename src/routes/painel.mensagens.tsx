@@ -3,11 +3,10 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Send, MessageCircle } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 import { useCurrentUserId } from "@/lib/favorites";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { timeAgo, toListing, type Listing, type ListingMessage } from "@/lib/marketplace";
+import { timeAgo, type Listing, type ListingMessage, fetchListingMessages, fetchListingThread, fetchListingById, sendListingMessage } from "@/lib/marketplace";
 
 export const Route = createFileRoute("/painel/mensagens")({
   head: () => ({ meta: [{ title: "Mensagens — AgendaAqui" }, { name: "robots", content: "noindex" }] }),
@@ -34,14 +33,7 @@ function Mensagens() {
   const msgsQ = useQuery({
     queryKey: ["mk", "msgs", userId],
     enabled: !!userId,
-    queryFn: async (): Promise<ListingMessage[]> => {
-      const { data, error } = await supabase
-        .from("listing_messages").select("*")
-        .or(`buyer_id.eq.${userId},seller_id.eq.${userId}`)
-        .order("created_at", { ascending: false }).limit(500);
-      if (error) throw error;
-      return (data ?? []) as ListingMessage[];
-    },
+    queryFn: fetchListingMessages,
   });
 
   const threads: Thread[] = useMemo(() => {
@@ -70,17 +62,8 @@ function Mensagens() {
     enabled: !!active,
     queryFn: async (): Promise<ListingMessage[]> => {
       const [lid, bid] = active!.split("::");
-      const { data, error } = await supabase.from("listing_messages")
-        .select("*").eq("listing_id", lid).eq("buyer_id", bid)
-        .order("created_at", { ascending: true });
-      if (error) throw error;
-      const rows = (data ?? []) as ListingMessage[];
-      // marcar como lidas
-      const unreadIds = rows.filter((m) => m.sender_id !== userId && !m.read_at).map((m) => m.id);
-      if (unreadIds.length) {
-        await supabase.from("listing_messages").update({ read_at: new Date().toISOString() }).in("id", unreadIds);
-        qc.invalidateQueries({ queryKey: ["mk", "msgs"] });
-      }
+      const rows = await fetchListingThread(lid, bid);
+      qc.invalidateQueries({ queryKey: ["mk", "msgs"] });
       return rows;
     },
   });
@@ -88,25 +71,23 @@ function Mensagens() {
   const listingQ = useQuery({
     queryKey: ["mk", "thread-listing", activeThread?.listingId],
     enabled: !!activeThread,
-    queryFn: async (): Promise<Listing | null> => {
-      const { data } = await supabase.from("listings").select("*").eq("id", activeThread!.listingId).maybeSingle();
-      return data ? toListing(data) : null;
-    },
+    queryFn: (): Promise<Listing | null> => fetchListingById(activeThread!.listingId),
   });
 
   async function send() {
     if (!activeThread || !userId || draft.trim().length < 2) return;
-    const { error } = await supabase.from("listing_messages").insert({
-      listing_id: activeThread.listingId,
-      buyer_id: activeThread.buyerId,
-      seller_id: activeThread.sellerId,
-      sender_id: userId,
-      body: draft.trim(),
-    });
-    if (error) { toast.error(error.message); return; }
-    setDraft("");
-    qc.invalidateQueries({ queryKey: ["mk", "thread", active] });
-    qc.invalidateQueries({ queryKey: ["mk", "msgs"] });
+    try {
+      await sendListingMessage({
+        listing_id: activeThread.listingId,
+        buyer_id: activeThread.buyerId,
+        body: draft.trim(),
+      });
+      setDraft("");
+      qc.invalidateQueries({ queryKey: ["mk", "thread", active] });
+      qc.invalidateQueries({ queryKey: ["mk", "msgs"] });
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Erro ao enviar");
+    }
   }
 
   if (!userId) return <p className="text-sm text-muted-foreground">Entre para ver suas mensagens.</p>;

@@ -1,4 +1,4 @@
-import { supabase } from "@/integrations/supabase/client";
+import { phpGet, phpPost } from "@/lib/php-api";
 
 export type EventRow = {
   id: string;
@@ -36,38 +36,49 @@ export type ShowRow = {
 export type EventCategory = { id: string; slug: string; name: string; icon: string | null; sort: number };
 
 export async function fetchPublishedEvents(opts?: { citySlug?: string; categorySlug?: string; q?: string }) {
-  let query = (supabase.from("events") as any)
-    .select("id, slug, title, description, cover_image, location, start_at, end_at, event_type, price_min, price_max, category_id, city_id, status")
-    .eq("status", "published")
-    .order("start_at", { ascending: true });
-  if (opts?.q) query = query.ilike("title", `%${opts.q}%`);
-  const { data, error } = await query;
-  if (error) throw error;
-  let rows = (data ?? []) as EventRow[];
-  if (opts?.categorySlug) {
-    const { data: cat } = await (supabase.from("event_categories") as any).select("id").eq("slug", opts.categorySlug).maybeSingle();
-    if (cat?.id) rows = rows.filter((r) => r.category_id === cat.id);
-  }
-  return rows;
+  const qs = new URLSearchParams({ op: "events" });
+  if (opts?.q) qs.set("q", opts.q);
+  if (opts?.categorySlug) qs.set("category", opts.categorySlug);
+  const data = await phpGet<{ events: EventRow[] }>(`/api/content/index.php?${qs.toString()}`);
+  return data.events ?? [];
 }
 
 export async function fetchEventBySlug(slug: string) {
-  const { data, error } = await (supabase.from("events") as any)
-    .select("*").eq("slug", slug).eq("status", "published").maybeSingle();
-  if (error) throw error;
-  return data as EventRow | null;
+  const data = await phpGet<{ event: EventRow | null }>(
+    `/api/content/index.php?op=event&slug=${encodeURIComponent(slug)}`,
+  );
+  return data.event;
 }
 
 export async function fetchShowsForEvent(eventId: string) {
-  const { data, error } = await (supabase.from("shows") as any)
-    .select("*").eq("event_id", eventId).order("start_at", { ascending: true });
-  if (error) throw error;
-  return (data ?? []) as ShowRow[];
+  const data = await phpGet<{ shows: ShowRow[] }>(
+    `/api/content/index.php?op=shows&event_id=${encodeURIComponent(eventId)}`,
+  );
+  return data.shows ?? [];
 }
 
 export async function fetchEventCategories() {
-  const { data, error } = await (supabase.from("event_categories") as any)
-    .select("*").order("sort", { ascending: true });
-  if (error) throw error;
-  return (data ?? []) as EventCategory[];
+  const data = await phpGet<{ categories: EventCategory[] }>("/api/content/index.php?op=event_categories");
+  return data.categories ?? [];
+}
+
+export async function fetchAllEvents(): Promise<EventRow[]> {
+  const data = await phpGet<{ events: EventRow[] }>("/api/content/index.php?op=events_admin");
+  return data.events ?? [];
+}
+
+export async function saveEvent(payload: Partial<EventRow> & { title?: string }) {
+  await phpPost("/api/content/index.php", { op: "event_save", ...payload });
+}
+
+export async function deleteEvent(id: string) {
+  await phpPost("/api/content/index.php", { op: "event_delete", id });
+}
+
+export async function saveShow(payload: Partial<ShowRow> & { event_id: string; artist_name?: string; start_at?: string }) {
+  await phpPost("/api/content/index.php", { op: "show_save", ...payload });
+}
+
+export async function deleteShow(id: string) {
+  await phpPost("/api/content/index.php", { op: "show_delete", id });
 }

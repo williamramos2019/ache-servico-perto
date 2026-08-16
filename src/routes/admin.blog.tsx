@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
-import { supabase } from "@/integrations/supabase/client";
+import { phpGet, phpPost } from "@/lib/php-api";
 
 export const Route = createFileRoute("/admin/blog")({
   head: () => ({ meta: [{ title: "Blog — Admin AgendaAqui" }, { name: "robots", content: "noindex" }] }),
@@ -47,28 +47,8 @@ function slugify(s: string) {
 }
 
 async function fetchAll(): Promise<Post[]> {
-  const { data, error } = await supabase
-    .from("posts")
-    .select("id, slug, title, excerpt, content, featured_image, author_name, status, published_at, created_at, meta_title, meta_description, og_image, tags")
-    .eq("type", "blog")
-    .order("created_at", { ascending: false });
-  if (error) throw error;
-  return (data ?? []).map((r) => ({
-    id: r.id,
-    slug: r.slug,
-    title: r.title,
-    excerpt: r.excerpt,
-    content: r.content,
-    cover_url: r.featured_image,
-    author_name: r.author_name,
-    published: r.status === "published",
-    published_at: r.published_at,
-    created_at: r.created_at,
-    meta_title: r.meta_title,
-    meta_description: r.meta_description,
-    og_image: r.og_image,
-    keywords: r.tags ?? [],
-  })) as Post[];
+  const data = await phpGet<{ posts: Post[] }>("/api/content/index.php?op=posts_admin");
+  return data.posts ?? [];
 }
 
 function keywordDensity(content: string, keywords: string[]) {
@@ -132,53 +112,71 @@ function AdminBlog() {
     if (p.published && contentStr.length < MIN_CONTENT_CHARS) {
       return toast.error(`Para publicar, o conteúdo precisa ter no mínimo ${MIN_CONTENT_CHARS} caracteres (atual: ${contentStr.length}).`);
     }
-    const payload = {
-      type: "blog" as const,
-      slug,
-      title,
-      excerpt: p.excerpt || null,
-      content: contentStr,
-      featured_image: p.cover_url || null,
-      author_name: p.author_name || "Equipe AgendaAqui",
-      status: (p.published ? "published" : "draft") as "published" | "draft",
-      published_at: p.published ? (p.published_at ?? new Date().toISOString()) : null,
-      meta_title: p.meta_title || null,
-      meta_description: p.meta_description || null,
-      og_image: p.og_image || p.cover_url || null,
-      tags: p.keywords ?? [],
-    };
-    const q = p.id
-      ? supabase.from("posts").update(payload).eq("id", p.id)
-      : supabase.from("posts").insert(payload);
-    const { error } = await q;
-    if (error) return toast.error(error.message);
-    toast.success(p.id ? "Post atualizado" : "Post criado");
-    setEditing(null);
-    qc.invalidateQueries({ queryKey: ["admin-blog-posts"] });
-    qc.invalidateQueries({ queryKey: ["blog-posts"] });
+    try {
+      await phpPost("/api/content/index.php", {
+        op: "post_save",
+        id: p.id,
+        slug,
+        title,
+        excerpt: p.excerpt || null,
+        content: contentStr,
+        cover_url: p.cover_url || null,
+        author_name: p.author_name || "Equipe AgendaAqui",
+        published: !!p.published,
+        published_at: p.published ? (p.published_at ?? new Date().toISOString()) : null,
+        meta_title: p.meta_title || null,
+        meta_description: p.meta_description || null,
+        og_image: p.og_image || p.cover_url || null,
+        keywords: p.keywords ?? [],
+      });
+      toast.success(p.id ? "Post atualizado" : "Post criado");
+      setEditing(null);
+      qc.invalidateQueries({ queryKey: ["admin-blog-posts"] });
+      qc.invalidateQueries({ queryKey: ["blog-posts"] });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Erro ao salvar");
+    }
   }
 
   async function togglePublish(p: Post) {
     if (!p.published && (p.content?.length ?? 0) < MIN_CONTENT_CHARS) {
       return toast.error(`Conteúdo com ${p.content?.length ?? 0}/${MIN_CONTENT_CHARS} caracteres. Amplie o texto antes de publicar.`);
     }
-    const { error } = await supabase.from("posts").update({
-      status: !p.published ? "published" : "draft",
-      published_at: !p.published ? (p.published_at ?? new Date().toISOString()) : p.published_at,
-    }).eq("id", p.id);
-    if (error) return toast.error(error.message);
-    toast.success(!p.published ? "Publicado" : "Despublicado");
-    qc.invalidateQueries({ queryKey: ["admin-blog-posts"] });
-    qc.invalidateQueries({ queryKey: ["blog-posts"] });
+    try {
+      await phpPost("/api/content/index.php", {
+        op: "post_save",
+        id: p.id,
+        title: p.title,
+        slug: p.slug,
+        content: p.content,
+        published: !p.published,
+        published_at: !p.published ? (p.published_at ?? new Date().toISOString()) : p.published_at,
+        cover_url: p.cover_url,
+        excerpt: p.excerpt,
+        author_name: p.author_name,
+        meta_title: p.meta_title,
+        meta_description: p.meta_description,
+        og_image: p.og_image,
+        keywords: p.keywords ?? [],
+      });
+      toast.success(!p.published ? "Publicado" : "Despublicado");
+      qc.invalidateQueries({ queryKey: ["admin-blog-posts"] });
+      qc.invalidateQueries({ queryKey: ["blog-posts"] });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Erro");
+    }
   }
 
   async function remove(p: Post) {
     if (!confirm(`Excluir "${p.title}"?`)) return;
-    const { error } = await supabase.from("posts").delete().eq("id", p.id);
-    if (error) return toast.error(error.message);
-    toast.success("Post excluído");
-    qc.invalidateQueries({ queryKey: ["admin-blog-posts"] });
-    qc.invalidateQueries({ queryKey: ["blog-posts"] });
+    try {
+      await phpPost("/api/content/index.php", { op: "post_delete", id: p.id });
+      toast.success("Post excluído");
+      qc.invalidateQueries({ queryKey: ["admin-blog-posts"] });
+      qc.invalidateQueries({ queryKey: ["blog-posts"] });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Erro");
+    }
   }
 
   return (

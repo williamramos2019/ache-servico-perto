@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { Trophy, Eye, MessageSquare, Star, Crown, TrendingUp } from "lucide-react";
 import { useAdmin } from "@/hooks/use-admin";
-import { supabase } from "@/integrations/supabase/client";
+import { phpGet } from "@/lib/php-api";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/painel/ranking")({
@@ -26,9 +26,11 @@ type RankRow = {
 };
 
 async function fetchRanking(): Promise<{ ok: true; rows: RankRow[] } | { ok: false; error: string }> {
-  const { data, error } = await supabase.rpc("get_weekly_ranking");
-  if (error) return { ok: false, error: error.message };
-  return { ok: true, rows: (data ?? []) as RankRow[] };
+  const data = await phpGet<{ ok: true; rows: RankRow[] } | { ok: false; error: string }>(
+    "/api/admin/index.php?op=ranking",
+  );
+  if (!data.ok) return { ok: false, error: "error" in data ? data.error : "Erro" };
+  return data;
 }
 
 function RankingPage() {

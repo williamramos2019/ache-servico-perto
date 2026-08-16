@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { supabase } from "@/integrations/supabase/client";
+import { phpPost } from "@/lib/php-api";
 import { fetchCompanyReviews } from "@/lib/queries";
 import { useCurrentUserId } from "@/lib/favorites";
 
@@ -24,13 +24,12 @@ export function ReviewsSection({ companyId }: { companyId: string }) {
 
   const mutate = useMutation({
     mutationFn: async () => {
-      const { data: u } = await supabase.auth.getUser();
-      if (!u.user) throw new Error("Faça login para avaliar.");
-      const { error } = await supabase.from("reviews").upsert(
-        { company_id: companyId, user_id: u.user.id, rating, comment: comment.trim() || null },
-        { onConflict: "company_id,user_id" },
-      );
-      if (error) throw error;
+      if (!userId) throw new Error("Faça login para avaliar.");
+      await phpPost("/api/reviews/upsert.php", {
+        company_id: companyId,
+        rating,
+        comment: comment.trim() || null,
+      });
     },
     onSuccess: () => {
       toast.success("Avaliação enviada!");
@@ -49,14 +48,14 @@ export function ReviewsSection({ companyId }: { companyId: string }) {
         <h2 className="font-display text-xl font-bold">Avaliações</h2>
         <div className="flex items-center gap-1 text-sm">
           <Star className="h-4 w-4 fill-accent text-accent" />
-          <span className="font-semibold">{avg ? avg.toFixed(1) : "—"}</span>
-          <span className="text-muted-foreground">({list.length})</span>
+          <span className="font-semibold">{avg ? avg.toFixed(1) : "Sem avaliações ainda"}</span>
+          {list.length > 0 ? <span className="text-muted-foreground">({list.length})</span> : null}
         </div>
       </div>
 
       <div className="mt-6 space-y-5">
         {list.length === 0 ? (
-          <p className="text-sm text-muted-foreground">Seja o primeiro a avaliar esta empresa.</p>
+          <p className="text-sm text-muted-foreground">Sem avaliações ainda. Seja o primeiro a avaliar esta empresa.</p>
         ) : (
           list.map((r) => {
             const displayName = r.author_name ?? "Cliente";

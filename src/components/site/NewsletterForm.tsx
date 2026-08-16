@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { Mail, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { supabase } from "@/integrations/supabase/client";
+import { phpPost, PhpApiError } from "@/lib/php-api";
 import { useSiteContent } from "@/lib/siteContent";
 
 const schema = z.object({
@@ -26,16 +26,18 @@ export function NewsletterForm({ compact = false }: { compact?: boolean }) {
       return;
     }
     setLoading(true);
-    const { error } = await supabase.from("newsletter_subscribers").insert(parsed.data);
-    setLoading(false);
-    if (error) {
-      if (error.code === "23505") toast.info("Você já está inscrito 🎉");
+    try {
+      const data = await phpPost<{ already?: boolean }>("/api/newsletter/subscribe.php", parsed.data);
+      if (data.already) toast.info("Você já está inscrito 🎉");
+      else toast.success("Inscrição confirmada! Obrigado.");
+      setEmail("");
+      setName("");
+    } catch (error) {
+      if (error instanceof PhpApiError && error.status === 409) toast.info("Você já está inscrito 🎉");
       else toast.error("Não foi possível inscrever agora");
-      return;
+    } finally {
+      setLoading(false);
     }
-    toast.success("Inscrição confirmada! Obrigado.");
-    setEmail("");
-    setName("");
   }
 
   return (

@@ -1,7 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { phpPost } from "@/lib/php-api";
 import {
   Phone, MessageCircle, Share2, MapPin, Globe, Instagram, Facebook, Star, BadgeCheck,
   Clock, CheckCircle2, Copy, Navigation, Mail, CalendarDays, ShieldCheck, Award,
@@ -19,6 +19,7 @@ import { companyBySlugQueryOptions, fetchCompanyReviews, fetchSimilarCompanies, 
 import { FavoriteButton } from "@/components/site/FavoriteButton";
 import { ClaimCompanyDialog } from "@/components/site/ClaimCompanyDialog";
 import { telUrl, waUrl } from "@/lib/format";
+import { companyOpenStatus } from "@/lib/companyHours";
 import {
   QualityBars, CertificationsGrid, DifferentialsGrid, CoverageArea, SocialLinksExtra,
   ResponseStatsRow, PromotionBanner, StatusPills,
@@ -79,40 +80,13 @@ type Company = {
   financing_info: { installments?: number; label?: string } | null;
   is_verified: boolean | null;
   owner_id: string | null;
+  origin?: string | null;
 };
 
-const WEEK_ORDER = ["seg", "ter", "qua", "qui", "sex", "sab", "dom"];
 const WEEK_FULL: Record<string, string> = {
   seg: "Segunda", ter: "Terça", qua: "Quarta", qui: "Quinta",
   sex: "Sexta", sab: "Sábado", dom: "Domingo",
 };
-const JS_DAY_TO_KEY = ["dom", "seg", "ter", "qua", "qui", "sex", "sab"];
-
-function isOpenNow(hours: Record<string, string> | null): { open: boolean; label: string } {
-  if (!hours) return { open: false, label: "Horário não informado" };
-  const now = new Date();
-  const todayKey = JS_DAY_TO_KEY[now.getDay()];
-  // Find a key that covers today: exact key, or range like "seg-sex" / "seg-sab"
-  const match = Object.entries(hours).find(([k]) => {
-    if (k === todayKey) return true;
-    const range = k.split("-");
-    if (range.length !== 2) return false;
-    const start = WEEK_ORDER.indexOf(range[0]);
-    const end = WEEK_ORDER.indexOf(range[1]);
-    const todayIdx = WEEK_ORDER.indexOf(todayKey);
-    if (start < 0 || end < 0 || todayIdx < 0) return false;
-    return todayIdx >= start && todayIdx <= end;
-  });
-  if (!match) return { open: false, label: "Fechado hoje" };
-  const [, value] = match;
-  const times = value.match(/(\d{2}):(\d{2})-(\d{2}):(\d{2})/);
-  if (!times) return { open: true, label: `Hoje: ${value}` };
-  const minutes = now.getHours() * 60 + now.getMinutes();
-  const startM = parseInt(times[1]) * 60 + parseInt(times[2]);
-  const endM = parseInt(times[3]) * 60 + parseInt(times[4]);
-  const open = minutes >= startM && minutes <= endM;
-  return { open, label: open ? `Aberto agora · fecha às ${times[3]}:${times[4]}` : `Fechado · abre às ${times[1]}:${times[2]}` };
-}
 
 function copyToClipboard(text: string, label: string) {
   if (typeof navigator !== "undefined" && navigator.clipboard) {
@@ -152,7 +126,7 @@ function CompanyPage() {
     const key = `cv:${company.id}`;
     if (typeof sessionStorage !== "undefined" && sessionStorage.getItem(key)) return;
     sessionStorage.setItem(key, "1");
-    void supabase.from("company_views").insert({ company_id: company.id });
+    void phpPost("/api/views/hit.php", { company_id: company.id });
   }, [company?.id]);
 
   if (q.isSuccess && !company) throw notFound();
@@ -182,10 +156,11 @@ function CompanyPage() {
     ? `https://www.google.com/maps/dir/?api=1&destination=${company.lat},${company.lng}`
     : null;
 
-  const status = isOpenNow(company.hours);
+  const status = companyOpenStatus(company.hours);
   const yearsActive = Math.max(1, Math.floor((Date.now() - new Date(company.created_at).getTime()) / (365 * 24 * 3600 * 1000)));
   const isPremium = company.plan === "premium";
-  const isVerified = isPremium || company.featured || ratings.length > 0;
+  const isFeaturedPlan = company.plan === "featured" || !!company.featured;
+  const isVerified = !!company.is_verified;
 
   const shareUrl = typeof window !== "undefined" ? window.location.href : "";
   const qrUrl = shareUrl
@@ -240,7 +215,7 @@ function CompanyPage() {
         <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />
       </div>
 
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-4 pb-24 md:pb-8">
         {/* Breadcrumbs */}
         <nav className="mt-4 flex flex-wrap items-center gap-1 text-xs text-muted-foreground">
           {breadcrumbs.map((b, i) => (
@@ -258,35 +233,45 @@ function CompanyPage() {
         {/* Header card */}
         <div className="relative -mt-10 rounded-2xl border border-border bg-card p-5 shadow-lg md:p-8">
           <div className="flex flex-col gap-5 md:flex-row md:items-start">
-            <img
-              src={company.logo_url ?? company.banner_url ?? ""}
-              alt={company.name}
-              className="h-24 w-24 rounded-xl border border-border bg-muted object-cover md:h-28 md:w-28"
-            />
+            {company.logo_url || company.banner_url ? (
+              <img
+                src={company.logo_url ?? company.banner_url ?? ""}
+                alt={company.name}
+                className="h-24 w-24 rounded-xl border border-border bg-muted object-cover md:h-28 md:w-28"
+              />
+            ) : (
+              <div className="flex h-24 w-24 items-center justify-center rounded-xl border border-border bg-primary/10 font-display text-3xl font-bold text-primary md:h-28 md:w-28" aria-hidden>
+                {company.name.trim().charAt(0).toUpperCase()}
+              </div>
+            )}
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-2">
                 <h1 className="font-display text-2xl font-bold md:text-3xl">{company.name}</h1>
-                {isPremium && (
-                  <Badge className="bg-primary text-primary-foreground hover:bg-primary">
-                    <BadgeCheck className="mr-1 h-3 w-3" /> Premium
-                  </Badge>
-                )}
-                {company.featured && (
-                  <Badge className="bg-accent text-accent-foreground hover:bg-accent">Destaque</Badge>
-                )}
-                {isVerified && (
+                {isVerified ? (
                   <Badge variant="outline" className="border-emerald-500 text-emerald-600">
                     <ShieldCheck className="mr-1 h-3 w-3" /> Verificada
                   </Badge>
-                )}
+                ) : null}
+                {isFeaturedPlan ? (
+                  <Badge className="bg-accent text-accent-foreground hover:bg-accent">Destaque</Badge>
+                ) : isPremium ? (
+                  <Badge className="bg-primary text-primary-foreground hover:bg-primary">Premium</Badge>
+                ) : null}
+                {company.origin === "imported" ? (
+                  <Badge variant="outline">Cadastro público</Badge>
+                ) : null}
               </div>
               {company.tagline && <p className="mt-1 text-muted-foreground">{company.tagline}</p>}
               <div className="mt-3 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
-                <span className="inline-flex items-center gap-1">
-                  <Star className="h-4 w-4 fill-accent text-accent" />
-                  <strong className="text-foreground">{avg ? avg.toFixed(1) : "—"}</strong>
-                  <span>({ratings.length} avaliações)</span>
-                </span>
+                {ratings.length > 0 ? (
+                  <span className="inline-flex items-center gap-1">
+                    <Star className="h-4 w-4 fill-accent text-accent" />
+                    <strong className="text-foreground">{avg.toFixed(1)}</strong>
+                    <span>({ratings.length} {ratings.length === 1 ? "avaliação" : "avaliações"})</span>
+                  </span>
+                ) : (
+                  <span>Sem avaliações ainda</span>
+                )}
                 {company.cities && (
                   <Link to="/cidades/$slug" params={{ slug: company.cities.slug }}
                     className="inline-flex items-center gap-1 hover:text-foreground">
@@ -294,11 +279,17 @@ function CompanyPage() {
                     {company.cities.name} · {company.cities.state}
                   </Link>
                 )}
-                <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${
-                  status.open ? "bg-emerald-500/10 text-emerald-600" : "bg-muted text-muted-foreground"
-                }`}>
-                  <Clock className="h-3 w-3" /> {status.label}
-                </span>
+                {status.open !== null ? (
+                  <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${
+                    status.open ? "bg-emerald-500/10 text-emerald-700" : "bg-muted text-muted-foreground"
+                  }`}>
+                    <Clock className="h-3 w-3" /> {status.open ? "Aberto agora" : "Fechado"} · {status.label}
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
+                    <Clock className="h-3 w-3" /> Horário não informado
+                  </span>
+                )}
                 {company.price_range ? (
                   <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-foreground/80" title="Faixa de preço">
                     {"$".repeat(company.price_range)}
@@ -614,7 +605,7 @@ function CompanyPage() {
               </div>
               <p className="mt-1 text-xs text-muted-foreground">Receba orçamento em minutos, sem compromisso.</p>
               <div className="mt-3">
-                <StatusPills open={status.open} statusLabel={status.label} responseTimeMinutes={company.response_time_minutes} />
+                <StatusPills open={status.open === true} statusLabel={status.label} responseTimeMinutes={company.response_time_minutes} />
               </div>
               <div className="mt-4 space-y-2">
                 {company.whatsapp && (
@@ -726,8 +717,8 @@ function CompanyPage() {
               <section className="rounded-xl border border-border bg-card p-6">
                 <div className="flex items-center justify-between">
                   <h3 className="font-display text-lg font-bold">Horário</h3>
-                  <span className={`text-xs font-medium ${status.open ? "text-emerald-600" : "text-muted-foreground"}`}>
-                    {status.open ? "● Aberto" : "● Fechado"}
+                  <span className={`text-xs font-medium ${status.open === true ? "text-emerald-600" : "text-muted-foreground"}`}>
+                    {status.open === true ? "Aberto agora" : status.open === false ? "Fechado" : "Horário não informado"}
                   </span>
                 </div>
                 <ul className="mt-3 space-y-1 text-sm text-foreground/85">
@@ -842,6 +833,41 @@ function CompanyPage() {
           </div>
         </div>
       </div>
+
+      {(company.whatsapp || company.phone || directionsUrl) ? (
+        <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 p-3 backdrop-blur md:hidden" style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}>
+          <div className="flex gap-2">
+            {company.whatsapp ? (
+              <a
+                href={waUrl(company.whatsapp, "Olá! Vi sua empresa no AgendaAqui.")}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-full bg-[#25D366] text-sm font-semibold text-white"
+              >
+                <MessageCircle className="h-4 w-4" aria-hidden /> WhatsApp
+              </a>
+            ) : null}
+            {company.phone ? (
+              <a
+                href={telUrl(company.phone)}
+                className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-full border border-border bg-card text-sm font-semibold"
+              >
+                <Phone className="h-4 w-4" aria-hidden /> Ligar
+              </a>
+            ) : null}
+            {directionsUrl ? (
+              <a
+                href={directionsUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-full border border-border bg-card text-sm font-semibold"
+              >
+                <Navigation className="h-4 w-4" aria-hidden /> Rota
+              </a>
+            ) : null}
+          </div>
+        </div>
+      ) : null}
     </SiteLayout>
   );
 }

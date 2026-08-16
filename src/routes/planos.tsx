@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { supabase } from "@/integrations/supabase/client";
+import { phpPost } from "@/lib/php-api";
 
 export const Route = createFileRoute("/planos")({
   head: () => ({
@@ -84,15 +84,16 @@ function PlanosPage() {
     const parsed = schema.safeParse(form);
     if (!parsed.success) { toast.error(parsed.error.issues[0]?.message ?? "Dados inválidos"); return; }
     setLoading(true);
-    const { error } = await supabase.from("leads_planos").insert({
-      ...parsed.data,
-      plan: open,
-    });
-    setLoading(false);
-    if (error) { toast.error("Não conseguimos enviar agora. Tente de novo em instantes."); return; }
-    toast.success("Recebido! Nossa equipe entra em contato em até 24h.");
-    setOpen(null);
-    setForm({ company_name: "", contact_name: "", email: "", phone: "", city: "", message: "" });
+    try {
+      await phpPost("/api/leads/planos.php", { ...parsed.data, plan: open });
+      toast.success("Recebido! Nossa equipe entra em contato em até 24h.");
+      setOpen(null);
+      setForm({ company_name: "", contact_name: "", email: "", phone: "", city: "", message: "" });
+    } catch {
+      toast.error("Não conseguimos enviar agora. Tente de novo em instantes.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (

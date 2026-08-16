@@ -8,8 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { supabase } from "@/integrations/supabase/client";
-import type { Database } from "@/integrations/supabase/types";
+import { phpGet, phpPost } from "@/lib/php-api";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/admin/cidades")({
@@ -17,13 +16,30 @@ export const Route = createFileRoute("/admin/cidades")({
   component: AdminCidades,
 });
 
-type CityRow = Database["public"]["Tables"]["cities"]["Row"];
-type CityUpdate = Database["public"]["Tables"]["cities"]["Update"];
+type CityRow = {
+  id: string;
+  name: string;
+  slug: string;
+  state: string;
+  lat: number | null;
+  lng: number | null;
+  hero_title: string | null;
+  hero_subtitle: string | null;
+  hero_image_url: string | null;
+  banner_url: string | null;
+  logo_url: string | null;
+  video_url: string | null;
+  primary_color: string | null;
+  seo_title: string | null;
+  seo_description: string | null;
+  og_image_url: string | null;
+  is_active: boolean;
+};
+type CityUpdate = Partial<CityRow>;
 
 async function fetchAllCities(): Promise<CityRow[]> {
-  const { data, error } = await supabase.from("cities").select("*").order("name");
-  if (error) throw error;
-  return data ?? [];
+  const data = await phpGet<{ cities: CityRow[] }>("/api/admin/index.php?op=cities");
+  return data.cities ?? [];
 }
 
 function AdminCidades() {
@@ -58,8 +74,7 @@ function AdminCidades() {
   const save = useMutation({
     mutationFn: async () => {
       if (!editing) return;
-      const { error } = await supabase.from("cities").update(form).eq("id", editing.id);
-      if (error) throw error;
+      await phpPost("/api/admin/index.php", { op: "city_update", id: editing.id, ...form });
     },
     onSuccess: () => {
       toast.success("Cidade atualizada");

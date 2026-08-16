@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { supabase } from "@/integrations/supabase/client";
+import { phpGet } from "@/lib/php-api";
 import { requireAdmin } from "@/lib/spa-auth";
 
 type Source = "blog" | "empresa" | "evento";
@@ -128,12 +128,13 @@ export type ScanResult = {
 
 async function loadItems(sources: Source[]): Promise<Item[]> {
   const items: Item[] = [];
+  const data = await phpGet<{
+    posts: Array<{ id: string; slug: string; title: string | null; excerpt: string | null; content: string | null }>;
+    companies: Array<{ id: string; slug: string; name: string | null; description: string | null }>;
+    events: Array<{ id: string; slug: string; title: string | null; description: string | null }>;
+  }>("/api/admin/index.php?op=scan_texts");
   if (sources.includes("blog")) {
-    const { data } = await supabase
-      .from("posts")
-      .select("id, slug, title, excerpt, content, status")
-      .eq("type", "blog");
-    for (const r of data ?? []) {
+    for (const r of data.posts ?? []) {
       const raw = `${r.title ?? ""}\n\n${r.excerpt ?? ""}\n\n${r.content ?? ""}`;
       items.push({
         key: `blog:${r.id}`,
@@ -148,11 +149,7 @@ async function loadItems(sources: Source[]): Promise<Item[]> {
     }
   }
   if (sources.includes("empresa")) {
-    const { data } = await supabase
-      .from("companies")
-      .select("id, slug, name, description")
-      .not("description", "is", null);
-    for (const r of data ?? []) {
+    for (const r of data.companies ?? []) {
       const raw = `${r.name ?? ""}\n\n${r.description ?? ""}`;
       items.push({
         key: `empresa:${r.id}`,
@@ -167,11 +164,7 @@ async function loadItems(sources: Source[]): Promise<Item[]> {
     }
   }
   if (sources.includes("evento")) {
-    const { data } = await supabase
-      .from("events")
-      .select("id, slug, title, description")
-      .not("description", "is", null);
-    for (const r of data ?? []) {
+    for (const r of data.events ?? []) {
       const raw = `${r.title ?? ""}\n\n${r.description ?? ""}`;
       items.push({
         key: `evento:${r.id}`,

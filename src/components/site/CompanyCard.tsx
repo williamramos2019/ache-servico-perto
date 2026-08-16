@@ -1,8 +1,8 @@
 import { Link } from "@tanstack/react-router";
-import { MapPin, Star, BadgeCheck, Crown } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { MapPin, Star, BadgeCheck, Crown, MessageCircle, Phone, ChevronRight } from "lucide-react";
 import { FavoriteButton } from "@/components/site/FavoriteButton";
 import { getPlanLimits } from "@/lib/plans";
+import { telUrl, waUrl } from "@/lib/format";
 import type { CompanyListItem } from "@/lib/queries";
 
 export type CompanyCardData = {
@@ -18,13 +18,13 @@ export type CompanyCardData = {
   rating?: number;
   review_count?: number;
   is_verified?: boolean | null;
+  phone?: string | null;
+  whatsapp?: string | null;
+  open_now?: boolean | null;
+  category_name?: string | null;
+  origin?: string | null;
 };
 
-/**
- * Adapter: convert the shared `CompanyListItem` shape (as returned by
- * `src/lib/queries`) into the flat props the card renders. Centralised here
- * so every list page uses the same mapping.
- */
 export function toCompanyCardData(co: CompanyListItem): CompanyCardData {
   return {
     id: co.id,
@@ -39,41 +39,54 @@ export function toCompanyCardData(co: CompanyListItem): CompanyCardData {
     rating: co.rating,
     review_count: co.review_count,
     is_verified: co.is_verified,
+    phone: co.phone,
+    whatsapp: co.whatsapp,
+    open_now: co.open_now,
+    category_name: co.categories?.[0]?.name ?? null,
+    origin: co.origin ?? null,
   };
 }
 
+function planBadge(plan: string | null | undefined, featured: boolean | null | undefined): {
+  label: string;
+  className: string;
+  icon: "crown" | "check" | null;
+} | null {
+  const limits = getPlanLimits(plan);
+  if (limits.cardVariant === "featured" || featured) {
+    return { label: "Destaque", className: "bg-accent text-accent-foreground", icon: "crown" };
+  }
+  if (limits.cardVariant === "premium" || plan === "premium") {
+    return { label: "Premium", className: "bg-primary text-primary-foreground", icon: "check" };
+  }
+  return null;
+}
 
 export function CompanyCard({ company }: { company: CompanyCardData }) {
-  const limits = getPlanLimits(company.plan);
-  const isPremium = limits.cardVariant !== "default";
-  const isFeatured = limits.cardVariant === "featured";
+  const badge = planBadge(company.plan, company.featured);
+  const hasReviews = (company.review_count ?? 0) > 0 && (company.rating ?? 0) > 0;
+  const cover = company.banner_url || company.logo_url;
+  const meta = [company.category_name, company.city_name].filter(Boolean).join(" · ");
 
   return (
-    <Link
-      to="/empresa/$slug"
-      params={{ slug: company.slug }}
-      className={`group relative flex flex-col overflow-hidden rounded-2xl border bg-card transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_20px_40px_-16px_rgb(15_23_42/0.22)] focus-ring active:translate-y-0 active:scale-[0.99] ${
-        isFeatured
-          ? "border-accent/60 ring-2 ring-accent/30 hover:ring-accent/60"
-          : isPremium
-          ? "border-primary/40 ring-1 ring-primary/20"
-          : "border-border"
-      }`}
-    >
-      {isPremium ? (
-        <div className="absolute right-0 top-0 z-10 rounded-bl-xl bg-gradient-to-r from-accent to-orange-500 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-white shadow-md">
-          Patrocinado
-        </div>
-      ) : null}
-      <div className={`relative overflow-hidden bg-muted ${isFeatured ? "aspect-[16/9]" : "aspect-[16/10]"}`}>
-        {company.banner_url ? (
+    <article className="group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-card transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-[0_18px_36px_-16px_rgb(15_23_42/0.2)]">
+      <div className="relative">
+      <Link
+        to="/empresa/$slug"
+        params={{ slug: company.slug }}
+        className="relative block overflow-hidden bg-muted aspect-[16/10] focus-ring"
+        aria-label={company.name}
+      >
+        {cover ? (
           <img
-            src={company.banner_url}
-            alt={company.name}
+            src={cover}
+            alt=""
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
             loading="lazy"
             decoding="async"
-            onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
+            onError={(e) => {
+              (e.currentTarget as HTMLImageElement).style.display = "none";
+            }}
           />
         ) : (
           <div
@@ -85,62 +98,89 @@ export function CompanyCard({ company }: { company: CompanyCardData }) {
             </span>
           </div>
         )}
-        {isFeatured ? (
-          <Badge className="absolute left-3 top-3 bg-accent text-accent-foreground hover:bg-accent">
-            <Crown className="mr-1 h-3 w-3" /> Destaque
-          </Badge>
-        ) : isPremium ? (
-          <Badge className="absolute left-3 top-3 bg-primary text-primary-foreground hover:bg-primary">
-            <BadgeCheck className="mr-1 h-3 w-3" /> Premium
-          </Badge>
-        ) : (
-          <Badge variant="outline" className="absolute left-3 top-3 bg-background/80 backdrop-blur text-muted-foreground">
-            Grátis
-          </Badge>
-        )}
-        {company.id ? <FavoriteButton companyId={company.id} className="absolute bottom-3 right-3" /> : null}
+        {badge ? (
+          <span className={`absolute left-3 top-3 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide ${badge.className}`}>
+            {badge.icon === "crown" ? <Crown className="h-3 w-3" aria-hidden /> : <BadgeCheck className="h-3 w-3" aria-hidden />}
+            {badge.label}
+          </span>
+        ) : null}
+        {company.open_now === true ? (
+          <span className="absolute left-3 bottom-3 rounded-full bg-emerald-600 px-2 py-0.5 text-[10px] font-semibold text-white">
+            Aberto agora
+          </span>
+        ) : null}
+      </Link>
+        {company.id ? <FavoriteButton companyId={company.id} className="absolute bottom-3 right-3 z-10" /> : null}
       </div>
+
       <div className="flex flex-1 flex-col gap-2 p-4">
-        <div className="flex items-start gap-3">
-          {company.logo_url ? (
-            <img
-              src={company.logo_url}
-              alt=""
-              className="h-12 w-12 shrink-0 rounded-lg border border-border object-cover"
-              loading="lazy"
-              decoding="async"
-            />
-          ) : (
-            <div className="h-12 w-12 shrink-0 rounded-lg bg-primary/10" />
-          )}
+        <div className="flex items-start justify-between gap-3">
           <div className="min-w-0 flex-1">
-            <h3 className={`truncate font-display font-semibold text-foreground ${isFeatured ? "text-lg" : "text-base"}`}>
-              {company.name}
+            <h3 className="truncate font-display text-base font-semibold text-foreground">
+              <Link to="/empresa/$slug" params={{ slug: company.slug }} className="hover:underline focus-ring rounded-sm">
+                {company.name}
+              </Link>
               {company.is_verified ? (
                 <BadgeCheck className="ml-1 inline h-4 w-4 text-primary" aria-label="Verificada" />
               ) : null}
             </h3>
-            {company.tagline ? (
-              <p className="line-clamp-1 text-sm text-muted-foreground">{company.tagline}</p>
+            <p className="mt-0.5 text-sm text-foreground/80">
+              {hasReviews ? (
+                <span className="inline-flex items-center gap-1">
+                  <Star className="h-3.5 w-3.5 fill-accent text-accent" aria-hidden />
+                  <span className="font-semibold">{company.rating!.toFixed(1)}</span>
+                  <span className="text-muted-foreground">
+                    ({company.review_count} {company.review_count === 1 ? "avaliação" : "avaliações"})
+                  </span>
+                </span>
+              ) : (
+                <span className="text-muted-foreground">Sem avaliações ainda</span>
+              )}
+            </p>
+            {meta ? (
+              <p className="mt-1 truncate text-xs text-muted-foreground">
+                <MapPin className="mr-0.5 inline h-3 w-3" aria-hidden />
+                {meta}
+              </p>
+            ) : null}
+            {company.origin === "imported" ? (
+              <p className="mt-1 text-[11px] text-muted-foreground">Cadastro público</p>
             ) : null}
           </div>
         </div>
-        <div className="mt-auto flex items-center justify-between pt-2 text-xs text-muted-foreground">
-          {company.city_name ? (
-            <span className="inline-flex items-center gap-1">
-              <MapPin className="h-3.5 w-3.5" />
-              {company.city_name}
-            </span>
-          ) : <span />}
-          <span className="inline-flex items-center gap-1 font-medium text-foreground">
-            <Star className="h-3.5 w-3.5 fill-accent text-accent" />
-            {company.rating ? company.rating.toFixed(1) : "—"}
-            <span className="font-normal text-muted-foreground">
-              ({company.review_count ?? 0})
-            </span>
-          </span>
+
+        {company.tagline ? (
+          <p className="line-clamp-1 text-sm text-muted-foreground">{company.tagline}</p>
+        ) : null}
+
+        <div className="mt-auto flex flex-wrap gap-2 pt-2">
+          {company.whatsapp ? (
+            <a
+              href={waUrl(company.whatsapp, "Olá! Vi sua empresa no AgendaAqui.")}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex min-h-10 flex-1 items-center justify-center gap-1.5 rounded-full bg-[#25D366] px-3 text-sm font-semibold text-white hover:bg-[#1ebe5d] focus-ring"
+            >
+              <MessageCircle className="h-4 w-4" aria-hidden /> WhatsApp
+            </a>
+          ) : null}
+          {company.phone ? (
+            <a
+              href={telUrl(company.phone)}
+              className="inline-flex min-h-10 items-center justify-center gap-1.5 rounded-full border border-border bg-background px-3 text-sm font-semibold text-foreground hover:bg-muted focus-ring"
+            >
+              <Phone className="h-4 w-4" aria-hidden /> Ligar
+            </a>
+          ) : null}
+          <Link
+            to="/empresa/$slug"
+            params={{ slug: company.slug }}
+            className="inline-flex min-h-10 items-center justify-center gap-1 rounded-full border border-border px-3 text-sm font-medium text-primary hover:bg-primary/5 focus-ring"
+          >
+            Ver empresa <ChevronRight className="h-4 w-4" aria-hidden />
+          </Link>
         </div>
       </div>
-    </Link>
+    </article>
   );
 }

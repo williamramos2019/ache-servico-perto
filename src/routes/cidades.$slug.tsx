@@ -22,7 +22,7 @@ function CityPage() {
   const city = cities.data?.find((c) => c.slug === slug);
   const results = useQuery({
     queryKey: ["search", "", slug, ""],
-    queryFn: () => searchCompanies({ city: slug }),
+    queryFn: () => searchCompanies({ city: slug, limit: 200 }),
   });
 
   if (cities.isSuccess && !city) throw notFound();

@@ -5,7 +5,7 @@ import { SiteLayout } from "@/components/site/SiteLayout";
 import { CompanyCard } from "@/components/site/CompanyCard";
 import { Button } from "@/components/ui/button";
 import { useFavorites, useCurrentUserId, useAuthReady } from "@/lib/favorites";
-import { supabase } from "@/integrations/supabase/client";
+import { phpPost } from "@/lib/php-api";
 import { useQueryClient } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/favoritos")({
@@ -51,11 +51,12 @@ function FavoritosPage() {
   async function clearAll() {
     if (!userId) return;
     if (!confirm("Remover todos os favoritos?")) return;
-    const { error } = await supabase.from("favorites").delete().eq("user_id", userId);
-    if (error) toast.error("Erro ao limpar");
-    else {
+    try {
+      await phpPost("/api/favorites/index.php", { op: "clear" });
       toast.success("Favoritos limpos");
       qc.invalidateQueries({ queryKey: ["favorites", userId] });
+    } catch {
+      toast.error("Erro ao limpar");
     }
   }
 

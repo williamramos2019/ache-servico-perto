@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { Bug, X, Camera, Loader2, CheckCircle2, Video, Square } from "lucide-react";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
+import { phpUpload } from "@/lib/php-api";
+import { fetchCurrentUser } from "@/lib/php-auth";
 import { createQaTicket } from "@/lib/qa.functions";
 import { collectDeviceInfo, getQaBuffers, installQaCapture } from "@/lib/qa-capture";
 import { useSelectedCity } from "@/hooks/useSelectedCity";
@@ -98,16 +99,13 @@ export function BugReportButton() {
   }
 
   async function uploadAttachment(a: FileAttachment): Promise<string | null> {
-    const ext = a.kind === "image" ? "png" : "webm";
-    const path = `${new Date().toISOString().slice(0, 10)}/${crypto.randomUUID()}.${ext}`;
-    const { error } = await supabase.storage
-      .from("qa-attachments")
-      .upload(path, a.file, { contentType: a.kind === "image" ? "image/png" : "video/webm", upsert: false });
-    if (error) {
+    try {
+      const data = await phpUpload<{ url: string }>("/api/upload/image.php", a.file, { kind: "qa" });
+      return data.url;
+    } catch (error) {
       console.warn("[qa] upload falhou", error);
       return null;
     }
-    return path;
   }
 
   async function submit() {
@@ -142,8 +140,7 @@ export function BugReportButton() {
         }
       }
 
-      const { data: sess } = await supabase.auth.getUser();
-      const user = sess.user;
+      const user = await fetchCurrentUser().catch(() => null);
       const buffers = getQaBuffers();
 
       const res = await createQaTicket({
@@ -156,12 +153,9 @@ export function BugReportButton() {
           device: collectDeviceInfo(),
           console_logs: buffers.logs,
           network_logs: buffers.net,
-          screenshot_url: screenshot_url
-            ? // guardamos o path relativo em screenshot_url; server assina depois
-              screenshot_url
-            : null,
+          screenshot_url,
           video_url,
-          user_name: (user?.user_metadata?.name as string | undefined) ?? null,
+          user_name: user?.profile?.name ?? null,
           user_email: user?.email ?? null,
           extra: {
             path: window.location.pathname,

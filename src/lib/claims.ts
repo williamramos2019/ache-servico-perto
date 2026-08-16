@@ -1,4 +1,4 @@
-import { supabase } from "@/integrations/supabase/client";
+import { phpGet, phpPost, PhpApiError } from "@/lib/php-api";
 
 export type ClaimStatus = "pending" | "approved" | "rejected";
 
@@ -13,74 +13,77 @@ export type ClaimInput = {
   proof_url?: string | null;
 };
 
-export async function createClaim(userId: string, input: ClaimInput) {
-  const { data, error } = await supabase
-    .from("company_claims")
-    .insert({
-      user_id: userId,
-      company_id: input.company_id,
-      full_name: input.full_name,
-      role_in_company: input.role_in_company || null,
-      phone: input.phone,
-      email: input.email,
-      document: input.document || null,
-      message: input.message || null,
-      proof_url: input.proof_url || null,
-    })
-    .select("id, status")
-    .single();
-  if (error) {
-    if ((error as { code?: string }).code === "23505") {
+export async function createClaim(_userId: string, input: ClaimInput) {
+  try {
+    return await phpPost<{ id: string; status: string }>("/api/claims/index.php", {
+      op: "create",
+      ...input,
+    });
+  } catch (error) {
+    if (error instanceof PhpApiError && (error.status === 409 || error.code === "already_pending")) {
       throw new Error("Você já tem uma solicitação pendente para esta empresa.");
     }
     throw error;
   }
-  return data;
 }
 
-export async function getMyClaimForCompany(userId: string, companyId: string) {
-  const { data, error } = await supabase
-    .from("company_claims")
-    .select("id, status, created_at, admin_notes")
-    .eq("user_id", userId)
-    .eq("company_id", companyId)
-    .order("created_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
-  if (error) throw error;
-  return data;
+export async function getMyClaimForCompany(_userId: string, companyId: string) {
+  const data = await phpGet<{
+    claim: { id: string; status: string; created_at: string; admin_notes: string | null } | null;
+  }>(`/api/claims/index.php?op=for_company&company_id=${encodeURIComponent(companyId)}`);
+  return data.claim;
 }
 
-export async function listMyClaims(userId: string) {
-  const { data, error } = await supabase
-    .from("company_claims")
-    .select("id, status, created_at, admin_notes, company_id, companies(name, slug)")
-    .eq("user_id", userId)
-    .order("created_at", { ascending: false });
-  if (error) throw error;
-  return data ?? [];
+export async function listMyClaims(_userId: string) {
+  const data = await phpGet<{
+    claims: Array<{
+      id: string;
+      status: string;
+      created_at: string;
+      admin_notes: string | null;
+      company_id: string;
+      companies: { name: string; slug: string };
+    }>;
+  }>("/api/claims/index.php?op=mine");
+  return data.claims ?? [];
 }
+
+export type AdminClaim = {
+  id: string;
+  status: string;
+  created_at: string;
+  reviewed_at: string | null;
+  admin_notes: string | null;
+  full_name: string;
+  role_in_company: string | null;
+  phone: string;
+  email: string;
+  document: string | null;
+  message: string | null;
+  proof_url: string | null;
+  user_id: string;
+  company_id: string;
+  companies: {
+    id: string;
+    name: string;
+    slug: string;
+    owner_id: string | null;
+    email: string | null;
+    phone: string | null;
+  };
+};
 
 export async function adminListClaims(status: "all" | ClaimStatus = "pending") {
-  let query = supabase
-    .from("company_claims")
-    .select(
-      "id, status, created_at, reviewed_at, admin_notes, full_name, role_in_company, phone, email, document, message, proof_url, user_id, company_id, companies(id, name, slug, owner_id, email, phone)",
-    )
-    .order("created_at", { ascending: false })
-    .limit(300);
-  if (status !== "all") query = query.eq("status", status);
-  const { data, error } = await query;
-  if (error) throw error;
-  return data ?? [];
+  const data = await phpGet<{ claims: AdminClaim[] }>(
+    `/api/claims/index.php?status=${encodeURIComponent(status)}`,
+  );
+  return data.claims ?? [];
 }
 
 export async function adminApproveClaim(claimId: string, notes?: string) {
-  const { error } = await supabase.rpc("approve_company_claim", { _claim_id: claimId, _notes: notes ?? undefined });
-  if (error) throw error;
+  await phpPost("/api/claims/index.php", { op: "approve", id: claimId, notes: notes ?? null });
 }
 
 export async function adminRejectClaim(claimId: string, notes?: string) {
-  const { error } = await supabase.rpc("reject_company_claim", { _claim_id: claimId, _notes: notes ?? undefined });
-  if (error) throw error;
+  await phpPost("/api/claims/index.php", { op: "reject", id: claimId, notes: notes ?? null });
 }

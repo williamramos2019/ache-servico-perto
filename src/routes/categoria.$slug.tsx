@@ -26,7 +26,7 @@ function CategoryPage() {
   const cat = cats.data?.find((c) => c.slug === slug);
   const results = useQuery({
     queryKey: ["search", "", "", slug],
-    queryFn: () => searchCompanies({ category: slug }),
+    queryFn: () => searchCompanies({ category: slug, limit: 200 }),
   });
 
   if (cats.isSuccess && !cat) throw notFound();

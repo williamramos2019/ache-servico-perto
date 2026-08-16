@@ -3,12 +3,10 @@ import { Upload, Image as ImageIcon, X, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
+import { phpUpload } from "@/lib/php-api";
 
 const ALLOWED = ["image/jpeg", "image/png", "image/webp"];
 const MAX_BYTES = 5 * 1024 * 1024; // 5 MB
-// 10 years — signed URL kept in the company row; overwriting the object serves the new bytes.
-const SIGNED_EXPIRY = 60 * 60 * 24 * 365 * 10;
 
 export type ImageKind = "logo" | "banner";
 
@@ -41,17 +39,8 @@ export function CompanyImageUpload({ companyId, kind, value, onChange, disabled 
     }
     setBusy(true);
     try {
-      const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
-      const path = `companies/${companyId}/${kind}-${Date.now()}.${ext}`;
-      const { error: upErr } = await supabase.storage
-        .from("media")
-        .upload(path, file, { contentType: file.type, upsert: true, cacheControl: "3600" });
-      if (upErr) throw upErr;
-      const { data: signed, error: sErr } = await supabase.storage
-        .from("media")
-        .createSignedUrl(path, SIGNED_EXPIRY);
-      if (sErr || !signed?.signedUrl) throw sErr || new Error("Falha ao gerar URL");
-      onChange(signed.signedUrl);
+      const data = await phpUpload<{ url: string }>("/api/upload/image.php", file, { kind: "company" });
+      onChange(data.url);
       toast.success(`${meta.title} atualizado.`);
     } catch (e) {
       toast.error((e as Error).message || "Falha ao enviar imagem.");
