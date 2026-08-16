@@ -17,6 +17,7 @@ import { QuoteDialog } from "@/components/site/QuoteDialog";
 import { CompanyCard, toCompanyCardData } from "@/components/site/CompanyCard";
 import { companyBySlugQueryOptions, fetchCompanyReviews, fetchSimilarCompanies, fetchCitiesByIds } from "@/lib/queries";
 import { FavoriteButton } from "@/components/site/FavoriteButton";
+import { ClaimCompanyDialog } from "@/components/site/ClaimCompanyDialog";
 import { telUrl, waUrl } from "@/lib/format";
 import {
   QualityBars, CertificationsGrid, DifferentialsGrid, CoverageArea, SocialLinksExtra,
@@ -77,6 +78,7 @@ type Company = {
   promotions: Array<{ title?: string; description?: string }> | null;
   financing_info: { installments?: number; label?: string } | null;
   is_verified: boolean | null;
+  owner_id: string | null;
 };
 
 const WEEK_ORDER = ["seg", "ter", "qua", "qui", "sex", "sab", "dom"];
@@ -633,8 +635,22 @@ function CompanyPage() {
               </div>
             </section>
 
+            {/* Claim this company */}
+            {!company.owner_id && (
+              <section className="rounded-xl border border-border bg-card p-5">
+                <h3 className="font-display text-lg font-bold">Este perfil ainda não tem dono</h3>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Assuma o controle para editar informações, responder avaliações e receber orçamentos.
+                </p>
+                <div className="mt-3">
+                  <ClaimCompanyDialog companyId={company.id} companyName={company.name} />
+                </div>
+              </section>
+            )}
+
             {/* Active promotion */}
             <PromotionBanner promotions={company.promotions} financing={company.financing_info} />
+
 
             {/* Social channels extra */}
             {(company.instagram || company.facebook || company.tiktok || company.youtube || company.website) && (

@@ -3,6 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useAdmin } from "@/hooks/use-admin";
 import { listMyCompanies, deleteMyCompany } from "@/lib/panel";
+import { listMyClaims } from "@/lib/claims";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Plus, ExternalLink, Trash2, Pencil } from "lucide-react";
@@ -15,6 +16,7 @@ function PanelEmpresas() {
   const { userId } = useAdmin();
   const qc = useQueryClient();
   const list = useQuery({ queryKey: ["panel-companies", userId], queryFn: () => listMyCompanies(userId!), enabled: !!userId });
+  const claims = useQuery({ queryKey: ["my-claims", userId], queryFn: () => listMyClaims(userId!), enabled: !!userId });
 
   async function remove(id: string, name: string) {
     if (!confirm(`Excluir "${name}"? Esta ação é permanente.`)) return;
@@ -81,6 +83,32 @@ function PanelEmpresas() {
           </tbody>
         </table>
       </div>
+
+      {(claims.data?.length ?? 0) > 0 && (
+        <section className="mt-8">
+          <h2 className="font-display text-lg font-bold">Minhas reivindicações</h2>
+          <p className="text-sm text-muted-foreground">Solicitações para assumir perfis de empresas já cadastradas.</p>
+          <ul className="mt-3 space-y-2">
+            {(claims.data ?? []).map((c) => {
+              const company = c.companies as { name: string; slug: string } | null;
+              return (
+                <li key={c.id} className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-border bg-card px-4 py-3 text-sm">
+                  <div className="min-w-0">
+                    <div className="font-medium">{company?.name ?? "Empresa"}</div>
+                    <div className="text-xs text-muted-foreground">
+                      Enviada em {new Date(c.created_at).toLocaleDateString("pt-BR")}
+                      {c.admin_notes ? ` · ${c.admin_notes}` : ""}
+                    </div>
+                  </div>
+                  <Badge variant={c.status === "approved" ? "default" : c.status === "pending" ? "secondary" : "outline"}>
+                    {c.status === "approved" ? "Aprovada" : c.status === "pending" ? "Em análise" : "Recusada"}
+                  </Badge>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      )}
     </div>
   );
 }

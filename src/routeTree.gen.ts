@@ -48,6 +48,7 @@ import { Route as CategoriaSlugRouteImport } from './routes/categoria.$slug'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as AdminTextosRouteImport } from './routes/admin.textos'
 import { Route as AdminServicosPublicosRouteImport } from './routes/admin.servicos-publicos'
+import { Route as AdminReivindicacoesRouteImport } from './routes/admin.reivindicacoes'
 import { Route as AdminQaRouteImport } from './routes/admin.qa'
 import { Route as AdminPushRouteImport } from './routes/admin.push'
 import { Route as AdminPlanosRouteImport } from './routes/admin.planos'
@@ -267,6 +268,11 @@ const AdminServicosPublicosRoute = AdminServicosPublicosRouteImport.update({
   path: '/servicos-publicos',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminReivindicacoesRoute = AdminReivindicacoesRouteImport.update({
+  id: '/reivindicacoes',
+  path: '/reivindicacoes',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminQaRoute = AdminQaRouteImport.update({
   id: '/qa',
   path: '/qa',
@@ -415,6 +421,7 @@ export interface FileRoutesByFullPath {
   '/admin/planos': typeof AdminPlanosRoute
   '/admin/push': typeof AdminPushRouteWithChildren
   '/admin/qa': typeof AdminQaRoute
+  '/admin/reivindicacoes': typeof AdminReivindicacoesRoute
   '/admin/servicos-publicos': typeof AdminServicosPublicosRoute
   '/admin/textos': typeof AdminTextosRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -476,6 +483,7 @@ export interface FileRoutesByTo {
   '/admin/menu': typeof AdminMenuRoute
   '/admin/planos': typeof AdminPlanosRoute
   '/admin/qa': typeof AdminQaRoute
+  '/admin/reivindicacoes': typeof AdminReivindicacoesRoute
   '/admin/servicos-publicos': typeof AdminServicosPublicosRoute
   '/admin/textos': typeof AdminTextosRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -541,6 +549,7 @@ export interface FileRoutesById {
   '/admin/planos': typeof AdminPlanosRoute
   '/admin/push': typeof AdminPushRouteWithChildren
   '/admin/qa': typeof AdminQaRoute
+  '/admin/reivindicacoes': typeof AdminReivindicacoesRoute
   '/admin/servicos-publicos': typeof AdminServicosPublicosRoute
   '/admin/textos': typeof AdminTextosRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -607,6 +616,7 @@ export interface FileRouteTypes {
     | '/admin/planos'
     | '/admin/push'
     | '/admin/qa'
+    | '/admin/reivindicacoes'
     | '/admin/servicos-publicos'
     | '/admin/textos'
     | '/blog/$slug'
@@ -668,6 +678,7 @@ export interface FileRouteTypes {
     | '/admin/menu'
     | '/admin/planos'
     | '/admin/qa'
+    | '/admin/reivindicacoes'
     | '/admin/servicos-publicos'
     | '/admin/textos'
     | '/blog/$slug'
@@ -732,6 +743,7 @@ export interface FileRouteTypes {
     | '/admin/planos'
     | '/admin/push'
     | '/admin/qa'
+    | '/admin/reivindicacoes'
     | '/admin/servicos-publicos'
     | '/admin/textos'
     | '/blog/$slug'
@@ -1070,6 +1082,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminServicosPublicosRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/reivindicacoes': {
+      id: '/admin/reivindicacoes'
+      path: '/reivindicacoes'
+      fullPath: '/admin/reivindicacoes'
+      preLoaderRoute: typeof AdminReivindicacoesRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/qa': {
       id: '/admin/qa'
       path: '/qa'
@@ -1267,6 +1286,7 @@ interface AdminRouteChildren {
   AdminPlanosRoute: typeof AdminPlanosRoute
   AdminPushRoute: typeof AdminPushRouteWithChildren
   AdminQaRoute: typeof AdminQaRoute
+  AdminReivindicacoesRoute: typeof AdminReivindicacoesRoute
   AdminServicosPublicosRoute: typeof AdminServicosPublicosRoute
   AdminTextosRoute: typeof AdminTextosRoute
   AdminIndexRoute: typeof AdminIndexRoute
@@ -1285,6 +1305,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminPlanosRoute: AdminPlanosRoute,
   AdminPushRoute: AdminPushRouteWithChildren,
   AdminQaRoute: AdminQaRoute,
+  AdminReivindicacoesRoute: AdminReivindicacoesRoute,
   AdminServicosPublicosRoute: AdminServicosPublicosRoute,
   AdminTextosRoute: AdminTextosRoute,
   AdminIndexRoute: AdminIndexRoute,
@@ -1403,3 +1424,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
