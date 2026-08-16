@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
@@ -25,20 +24,15 @@ function NotifPage() {
   const [q, setQ] = useState("");
   const qc = useQueryClient();
 
-  const list = useServerFn(listMyInbox);
-  const act = useServerFn(inboxAction);
-  const markAll = useServerFn(markAllRead);
-  const unread = useServerFn(unreadInboxCount);
-
-  const { data: unreadCount } = useQuery({ queryKey: ["push-unread"], queryFn: () => unread({}) });
+  const { data: unreadCount } = useQuery({ queryKey: ["push-unread"], queryFn: () => unreadInboxCount({}) });
   const { data: items = [], isLoading } = useQuery({
     queryKey: ["push-inbox", tab, q],
-    queryFn: () => list({ data: { tab, q: q || undefined, limit: 100 } }),
+    queryFn: () => listMyInbox({ data: { tab, q: q || undefined, limit: 100 } }),
   });
 
   const mut = useMutation({
     mutationFn: (v: { id: number; action: "read" | "unread" | "favorite" | "unfavorite" | "archive" | "unarchive" | "delete" }) =>
-      act({ data: v }),
+      inboxAction({ data: v }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["push-inbox"] });
       qc.invalidateQueries({ queryKey: ["push-unread"] });
@@ -46,7 +40,7 @@ function NotifPage() {
   });
 
   const markMut = useMutation({
-    mutationFn: () => markAll({}),
+    mutationFn: () => markAllRead({}),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["push-inbox"] });
       qc.invalidateQueries({ queryKey: ["push-unread"] });

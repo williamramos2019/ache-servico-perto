@@ -1,5 +1,4 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,7 +12,7 @@ export const Route = createFileRoute("/admin/push/$id")({
 
 function PushDetail() {
   const { id } = Route.useParams();
-  const load = useServerFn(getAdminPush);
+  const load = getAdminPush;
   const { data, isLoading } = useQuery({ queryKey: ["admin-push-detail", id], queryFn: () => load({ data: { id } }) });
 
   if (isLoading || !data) return <div className="py-10 text-center text-muted-foreground">Carregando…</div>;

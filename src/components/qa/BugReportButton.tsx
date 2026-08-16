@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { useServerFn } from "@tanstack/react-start";
 import { Bug, X, Camera, Loader2, CheckCircle2, Video, Square } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -35,7 +34,6 @@ export function BugReportButton() {
   const [recording, setRecording] = useState(false);
   const recorderRef = useRef<MediaRecorder | null>(null);
   const { city } = useSelectedCity();
-  const createTicket = useServerFn(createQaTicket);
 
   useEffect(() => {
     installQaCapture();
@@ -148,7 +146,7 @@ export function BugReportButton() {
       const user = sess.user;
       const buffers = getQaBuffers();
 
-      const res = await createTicket({
+      const res = await createQaTicket({
         data: {
           type: type as never,
           description: description.trim(),

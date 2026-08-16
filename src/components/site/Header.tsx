@@ -21,7 +21,6 @@ import {
   ShoppingBag,
   X,
 } from "lucide-react";
-import { useServerFn } from "@tanstack/react-start";
 import { unreadInboxCount } from "@/lib/push.functions";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -66,10 +65,9 @@ export function Header() {
 
   const isActive = (to: string) => (to === "/" ? pathname === "/" : pathname.startsWith(to));
 
-  const fetchUnread = useServerFn(unreadInboxCount);
   const { data: unread } = useQuery({
     queryKey: ["push-unread"],
-    queryFn: () => fetchUnread({}),
+    queryFn: () => unreadInboxCount({}),
     enabled: isAuthed,
     refetchInterval: 60_000,
   });

@@ -1,0 +1,15 @@
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Existing files and directories (assets, PWA, uploads) are served as-is.
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # Future PHP API — never send /api/* to the SPA.
+  RewriteRule ^api(/|$) - [L]
+
+  # SPA fallback for TanStack Router.
+  RewriteRule ^ index.html [L]
+</IfModule>

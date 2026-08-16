@@ -1,5 +1,4 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
@@ -47,7 +46,7 @@ const AUDIENCES = [
 
 function NovoPush() {
   const nav = useNavigate();
-  const send = useServerFn(sendPushNow);
+  const send = sendPushNow;
 
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");

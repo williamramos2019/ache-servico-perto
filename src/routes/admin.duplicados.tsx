@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -28,7 +27,7 @@ function simColor(s: number) {
 }
 
 function DuplicatesPage() {
-  const scan = useServerFn(scanDuplicates);
+  const scan = scanDuplicates;
   const [threshold, setThreshold] = useState(0.6);
   const [crossSource, setCrossSource] = useState(false);
   const [sources, setSources] = useState<("blog" | "empresa" | "evento")[]>(["blog", "empresa", "evento"]);

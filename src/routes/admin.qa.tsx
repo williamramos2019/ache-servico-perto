@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { listQaTickets, getQaTicket, updateQaTicket, addQaComment } from "@/lib/qa.functions";
@@ -54,13 +53,12 @@ const PRIORITY_COLOR: Record<string, string> = {
 function QaAdminPage() {
   const [openId, setOpenId] = useState<string | null>(null);
   const [filters, setFilters] = useState<{ status?: string; type?: string; priority?: string; search?: string }>({});
-  const list = useServerFn(listQaTickets);
   const qc = useQueryClient();
 
   const query = useQuery({
     queryKey: ["qa-tickets", filters],
     queryFn: () =>
-      list({
+      listQaTickets({
         data: {
           status: (filters.status ?? null) as never,
           type: (filters.type ?? null) as never,
@@ -213,9 +211,9 @@ function FilterSelect({
 }
 
 function TicketDrawer({ id, onClose }: { id: string; onClose: () => void }) {
-  const get = useServerFn(getQaTicket);
-  const update = useServerFn(updateQaTicket);
-  const comment = useServerFn(addQaComment);
+  const get = getQaTicket;
+  const update = updateQaTicket;
+  const comment = addQaComment;
   const qc = useQueryClient();
   const [body, setBody] = useState("");
 

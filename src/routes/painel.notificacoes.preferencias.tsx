@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
@@ -32,11 +31,9 @@ const DEFAULTS: Prefs = {
 };
 
 function PrefsPage() {
-  const get = useServerFn(getMyPreferences);
-  const save = useServerFn(savePreferences);
   const qc = useQueryClient();
 
-  const { data } = useQuery({ queryKey: ["push-prefs"], queryFn: () => get({}) });
+  const { data } = useQuery({ queryKey: ["push-prefs"], queryFn: () => getMyPreferences({}) });
   const [prefs, setPrefs] = useState<Prefs>(DEFAULTS);
 
   useEffect(() => {
@@ -44,7 +41,7 @@ function PrefsPage() {
   }, [data]);
 
   const mut = useMutation({
-    mutationFn: (p: Prefs) => save({ data: p }),
+    mutationFn: (p: Prefs) => savePreferences({ data: p }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["push-prefs"] });
       toast.success("Preferências salvas.");

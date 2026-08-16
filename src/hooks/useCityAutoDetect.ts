@@ -1,5 +1,4 @@
 import { useEffect, useRef } from "react";
-import { useServerFn } from "@tanstack/react-start";
 import { detectCityByIP, detectCityByGPS } from "@/lib/cityDetect.functions";
 import { CITY_OPTIONS, useSelectedCity, type CitySlug } from "./useSelectedCity";
 
@@ -19,7 +18,6 @@ function isKnownSlug(s: string | null | undefined): s is CitySlug {
  */
 export function useCityAutoDetect() {
   const { setCity } = useSelectedCity();
-  const ipFn = useServerFn(detectCityByIP);
   const ran = useRef(false);
 
   useEffect(() => {
@@ -29,7 +27,7 @@ export function useCityAutoDetect() {
     if (window.localStorage.getItem("selected_city")) return; // already chosen
     if (window.localStorage.getItem(DETECTED_KEY)) return; // avoid re-running each visit
 
-    ipFn()
+    detectCityByIP()
       .then((res) => {
         if (isKnownSlug(res?.slug)) setCity(res.slug);
       })
@@ -39,12 +37,11 @@ export function useCityAutoDetect() {
           window.localStorage.setItem(DETECTED_KEY, "1");
         } catch {}
       });
-  }, [ipFn, setCity]);
+  }, [setCity]);
 }
 
 export function useRunGPSDetect() {
   const { setCity } = useSelectedCity();
-  const gpsFn = useServerFn(detectCityByGPS);
   return () =>
     new Promise<{ slug: string | null; name: string | null } | null>((resolve) => {
       if (typeof navigator === "undefined" || !navigator.geolocation) {
@@ -54,7 +51,7 @@ export function useRunGPSDetect() {
       navigator.geolocation.getCurrentPosition(
         async (pos) => {
           try {
-            const res = await gpsFn({
+            const res = await detectCityByGPS({
               data: { lat: pos.coords.latitude, lng: pos.coords.longitude },
             });
             if (isKnownSlug(res?.slug)) setCity(res.slug);

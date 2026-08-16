@@ -1,5 +1,4 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -15,7 +14,7 @@ export const Route = createFileRoute("/admin/push/")({
 type Stats = Awaited<ReturnType<typeof pushDashboardStats>>;
 
 function PushDashboard() {
-  const load = useServerFn(pushDashboardStats);
+  const load = pushDashboardStats;
   const { data, isLoading } = useQuery({ queryKey: ["push-dashboard"], queryFn: () => load({}) });
 
   if (isLoading || !data) return <div className="py-10 text-center text-muted-foreground">Carregando métricas…</div>;

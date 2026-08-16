@@ -11,7 +11,6 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TransporteRouteImport } from './routes/transporte'
 import { Route as SobreRouteImport } from './routes/sobre'
-import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ServicosPublicosRouteImport } from './routes/servicos-publicos'
 import { Route as ReputacaoRouteImport } from './routes/reputacao'
 import { Route as PromocoesRouteImport } from './routes/promocoes'
@@ -71,7 +70,6 @@ import { Route as AdminPushNovoRouteImport } from './routes/admin.push.novo'
 import { Route as AdminPushHistoricoRouteImport } from './routes/admin.push.historico'
 import { Route as AdminPushIdRouteImport } from './routes/admin.push.$id'
 import { Route as PainelAnunciosIdEditarRouteImport } from './routes/painel.anuncios.$id.editar'
-import { Route as ApiPublicPushTrackRouteImport } from './routes/api/public/push/track'
 
 const TransporteRoute = TransporteRouteImport.update({
   id: '/transporte',
@@ -81,11 +79,6 @@ const TransporteRoute = TransporteRouteImport.update({
 const SobreRoute = SobreRouteImport.update({
   id: '/sobre',
   path: '/sobre',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
-  id: '/sitemap.xml',
-  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ServicosPublicosRoute = ServicosPublicosRouteImport.update({
@@ -384,11 +377,6 @@ const PainelAnunciosIdEditarRoute = PainelAnunciosIdEditarRouteImport.update({
   path: '/$id/editar',
   getParentRoute: () => PainelAnunciosRoute,
 } as any)
-const ApiPublicPushTrackRoute = ApiPublicPushTrackRouteImport.update({
-  id: '/api/public/push/track',
-  path: '/api/public/push/track',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -406,7 +394,6 @@ export interface FileRoutesByFullPath {
   '/promocoes': typeof PromocoesRoute
   '/reputacao': typeof ReputacaoRoute
   '/servicos-publicos': typeof ServicosPublicosRoute
-  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
   '/transporte': typeof TransporteRoute
   '/admin/blog': typeof AdminBlogRoute
@@ -452,7 +439,6 @@ export interface FileRoutesByFullPath {
   '/painel/empresas/nova': typeof PainelEmpresasNovaRoute
   '/painel/notificacoes/preferencias': typeof PainelNotificacoesPreferenciasRoute
   '/admin/push/': typeof AdminPushIndexRoute
-  '/api/public/push/track': typeof ApiPublicPushTrackRoute
   '/painel/anuncios/$id/editar': typeof PainelAnunciosIdEditarRoute
 }
 export interface FileRoutesByTo {
@@ -469,7 +455,6 @@ export interface FileRoutesByTo {
   '/promocoes': typeof PromocoesRoute
   '/reputacao': typeof ReputacaoRoute
   '/servicos-publicos': typeof ServicosPublicosRoute
-  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
   '/transporte': typeof TransporteRoute
   '/admin/blog': typeof AdminBlogRoute
@@ -514,7 +499,6 @@ export interface FileRoutesByTo {
   '/painel/empresas/nova': typeof PainelEmpresasNovaRoute
   '/painel/notificacoes/preferencias': typeof PainelNotificacoesPreferenciasRoute
   '/admin/push': typeof AdminPushIndexRoute
-  '/api/public/push/track': typeof ApiPublicPushTrackRoute
   '/painel/anuncios/$id/editar': typeof PainelAnunciosIdEditarRoute
 }
 export interface FileRoutesById {
@@ -534,7 +518,6 @@ export interface FileRoutesById {
   '/promocoes': typeof PromocoesRoute
   '/reputacao': typeof ReputacaoRoute
   '/servicos-publicos': typeof ServicosPublicosRoute
-  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
   '/transporte': typeof TransporteRoute
   '/admin/blog': typeof AdminBlogRoute
@@ -580,7 +563,6 @@ export interface FileRoutesById {
   '/painel/empresas/nova': typeof PainelEmpresasNovaRoute
   '/painel/notificacoes/preferencias': typeof PainelNotificacoesPreferenciasRoute
   '/admin/push/': typeof AdminPushIndexRoute
-  '/api/public/push/track': typeof ApiPublicPushTrackRoute
   '/painel/anuncios/$id/editar': typeof PainelAnunciosIdEditarRoute
 }
 export interface FileRouteTypes {
@@ -601,7 +583,6 @@ export interface FileRouteTypes {
     | '/promocoes'
     | '/reputacao'
     | '/servicos-publicos'
-    | '/sitemap.xml'
     | '/sobre'
     | '/transporte'
     | '/admin/blog'
@@ -647,7 +628,6 @@ export interface FileRouteTypes {
     | '/painel/empresas/nova'
     | '/painel/notificacoes/preferencias'
     | '/admin/push/'
-    | '/api/public/push/track'
     | '/painel/anuncios/$id/editar'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -664,7 +644,6 @@ export interface FileRouteTypes {
     | '/promocoes'
     | '/reputacao'
     | '/servicos-publicos'
-    | '/sitemap.xml'
     | '/sobre'
     | '/transporte'
     | '/admin/blog'
@@ -709,7 +688,6 @@ export interface FileRouteTypes {
     | '/painel/empresas/nova'
     | '/painel/notificacoes/preferencias'
     | '/admin/push'
-    | '/api/public/push/track'
     | '/painel/anuncios/$id/editar'
   id:
     | '__root__'
@@ -728,7 +706,6 @@ export interface FileRouteTypes {
     | '/promocoes'
     | '/reputacao'
     | '/servicos-publicos'
-    | '/sitemap.xml'
     | '/sobre'
     | '/transporte'
     | '/admin/blog'
@@ -774,7 +751,6 @@ export interface FileRouteTypes {
     | '/painel/empresas/nova'
     | '/painel/notificacoes/preferencias'
     | '/admin/push/'
-    | '/api/public/push/track'
     | '/painel/anuncios/$id/editar'
   fileRoutesById: FileRoutesById
 }
@@ -794,7 +770,6 @@ export interface RootRouteChildren {
   PromocoesRoute: typeof PromocoesRoute
   ReputacaoRoute: typeof ReputacaoRoute
   ServicosPublicosRoute: typeof ServicosPublicosRoute
-  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SobreRoute: typeof SobreRoute
   TransporteRoute: typeof TransporteRoute
   BlogSlugRoute: typeof BlogSlugRoute
@@ -804,7 +779,6 @@ export interface RootRouteChildren {
   EventosSlugRoute: typeof EventosSlugRoute
   BlogIndexRoute: typeof BlogIndexRoute
   EventosIndexRoute: typeof EventosIndexRoute
-  ApiPublicPushTrackRoute: typeof ApiPublicPushTrackRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -821,13 +795,6 @@ declare module '@tanstack/react-router' {
       path: '/sobre'
       fullPath: '/sobre'
       preLoaderRoute: typeof SobreRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sitemap.xml': {
-      id: '/sitemap.xml'
-      path: '/sitemap.xml'
-      fullPath: '/sitemap.xml'
-      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/servicos-publicos': {
@@ -1243,13 +1210,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PainelAnunciosIdEditarRouteImport
       parentRoute: typeof PainelAnunciosRoute
     }
-    '/api/public/push/track': {
-      id: '/api/public/push/track'
-      path: '/api/public/push/track'
-      fullPath: '/api/public/push/track'
-      preLoaderRoute: typeof ApiPublicPushTrackRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
@@ -1409,7 +1369,6 @@ const rootRouteChildren: RootRouteChildren = {
   PromocoesRoute: PromocoesRoute,
   ReputacaoRoute: ReputacaoRoute,
   ServicosPublicosRoute: ServicosPublicosRoute,
-  SitemapDotxmlRoute: SitemapDotxmlRoute,
   SobreRoute: SobreRoute,
   TransporteRoute: TransporteRoute,
   BlogSlugRoute: BlogSlugRoute,
@@ -1419,18 +1378,7 @@ const rootRouteChildren: RootRouteChildren = {
   EventosSlugRoute: EventosSlugRoute,
   BlogIndexRoute: BlogIndexRoute,
   EventosIndexRoute: EventosIndexRoute,
-  ApiPublicPushTrackRoute: ApiPublicPushTrackRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

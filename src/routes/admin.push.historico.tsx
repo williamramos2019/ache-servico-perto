@@ -1,5 +1,4 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -22,8 +21,8 @@ type Row = {
 };
 
 function HistoricoPush() {
-  const load = useServerFn(listAdminPush);
-  const del = useServerFn(deleteAdminPush);
+  const load = listAdminPush;
+  const del = deleteAdminPush;
   const qc = useQueryClient();
   const { data = [], isLoading } = useQuery({ queryKey: ["admin-push-list"], queryFn: () => load({}) });
   const mut = useMutation({
