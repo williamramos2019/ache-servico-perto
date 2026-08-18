@@ -189,6 +189,34 @@ export async function phpUpload<T>(
   }
 }
 
+export async function phpUploadForm<T>(
+  path: string,
+  form: FormData,
+  retryCsrf = true,
+): Promise<T> {
+  const token = await ensureCsrf();
+  const res = await fetch(apiUrl(path), {
+    method: "POST",
+    credentials: "include",
+    headers: { Accept: "application/json", "X-CSRF-Token": token },
+    body: form,
+  });
+  try {
+    return await parseEnvelope<T>(res);
+  } catch (err) {
+    if (
+      retryCsrf &&
+      err instanceof PhpApiError &&
+      err.status === 403 &&
+      err.code === "csrf_invalid"
+    ) {
+      clearCsrf();
+      return phpUploadForm<T>(path, form, false);
+    }
+    throw err;
+  }
+}
+
 export async function phpGetMe(): Promise<PhpUser | null> {
   try {
     const data = await phpGet<{ user: PhpUser; csrf_token?: string }>("/api/auth/me.php");

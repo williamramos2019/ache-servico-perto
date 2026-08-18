@@ -1,0 +1,2 @@
+code,name,city_slug,type,status,fare,operator_name,notes
+TEST-CSV-01,Linha fictícia CSV de teste AgendaAqui,sao-jose-da-lapa,municipal,unknown,,Operadora de teste,Não usar em produção

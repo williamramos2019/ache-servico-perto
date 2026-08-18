@@ -1,10 +1,12 @@
 {
+  "id": "/",
   "name": "AgendaAqui — Serviços perto de você",
   "short_name": "AgendaAqui",
   "description": "Marketplace regional de serviços, empresas e serviços públicos em Minas Gerais.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
+  "display_override": ["standalone", "browser"],
   "orientation": "portrait",
   "background_color": "#ffffff",
   "theme_color": "#0057FF",

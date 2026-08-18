@@ -98,8 +98,9 @@ export async function suggestCompanies(
 }
 
 export async function fetchCompanyBySlug(slug: string) {
+  const safe = slug.trim().toLowerCase();
   const data = await phpGet<{ company: Record<string, unknown> | null }>(
-    `/api/catalog/index.php?op=company&slug=${encodeURIComponent(slug)}`,
+    `/api/catalog/index.php?op=company&slug=${encodeURIComponent(safe)}`,
   );
   return data.company;
 }

@@ -17,6 +17,9 @@ import {
   Megaphone,
   Menu,
   Newspaper,
+  FileText,
+  Landmark,
+  Radio,
   ShieldCheck,
   ShoppingBag,
   X,
@@ -51,6 +54,11 @@ const NAV_ICONS: Record<string, IconType> = {
   "/transporte": Bus,
   "/empregos": Briefcase,
   "/promocoes": Megaphone,
+  "/ofertas-shopee": ShoppingBag,
+  "/agora": Radio,
+  "/representantes": Landmark,
+  "/transparencia": FileText,
+  "/roteiro-turistico": Compass,
 };
 
 function stripLeadingEmoji(label: string): string {
@@ -199,7 +207,7 @@ export function Header() {
             </Link>
           )}
 
-          <Link to="/planos" className="hidden sm:inline-flex">
+          <Link to="/cadastre-sua-empresa" className="hidden sm:inline-flex">
             <Button
               size="sm"
               className="btn-shine rounded-full bg-accent px-3 text-accent-foreground shadow-sm hover:bg-accent/90 sm:px-4"
@@ -302,7 +310,7 @@ export function Header() {
                   <Heart className="h-4 w-4" /> Favoritos
                 </Button>
               </Link>
-              <Link to="/planos" className="flex-1" onClick={() => setOpen(false)}>
+              <Link to="/cadastre-sua-empresa" className="flex-1" onClick={() => setOpen(false)}>
                 <Button size="sm" className="w-full bg-accent text-accent-foreground">Anunciar</Button>
               </Link>
             </div>

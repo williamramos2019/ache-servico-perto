@@ -335,8 +335,7 @@ function classify_migrations(array $files, array $applied): array
 
     foreach ($applied as $row) {
         if ((int) $row['success'] !== 1) {
-            $errors[] = 'Migration ' . $row['name'] . ' previously failed (success=0). '
-                . 'It is not applied. Inspect the database, then DELETE the failed row before retrying.';
+            log_line('WARNING', 'Previously failed ' . $row['name'] . ' will be retried');
         }
     }
 
@@ -348,6 +347,7 @@ function classify_migrations(array $files, array $applied): array
         }
 
         if ((int) $row['success'] !== 1) {
+            $pending[] = $file;
             continue;
         }
 
@@ -376,6 +376,11 @@ function apply_migration(PDO $pdo, array $file): void
     $inTransaction = false;
 
     try {
+        if (migrations_table_exists($pdo)) {
+            $clearFailed = $pdo->prepare('DELETE FROM migrations WHERE version = :version AND success = 0');
+            $clearFailed->execute([':version' => $file['version']]);
+        }
+
         $inTransaction = $pdo->beginTransaction();
         $pdo->exec($sql);
         if ($inTransaction && $pdo->inTransaction()) {

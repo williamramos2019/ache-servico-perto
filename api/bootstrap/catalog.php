@@ -7,10 +7,69 @@ require_once __DIR__ . '/mail.php';
 
 const CATALOG_APP_CITY_SLUGS = ['vespasiano', 'sao-jose-da-lapa'];
 
+function catalog_slug_is_safe(string $slug): bool
+{
+    return $slug !== ''
+        && strlen($slug) <= 255
+        && preg_match('/^[a-z0-9]+(?:-[a-z0-9]*)*$/', $slug) === 1;
+}
+
 /**
- * @param array<string, mixed> $row
- * @return array<string, mixed>
+ * @return list<string>
  */
+function catalog_slug_lookup_values(string $slug): array
+{
+    $values = [$slug];
+    $trimmed = rtrim($slug, '-');
+    if ($trimmed !== '' && $trimmed !== $slug) {
+        $values[] = $trimmed;
+    }
+
+    return $values;
+}
+
+/**
+ * @return array<string, mixed>|null
+ */
+function catalog_find_company_row(PDO $pdo, string $slug): ?array
+{
+    $select = 'SELECT ' . catalog_company_select() . '
+         FROM companies c
+         LEFT JOIN cities ci ON ci.id = c.city_id
+         WHERE c.slug = :slug
+         LIMIT 1';
+    $exact = $pdo->prepare($select);
+    foreach (catalog_slug_lookup_values($slug) as $candidate) {
+        $exact->execute([':slug' => $candidate]);
+        $row = $exact->fetch();
+        if ($row !== false) {
+            return $row;
+        }
+    }
+
+    $prefix = $pdo->prepare(
+        'SELECT ' . catalog_company_select() . '
+         FROM companies c
+         LEFT JOIN cities ci ON ci.id = c.city_id
+         WHERE CHAR_LENGTH(c.slug) >= 60
+           AND (
+             c.slug LIKE CONCAT(:prefix_a, "%")
+             OR :prefix_b LIKE CONCAT(c.slug, "%")
+           )
+         LIMIT 3'
+    );
+    $prefix->execute([
+        ':prefix_a' => $slug,
+        ':prefix_b' => $slug,
+    ]);
+    $rows = $prefix->fetchAll();
+    if (count($rows) === 1) {
+        return $rows[0];
+    }
+
+    return null;
+}
+
 /**
  * @param mixed $raw
  * @return array<string, string>|null

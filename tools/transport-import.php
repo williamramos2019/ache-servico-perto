@@ -6,11 +6,15 @@ declare(strict_types=1);
  * Importador de linhas de transporte (CLI only).
  *
  *   php tools/transport-import.php --help
- *   php tools/transport-import.php --file=linhas.json --source-name="Prefeitura SJL" --source-url="https://..." --dry-run
+ *   php tools/transport-import.php --file linhas.json --source-name "Prefeitura" --source-url "https://exemplo.gov.br" --dry-run
  */
 
 if (PHP_SAPI !== 'cli') {
-    fwrite(STDERR, "Este importador só pode ser executado pela linha de comando.\n");
+    if (!headers_sent()) {
+        http_response_code(403);
+        header('Content-Type: text/plain; charset=utf-8');
+    }
+    echo "Forbidden\n";
     exit(1);
 }
 
@@ -23,56 +27,37 @@ function transport_import_help(): void
 Importador de transporte público — AgendaAqui
 
 Uso:
-  php tools/transport-import.php --file=linhas.json --source-name="Prefeitura" --source-url="https://exemplo.gov.br" --dry-run
+  php tools/transport-import.php --file linhas.json --source-name "Prefeitura" --source-url "https://exemplo.gov.br" --dry-run
+  php tools/transport-import.php --file=linhas.csv --source-name=Prefeitura --source-url=https://exemplo.gov.br --limit=50
 
 Opções:
-  --file=nome.json             Arquivo dentro de storage/imports
-  --source-name=...            Nome da fonte (obrigatório)
-  --source-url=https://...     URL da fonte (obrigatório)
-  --source-type=prefeitura|der|consorcio|other
-  --dry-run                    Simula, não grava
+  --file nome.json|csv         Arquivo em storage/imports
+  --source-name ...            Nome da fonte (obrigatório)
+  --source-url https://...     URL da fonte (obrigatório)
+  --source-type prefeitura|der|consorcio|operador|dados-abertos|other
+  --source TYPE               Alias de --source-type (espaço ou --source=tipo)
+  --dry-run                    Somente leitura: não grava linhas, horários, pontos nem fontes
+  --update                     Atualiza linha existente e substitui horários/pontos
+  --resume                     Ignora linhas já cadastradas (code+tipo+cidade)
+  --limit=N                    Processa no máximo N registros
   --help
 
-Não há scraping. Sem arquivo sourced, o catálogo de linhas permanece vazio.
+Sem --update, linha já existente é duplicata e não é alterada (preserva edição manual).
+Não há scraping. Sem arquivo sourced, o catálogo permanece vazio.
 
 TXT;
 }
 
-$opts = [
-    'file' => '',
-    'source_name' => '',
-    'source_url' => '',
-    'source_type' => 'other',
-    'dry_run' => false,
-];
-
-foreach (array_slice($argv, 1) as $arg) {
-    if ($arg === '--help' || $arg === '-h') {
-        transport_import_help();
-        exit(0);
-    }
-    if ($arg === '--dry-run') {
-        $opts['dry_run'] = true;
-        continue;
-    }
-    if (str_starts_with($arg, '--file=')) {
-        $opts['file'] = substr($arg, 7);
-        continue;
-    }
-    if (str_starts_with($arg, '--source-name=')) {
-        $opts['source_name'] = substr($arg, 14);
-        continue;
-    }
-    if (str_starts_with($arg, '--source-url=')) {
-        $opts['source_url'] = substr($arg, 13);
-        continue;
-    }
-    if (str_starts_with($arg, '--source-type=')) {
-        $opts['source_type'] = substr($arg, 14);
-        continue;
-    }
-    fwrite(STDERR, "Opção desconhecida: $arg\n");
+try {
+    $opts = transport_parse_argv($argv);
+} catch (InvalidArgumentException $e) {
+    fwrite(STDERR, $e->getMessage() . PHP_EOL);
     exit(1);
+}
+
+if ($opts['help']) {
+    transport_import_help();
+    exit(0);
 }
 
 if ($opts['file'] === '' || $opts['source_name'] === '' || $opts['source_url'] === '') {

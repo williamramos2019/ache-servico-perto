@@ -17,47 +17,10 @@ declare(strict_types=1);
  *   DB_PORT     (default 3306)
  *   DB_PASSWORD (default empty)
  *   DB_SOCKET   (unix socket; preferred on cPanel when set)
+ *
+ * Environment file discovery lives in api/bootstrap/env.php.
  */
-function db_env_candidates(): array
-{
-    $candidates = [];
-    $explicit = getenv('AGENDAQUI_ENV_FILE');
-    if (is_string($explicit) && $explicit !== '') {
-        $candidates[] = $explicit;
-    }
-
-    $apiRoot = dirname(__DIR__, 2);
-    $accountRoot = dirname($apiRoot);
-    $candidates[] = $accountRoot . DIRECTORY_SEPARATOR . 'agendaqui' . DIRECTORY_SEPARATOR . 'load-env.php';
-    $candidates[] = $apiRoot . DIRECTORY_SEPARATOR . 'load-env.php';
-
-    return $candidates;
-}
-
-function db_load_optional_env(): void
-{
-    static $loaded = false;
-    if ($loaded) {
-        return;
-    }
-    $loaded = true;
-
-    $host = getenv('DB_HOST');
-    if (is_string($host) && $host !== '') {
-        return;
-    }
-
-    foreach (db_env_candidates() as $file) {
-        if (!is_file($file) || !is_readable($file)) {
-            continue;
-        }
-        if (!defined('AGENDAQUI_ENV_OK')) {
-            define('AGENDAQUI_ENV_OK', true);
-        }
-        require $file;
-        return;
-    }
-}
+require_once __DIR__ . '/env.php';
 
 function db_env(string $name, bool $required = true, string $default = ''): string
 {

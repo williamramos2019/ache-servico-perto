@@ -8,6 +8,7 @@ require_once __DIR__ . '/security.php';
 const AUTH_KNOWN_ROLES = ['admin', 'company_owner', 'user', 'editor', 'publisher'];
 const AUTH_SESSION_KEY = 'uid';
 const AUTH_LAST_SEEN_KEY = 'last_seen';
+const AUTH_SESSION_VERSION_KEY = 'session_version';
 const AUTH_MIN_PASSWORD_LENGTH = 8;
 const AUTH_MAX_PASSWORD_LENGTH = 72;
 const AUTH_IDLE_SECONDS = 28800;
@@ -34,14 +35,30 @@ function auth_session_name(): string
     return trim($name);
 }
 
+function auth_idle_seconds(): int
+{
+    $raw = getenv('AUTH_IDLE_SECONDS');
+    if ($raw === false || $raw === '') {
+        $fromEnv = $_ENV['AUTH_IDLE_SECONDS'] ?? '';
+        $raw = is_string($fromEnv) ? $fromEnv : '';
+    }
+    $seconds = (int) $raw;
+    if ($seconds < 300 || $seconds > 86400) {
+        return AUTH_IDLE_SECONDS;
+    }
+
+    return $seconds;
+}
+
 function auth_configure_session(): void
 {
+    $idle = auth_idle_seconds();
     ini_set('session.use_strict_mode', '1');
     ini_set('session.use_only_cookies', '1');
     ini_set('session.use_trans_sid', '0');
     ini_set('session.cookie_httponly', '1');
     ini_set('session.cookie_samesite', 'Lax');
-    ini_set('session.gc_maxlifetime', (string) AUTH_IDLE_SECONDS);
+    ini_set('session.gc_maxlifetime', (string) $idle);
 
     session_name(auth_session_name());
     session_set_cookie_params([
@@ -67,7 +84,7 @@ function auth_start_session(): void
 function auth_enforce_idle(): void
 {
     $seen = $_SESSION[AUTH_LAST_SEEN_KEY] ?? null;
-    if ($seen !== null && (time() - (int) $seen) > AUTH_IDLE_SECONDS) {
+    if ($seen !== null && (time() - (int) $seen) > auth_idle_seconds()) {
         $_SESSION = [];
         if (session_status() === PHP_SESSION_ACTIVE) {
             session_regenerate_id(true);
@@ -144,11 +161,52 @@ function auth_user_id(): ?string
     return $id;
 }
 
+function auth_session_version_valid(mixed $sessionVersion, mixed $durableVersion): bool
+{
+    return is_int($sessionVersion)
+        && is_int($durableVersion)
+        && $sessionVersion > 0
+        && $sessionVersion === $durableVersion;
+}
+
+function auth_reset_token_valid(string $token, string $storedHash, int $expiresAt, int $now): bool
+{
+    return preg_match('/^[a-f0-9]{64}$/', $token) === 1
+        && preg_match('/^[a-f0-9]{64}$/', $storedHash) === 1
+        && $expiresAt >= $now
+        && hash_equals($storedHash, hash('sha256', $token));
+}
+
+/**
+ * @return array{user_id:string,invalidate_all_tokens:true,next_session_version:int}
+ */
+function auth_reset_plan(string $userId, int $currentSessionVersion): array
+{
+    return [
+        'user_id' => $userId,
+        'invalidate_all_tokens' => true,
+        'next_session_version' => max(1, $currentSessionVersion + 1),
+    ];
+}
+
 function require_auth(): string
 {
     $id = auth_user_id();
     if ($id === null) {
         app_error('unauthenticated', 'Authentication is required.', 401);
+    }
+    $pdo = db_pdo(false);
+    $stmt = $pdo->prepare('SELECT session_version FROM users WHERE id = :id LIMIT 1');
+    $stmt->execute([':id' => $id]);
+    $version = $stmt->fetchColumn();
+    $durableVersion = is_int($version) ? $version : (is_numeric($version) ? (int) $version : null);
+    $sessionVersion = $_SESSION[AUTH_SESSION_VERSION_KEY] ?? null;
+    if (!auth_session_version_valid($sessionVersion, $durableVersion)) {
+        $_SESSION = [];
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_regenerate_id(true);
+        }
+        app_error('session_revoked', 'Session is no longer valid.', 401);
     }
 
     return $id;

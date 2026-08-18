@@ -9,29 +9,47 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as VespasianoRouteImport } from './routes/vespasiano'
 import { Route as TransporteRouteImport } from './routes/transporte'
+import { Route as TransparenciaRouteImport } from './routes/transparencia'
 import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as ServicosPublicosRouteImport } from './routes/servicos-publicos'
+import { Route as RoteiroTuristicoRouteImport } from './routes/roteiro-turistico'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ReputacaoRouteImport } from './routes/reputacao'
+import { Route as RepresentantesRouteImport } from './routes/representantes'
 import { Route as PromocoesRouteImport } from './routes/promocoes'
 import { Route as PlanosRouteImport } from './routes/planos'
 import { Route as PainelRouteImport } from './routes/painel'
+import { Route as OfertasShopeeRouteImport } from './routes/ofertas-shopee'
 import { Route as OQueFazerRouteImport } from './routes/o-que-fazer'
 import { Route as MarketplaceRouteImport } from './routes/marketplace'
 import { Route as FavoritosRouteImport } from './routes/favoritos'
 import { Route as EmpregosRouteImport } from './routes/empregos'
 import { Route as EmergenciaRouteImport } from './routes/emergencia'
 import { Route as ContatoRouteImport } from './routes/contato'
+import { Route as CadastreSuaEmpresaRouteImport } from './routes/cadastre-sua-empresa'
 import { Route as BuscarRouteImport } from './routes/buscar'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AoVivoRouteImport } from './routes/ao-vivo'
+import { Route as AgoraRouteImport } from './routes/agora'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as TransporteIndexRouteImport } from './routes/transporte.index'
+import { Route as RepresentantesIndexRouteImport } from './routes/representantes.index'
 import { Route as PainelIndexRouteImport } from './routes/painel.index'
 import { Route as EventosIndexRouteImport } from './routes/eventos.index'
+import { Route as EmpregosIndexRouteImport } from './routes/empregos.index'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as TransporteLinhasRouteImport } from './routes/transporte.linhas'
 import { Route as TransporteSlugRouteImport } from './routes/transporte.$slug'
+import { Route as RepresentantesRankingRouteImport } from './routes/representantes.ranking'
+import { Route as RepresentantesFeedRouteImport } from './routes/representantes.feed'
+import { Route as RepresentantesIdRouteImport } from './routes/representantes.$id'
+import { Route as PainelReivindicacoesRouteImport } from './routes/painel.reivindicacoes'
 import { Route as PainelRankingRouteImport } from './routes/painel.ranking'
+import { Route as PainelPromocoesRouteImport } from './routes/painel.promocoes'
 import { Route as PainelPerfilRouteImport } from './routes/painel.perfil'
 import { Route as PainelNotificacoesRouteImport } from './routes/painel.notificacoes'
 import { Route as PainelMensagensRouteImport } from './routes/painel.mensagens'
@@ -43,26 +61,43 @@ import { Route as PainelAnunciosRouteImport } from './routes/painel.anuncios'
 import { Route as MarketplaceSlugRouteImport } from './routes/marketplace.$slug'
 import { Route as EventosSlugRouteImport } from './routes/eventos.$slug'
 import { Route as EmpresaSlugRouteImport } from './routes/empresa.$slug'
+import { Route as EmpregosPremiumRouteImport } from './routes/empregos.premium'
+import { Route as EmpregosIdRouteImport } from './routes/empregos.$id'
 import { Route as CidadesSlugRouteImport } from './routes/cidades.$slug'
 import { Route as CategoriaSlugRouteImport } from './routes/categoria.$slug'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
+import { Route as AdminTurismoRouteImport } from './routes/admin.turismo'
 import { Route as AdminTransporteRouteImport } from './routes/admin.transporte'
 import { Route as AdminTextosRouteImport } from './routes/admin.textos'
+import { Route as AdminSolicitacoesRouteImport } from './routes/admin.solicitacoes'
+import { Route as AdminShopeeFeedsRouteImport } from './routes/admin.shopee-feeds'
 import { Route as AdminServicosPublicosRouteImport } from './routes/admin.servicos-publicos'
+import { Route as AdminScraperVespasianoRouteImport } from './routes/admin.scraper-vespasiano'
+import { Route as AdminScraperSjlRouteImport } from './routes/admin.scraper-sjl'
+import { Route as AdminScraperCamaraSjlRouteImport } from './routes/admin.scraper-camara-sjl'
 import { Route as AdminReivindicacoesRouteImport } from './routes/admin.reivindicacoes'
 import { Route as AdminQaRouteImport } from './routes/admin.qa'
 import { Route as AdminPushRouteImport } from './routes/admin.push'
+import { Route as AdminPromocoesRouteImport } from './routes/admin.promocoes'
 import { Route as AdminPlanosRouteImport } from './routes/admin.planos'
 import { Route as AdminMenuRouteImport } from './routes/admin.menu'
 import { Route as AdminLeadsRouteImport } from './routes/admin.leads'
+import { Route as AdminIntegracoesRouteImport } from './routes/admin.integracoes'
 import { Route as AdminImportsRouteImport } from './routes/admin.imports'
 import { Route as AdminEventosRouteImport } from './routes/admin.eventos'
 import { Route as AdminEmpresasRouteImport } from './routes/admin.empresas'
+import { Route as AdminEmpregosRouteImport } from './routes/admin.empregos'
 import { Route as AdminEmergenciaRouteImport } from './routes/admin.emergencia'
 import { Route as AdminDuplicadosRouteImport } from './routes/admin.duplicados'
 import { Route as AdminConfiguracoesRouteImport } from './routes/admin.configuracoes'
 import { Route as AdminCidadesRouteImport } from './routes/admin.cidades'
+import { Route as AdminCalendarioEditorialRouteImport } from './routes/admin.calendario-editorial'
+import { Route as AdminBlogAiRouteImport } from './routes/admin.blog-ai'
 import { Route as AdminBlogRouteImport } from './routes/admin.blog'
+import { Route as AdminBackupRouteImport } from './routes/admin.backup'
+import { Route as AdminAoVivoRouteImport } from './routes/admin.ao-vivo'
+import { Route as AdminAnunciosRouteImport } from './routes/admin.anuncios'
+import { Route as AdminAnalyticsAnunciosRouteImport } from './routes/admin.analytics-anuncios'
 import { Route as AdminPushIndexRouteImport } from './routes/admin.push.index'
 import { Route as PainelNotificacoesPreferenciasRouteImport } from './routes/painel.notificacoes.preferencias'
 import { Route as PainelEmpresasNovaRouteImport } from './routes/painel.empresas.nova'
@@ -74,9 +109,19 @@ import { Route as AdminPushHistoricoRouteImport } from './routes/admin.push.hist
 import { Route as AdminPushIdRouteImport } from './routes/admin.push.$id'
 import { Route as PainelAnunciosIdEditarRouteImport } from './routes/painel.anuncios.$id.editar'
 
+const VespasianoRoute = VespasianoRouteImport.update({
+  id: '/vespasiano',
+  path: '/vespasiano',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TransporteRoute = TransporteRouteImport.update({
   id: '/transporte',
   path: '/transporte',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TransparenciaRoute = TransparenciaRouteImport.update({
+  id: '/transparencia',
+  path: '/transparencia',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SobreRoute = SobreRouteImport.update({
@@ -89,9 +134,24 @@ const ServicosPublicosRoute = ServicosPublicosRouteImport.update({
   path: '/servicos-publicos',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RoteiroTuristicoRoute = RoteiroTuristicoRouteImport.update({
+  id: '/roteiro-turistico',
+  path: '/roteiro-turistico',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ReputacaoRoute = ReputacaoRouteImport.update({
   id: '/reputacao',
   path: '/reputacao',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RepresentantesRoute = RepresentantesRouteImport.update({
+  id: '/representantes',
+  path: '/representantes',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PromocoesRoute = PromocoesRouteImport.update({
@@ -107,6 +167,11 @@ const PlanosRoute = PlanosRouteImport.update({
 const PainelRoute = PainelRouteImport.update({
   id: '/painel',
   path: '/painel',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OfertasShopeeRoute = OfertasShopeeRouteImport.update({
+  id: '/ofertas-shopee',
+  path: '/ofertas-shopee',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OQueFazerRoute = OQueFazerRouteImport.update({
@@ -139,6 +204,11 @@ const ContatoRoute = ContatoRouteImport.update({
   path: '/contato',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CadastreSuaEmpresaRoute = CadastreSuaEmpresaRouteImport.update({
+  id: '/cadastre-sua-empresa',
+  path: '/cadastre-sua-empresa',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BuscarRoute = BuscarRouteImport.update({
   id: '/buscar',
   path: '/buscar',
@@ -147,6 +217,16 @@ const BuscarRoute = BuscarRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AoVivoRoute = AoVivoRouteImport.update({
+  id: '/ao-vivo',
+  path: '/ao-vivo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AgoraRoute = AgoraRouteImport.update({
+  id: '/agora',
+  path: '/agora',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRoute = AdminRouteImport.update({
@@ -159,6 +239,16 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TransporteIndexRoute = TransporteIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => TransporteRoute,
+} as any)
+const RepresentantesIndexRoute = RepresentantesIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => RepresentantesRoute,
+} as any)
 const PainelIndexRoute = PainelIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -168,6 +258,11 @@ const EventosIndexRoute = EventosIndexRouteImport.update({
   id: '/eventos/',
   path: '/eventos/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const EmpregosIndexRoute = EmpregosIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => EmpregosRoute,
 } as any)
 const BlogIndexRoute = BlogIndexRouteImport.update({
   id: '/blog/',
@@ -179,14 +274,44 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
+const TransporteLinhasRoute = TransporteLinhasRouteImport.update({
+  id: '/linhas',
+  path: '/linhas',
+  getParentRoute: () => TransporteRoute,
+} as any)
 const TransporteSlugRoute = TransporteSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
   getParentRoute: () => TransporteRoute,
 } as any)
+const RepresentantesRankingRoute = RepresentantesRankingRouteImport.update({
+  id: '/ranking',
+  path: '/ranking',
+  getParentRoute: () => RepresentantesRoute,
+} as any)
+const RepresentantesFeedRoute = RepresentantesFeedRouteImport.update({
+  id: '/feed',
+  path: '/feed',
+  getParentRoute: () => RepresentantesRoute,
+} as any)
+const RepresentantesIdRoute = RepresentantesIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => RepresentantesRoute,
+} as any)
+const PainelReivindicacoesRoute = PainelReivindicacoesRouteImport.update({
+  id: '/reivindicacoes',
+  path: '/reivindicacoes',
+  getParentRoute: () => PainelRoute,
+} as any)
 const PainelRankingRoute = PainelRankingRouteImport.update({
   id: '/ranking',
   path: '/ranking',
+  getParentRoute: () => PainelRoute,
+} as any)
+const PainelPromocoesRoute = PainelPromocoesRouteImport.update({
+  id: '/promocoes',
+  path: '/promocoes',
   getParentRoute: () => PainelRoute,
 } as any)
 const PainelPerfilRoute = PainelPerfilRouteImport.update({
@@ -244,6 +369,16 @@ const EmpresaSlugRoute = EmpresaSlugRouteImport.update({
   path: '/empresa/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EmpregosPremiumRoute = EmpregosPremiumRouteImport.update({
+  id: '/premium',
+  path: '/premium',
+  getParentRoute: () => EmpregosRoute,
+} as any)
+const EmpregosIdRoute = EmpregosIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => EmpregosRoute,
+} as any)
 const CidadesSlugRoute = CidadesSlugRouteImport.update({
   id: '/cidades/$slug',
   path: '/cidades/$slug',
@@ -259,6 +394,11 @@ const BlogSlugRoute = BlogSlugRouteImport.update({
   path: '/blog/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminTurismoRoute = AdminTurismoRouteImport.update({
+  id: '/turismo',
+  path: '/turismo',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminTransporteRoute = AdminTransporteRouteImport.update({
   id: '/transporte',
   path: '/transporte',
@@ -269,9 +409,34 @@ const AdminTextosRoute = AdminTextosRouteImport.update({
   path: '/textos',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminSolicitacoesRoute = AdminSolicitacoesRouteImport.update({
+  id: '/solicitacoes',
+  path: '/solicitacoes',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminShopeeFeedsRoute = AdminShopeeFeedsRouteImport.update({
+  id: '/shopee-feeds',
+  path: '/shopee-feeds',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminServicosPublicosRoute = AdminServicosPublicosRouteImport.update({
   id: '/servicos-publicos',
   path: '/servicos-publicos',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminScraperVespasianoRoute = AdminScraperVespasianoRouteImport.update({
+  id: '/scraper-vespasiano',
+  path: '/scraper-vespasiano',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminScraperSjlRoute = AdminScraperSjlRouteImport.update({
+  id: '/scraper-sjl',
+  path: '/scraper-sjl',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminScraperCamaraSjlRoute = AdminScraperCamaraSjlRouteImport.update({
+  id: '/scraper-camara-sjl',
+  path: '/scraper-camara-sjl',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminReivindicacoesRoute = AdminReivindicacoesRouteImport.update({
@@ -289,6 +454,11 @@ const AdminPushRoute = AdminPushRouteImport.update({
   path: '/push',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminPromocoesRoute = AdminPromocoesRouteImport.update({
+  id: '/promocoes',
+  path: '/promocoes',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminPlanosRoute = AdminPlanosRouteImport.update({
   id: '/planos',
   path: '/planos',
@@ -304,6 +474,11 @@ const AdminLeadsRoute = AdminLeadsRouteImport.update({
   path: '/leads',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminIntegracoesRoute = AdminIntegracoesRouteImport.update({
+  id: '/integracoes',
+  path: '/integracoes',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminImportsRoute = AdminImportsRouteImport.update({
   id: '/imports',
   path: '/imports',
@@ -317,6 +492,11 @@ const AdminEventosRoute = AdminEventosRouteImport.update({
 const AdminEmpresasRoute = AdminEmpresasRouteImport.update({
   id: '/empresas',
   path: '/empresas',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminEmpregosRoute = AdminEmpregosRouteImport.update({
+  id: '/empregos',
+  path: '/empregos',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminEmergenciaRoute = AdminEmergenciaRouteImport.update({
@@ -339,9 +519,40 @@ const AdminCidadesRoute = AdminCidadesRouteImport.update({
   path: '/cidades',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminCalendarioEditorialRoute =
+  AdminCalendarioEditorialRouteImport.update({
+    id: '/calendario-editorial',
+    path: '/calendario-editorial',
+    getParentRoute: () => AdminRoute,
+  } as any)
+const AdminBlogAiRoute = AdminBlogAiRouteImport.update({
+  id: '/blog-ai',
+  path: '/blog-ai',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminBlogRoute = AdminBlogRouteImport.update({
   id: '/blog',
   path: '/blog',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminBackupRoute = AdminBackupRouteImport.update({
+  id: '/backup',
+  path: '/backup',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAoVivoRoute = AdminAoVivoRouteImport.update({
+  id: '/ao-vivo',
+  path: '/ao-vivo',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAnunciosRoute = AdminAnunciosRouteImport.update({
+  id: '/anuncios',
+  path: '/anuncios',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAnalyticsAnunciosRoute = AdminAnalyticsAnunciosRouteImport.update({
+  id: '/analytics-anuncios',
+  path: '/analytics-anuncios',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminPushIndexRoute = AdminPushIndexRouteImport.update({
@@ -399,41 +610,67 @@ const PainelAnunciosIdEditarRoute = PainelAnunciosIdEditarRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/agora': typeof AgoraRoute
+  '/ao-vivo': typeof AoVivoRoute
   '/auth': typeof AuthRoute
   '/buscar': typeof BuscarRoute
+  '/cadastre-sua-empresa': typeof CadastreSuaEmpresaRoute
   '/contato': typeof ContatoRoute
   '/emergencia': typeof EmergenciaRoute
-  '/empregos': typeof EmpregosRoute
+  '/empregos': typeof EmpregosRouteWithChildren
   '/favoritos': typeof FavoritosRoute
   '/marketplace': typeof MarketplaceRouteWithChildren
   '/o-que-fazer': typeof OQueFazerRoute
+  '/ofertas-shopee': typeof OfertasShopeeRoute
   '/painel': typeof PainelRouteWithChildren
   '/planos': typeof PlanosRoute
   '/promocoes': typeof PromocoesRoute
+  '/representantes': typeof RepresentantesRouteWithChildren
   '/reputacao': typeof ReputacaoRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/roteiro-turistico': typeof RoteiroTuristicoRoute
   '/servicos-publicos': typeof ServicosPublicosRoute
   '/sobre': typeof SobreRoute
+  '/transparencia': typeof TransparenciaRoute
   '/transporte': typeof TransporteRouteWithChildren
+  '/vespasiano': typeof VespasianoRoute
+  '/admin/analytics-anuncios': typeof AdminAnalyticsAnunciosRoute
+  '/admin/anuncios': typeof AdminAnunciosRoute
+  '/admin/ao-vivo': typeof AdminAoVivoRoute
+  '/admin/backup': typeof AdminBackupRoute
   '/admin/blog': typeof AdminBlogRoute
+  '/admin/blog-ai': typeof AdminBlogAiRoute
+  '/admin/calendario-editorial': typeof AdminCalendarioEditorialRoute
   '/admin/cidades': typeof AdminCidadesRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
   '/admin/duplicados': typeof AdminDuplicadosRoute
   '/admin/emergencia': typeof AdminEmergenciaRoute
+  '/admin/empregos': typeof AdminEmpregosRoute
   '/admin/empresas': typeof AdminEmpresasRoute
   '/admin/eventos': typeof AdminEventosRoute
   '/admin/imports': typeof AdminImportsRoute
+  '/admin/integracoes': typeof AdminIntegracoesRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/menu': typeof AdminMenuRoute
   '/admin/planos': typeof AdminPlanosRoute
+  '/admin/promocoes': typeof AdminPromocoesRoute
   '/admin/push': typeof AdminPushRouteWithChildren
   '/admin/qa': typeof AdminQaRoute
   '/admin/reivindicacoes': typeof AdminReivindicacoesRoute
+  '/admin/scraper-camara-sjl': typeof AdminScraperCamaraSjlRoute
+  '/admin/scraper-sjl': typeof AdminScraperSjlRoute
+  '/admin/scraper-vespasiano': typeof AdminScraperVespasianoRoute
   '/admin/servicos-publicos': typeof AdminServicosPublicosRoute
+  '/admin/shopee-feeds': typeof AdminShopeeFeedsRoute
+  '/admin/solicitacoes': typeof AdminSolicitacoesRoute
   '/admin/textos': typeof AdminTextosRoute
   '/admin/transporte': typeof AdminTransporteRoute
+  '/admin/turismo': typeof AdminTurismoRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/categoria/$slug': typeof CategoriaSlugRoute
   '/cidades/$slug': typeof CidadesSlugRoute
+  '/empregos/$id': typeof EmpregosIdRoute
+  '/empregos/premium': typeof EmpregosPremiumRoute
   '/empresa/$slug': typeof EmpresaSlugRoute
   '/eventos/$slug': typeof EventosSlugRoute
   '/marketplace/$slug': typeof MarketplaceSlugRoute
@@ -445,12 +682,21 @@ export interface FileRoutesByFullPath {
   '/painel/mensagens': typeof PainelMensagensRoute
   '/painel/notificacoes': typeof PainelNotificacoesRouteWithChildren
   '/painel/perfil': typeof PainelPerfilRoute
+  '/painel/promocoes': typeof PainelPromocoesRoute
   '/painel/ranking': typeof PainelRankingRoute
+  '/painel/reivindicacoes': typeof PainelReivindicacoesRoute
+  '/representantes/$id': typeof RepresentantesIdRoute
+  '/representantes/feed': typeof RepresentantesFeedRoute
+  '/representantes/ranking': typeof RepresentantesRankingRoute
   '/transporte/$slug': typeof TransporteSlugRoute
+  '/transporte/linhas': typeof TransporteLinhasRoute
   '/admin/': typeof AdminIndexRoute
   '/blog/': typeof BlogIndexRoute
+  '/empregos/': typeof EmpregosIndexRoute
   '/eventos/': typeof EventosIndexRoute
   '/painel/': typeof PainelIndexRoute
+  '/representantes/': typeof RepresentantesIndexRoute
+  '/transporte/': typeof TransporteIndexRoute
   '/admin/push/$id': typeof AdminPushIdRoute
   '/admin/push/historico': typeof AdminPushHistoricoRoute
   '/admin/push/novo': typeof AdminPushNovoRoute
@@ -464,39 +710,62 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/agora': typeof AgoraRoute
+  '/ao-vivo': typeof AoVivoRoute
   '/auth': typeof AuthRoute
   '/buscar': typeof BuscarRoute
+  '/cadastre-sua-empresa': typeof CadastreSuaEmpresaRoute
   '/contato': typeof ContatoRoute
   '/emergencia': typeof EmergenciaRoute
-  '/empregos': typeof EmpregosRoute
   '/favoritos': typeof FavoritosRoute
   '/marketplace': typeof MarketplaceRouteWithChildren
   '/o-que-fazer': typeof OQueFazerRoute
+  '/ofertas-shopee': typeof OfertasShopeeRoute
   '/planos': typeof PlanosRoute
   '/promocoes': typeof PromocoesRoute
   '/reputacao': typeof ReputacaoRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/roteiro-turistico': typeof RoteiroTuristicoRoute
   '/servicos-publicos': typeof ServicosPublicosRoute
   '/sobre': typeof SobreRoute
-  '/transporte': typeof TransporteRouteWithChildren
+  '/transparencia': typeof TransparenciaRoute
+  '/vespasiano': typeof VespasianoRoute
+  '/admin/analytics-anuncios': typeof AdminAnalyticsAnunciosRoute
+  '/admin/anuncios': typeof AdminAnunciosRoute
+  '/admin/ao-vivo': typeof AdminAoVivoRoute
+  '/admin/backup': typeof AdminBackupRoute
   '/admin/blog': typeof AdminBlogRoute
+  '/admin/blog-ai': typeof AdminBlogAiRoute
+  '/admin/calendario-editorial': typeof AdminCalendarioEditorialRoute
   '/admin/cidades': typeof AdminCidadesRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
   '/admin/duplicados': typeof AdminDuplicadosRoute
   '/admin/emergencia': typeof AdminEmergenciaRoute
+  '/admin/empregos': typeof AdminEmpregosRoute
   '/admin/empresas': typeof AdminEmpresasRoute
   '/admin/eventos': typeof AdminEventosRoute
   '/admin/imports': typeof AdminImportsRoute
+  '/admin/integracoes': typeof AdminIntegracoesRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/menu': typeof AdminMenuRoute
   '/admin/planos': typeof AdminPlanosRoute
+  '/admin/promocoes': typeof AdminPromocoesRoute
   '/admin/qa': typeof AdminQaRoute
   '/admin/reivindicacoes': typeof AdminReivindicacoesRoute
+  '/admin/scraper-camara-sjl': typeof AdminScraperCamaraSjlRoute
+  '/admin/scraper-sjl': typeof AdminScraperSjlRoute
+  '/admin/scraper-vespasiano': typeof AdminScraperVespasianoRoute
   '/admin/servicos-publicos': typeof AdminServicosPublicosRoute
+  '/admin/shopee-feeds': typeof AdminShopeeFeedsRoute
+  '/admin/solicitacoes': typeof AdminSolicitacoesRoute
   '/admin/textos': typeof AdminTextosRoute
   '/admin/transporte': typeof AdminTransporteRoute
+  '/admin/turismo': typeof AdminTurismoRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/categoria/$slug': typeof CategoriaSlugRoute
   '/cidades/$slug': typeof CidadesSlugRoute
+  '/empregos/$id': typeof EmpregosIdRoute
+  '/empregos/premium': typeof EmpregosPremiumRoute
   '/empresa/$slug': typeof EmpresaSlugRoute
   '/eventos/$slug': typeof EventosSlugRoute
   '/marketplace/$slug': typeof MarketplaceSlugRoute
@@ -508,12 +777,21 @@ export interface FileRoutesByTo {
   '/painel/mensagens': typeof PainelMensagensRoute
   '/painel/notificacoes': typeof PainelNotificacoesRouteWithChildren
   '/painel/perfil': typeof PainelPerfilRoute
+  '/painel/promocoes': typeof PainelPromocoesRoute
   '/painel/ranking': typeof PainelRankingRoute
+  '/painel/reivindicacoes': typeof PainelReivindicacoesRoute
+  '/representantes/$id': typeof RepresentantesIdRoute
+  '/representantes/feed': typeof RepresentantesFeedRoute
+  '/representantes/ranking': typeof RepresentantesRankingRoute
   '/transporte/$slug': typeof TransporteSlugRoute
+  '/transporte/linhas': typeof TransporteLinhasRoute
   '/admin': typeof AdminIndexRoute
   '/blog': typeof BlogIndexRoute
+  '/empregos': typeof EmpregosIndexRoute
   '/eventos': typeof EventosIndexRoute
   '/painel': typeof PainelIndexRoute
+  '/representantes': typeof RepresentantesIndexRoute
+  '/transporte': typeof TransporteIndexRoute
   '/admin/push/$id': typeof AdminPushIdRoute
   '/admin/push/historico': typeof AdminPushHistoricoRoute
   '/admin/push/novo': typeof AdminPushNovoRoute
@@ -529,41 +807,67 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/agora': typeof AgoraRoute
+  '/ao-vivo': typeof AoVivoRoute
   '/auth': typeof AuthRoute
   '/buscar': typeof BuscarRoute
+  '/cadastre-sua-empresa': typeof CadastreSuaEmpresaRoute
   '/contato': typeof ContatoRoute
   '/emergencia': typeof EmergenciaRoute
-  '/empregos': typeof EmpregosRoute
+  '/empregos': typeof EmpregosRouteWithChildren
   '/favoritos': typeof FavoritosRoute
   '/marketplace': typeof MarketplaceRouteWithChildren
   '/o-que-fazer': typeof OQueFazerRoute
+  '/ofertas-shopee': typeof OfertasShopeeRoute
   '/painel': typeof PainelRouteWithChildren
   '/planos': typeof PlanosRoute
   '/promocoes': typeof PromocoesRoute
+  '/representantes': typeof RepresentantesRouteWithChildren
   '/reputacao': typeof ReputacaoRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/roteiro-turistico': typeof RoteiroTuristicoRoute
   '/servicos-publicos': typeof ServicosPublicosRoute
   '/sobre': typeof SobreRoute
+  '/transparencia': typeof TransparenciaRoute
   '/transporte': typeof TransporteRouteWithChildren
+  '/vespasiano': typeof VespasianoRoute
+  '/admin/analytics-anuncios': typeof AdminAnalyticsAnunciosRoute
+  '/admin/anuncios': typeof AdminAnunciosRoute
+  '/admin/ao-vivo': typeof AdminAoVivoRoute
+  '/admin/backup': typeof AdminBackupRoute
   '/admin/blog': typeof AdminBlogRoute
+  '/admin/blog-ai': typeof AdminBlogAiRoute
+  '/admin/calendario-editorial': typeof AdminCalendarioEditorialRoute
   '/admin/cidades': typeof AdminCidadesRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
   '/admin/duplicados': typeof AdminDuplicadosRoute
   '/admin/emergencia': typeof AdminEmergenciaRoute
+  '/admin/empregos': typeof AdminEmpregosRoute
   '/admin/empresas': typeof AdminEmpresasRoute
   '/admin/eventos': typeof AdminEventosRoute
   '/admin/imports': typeof AdminImportsRoute
+  '/admin/integracoes': typeof AdminIntegracoesRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/menu': typeof AdminMenuRoute
   '/admin/planos': typeof AdminPlanosRoute
+  '/admin/promocoes': typeof AdminPromocoesRoute
   '/admin/push': typeof AdminPushRouteWithChildren
   '/admin/qa': typeof AdminQaRoute
   '/admin/reivindicacoes': typeof AdminReivindicacoesRoute
+  '/admin/scraper-camara-sjl': typeof AdminScraperCamaraSjlRoute
+  '/admin/scraper-sjl': typeof AdminScraperSjlRoute
+  '/admin/scraper-vespasiano': typeof AdminScraperVespasianoRoute
   '/admin/servicos-publicos': typeof AdminServicosPublicosRoute
+  '/admin/shopee-feeds': typeof AdminShopeeFeedsRoute
+  '/admin/solicitacoes': typeof AdminSolicitacoesRoute
   '/admin/textos': typeof AdminTextosRoute
   '/admin/transporte': typeof AdminTransporteRoute
+  '/admin/turismo': typeof AdminTurismoRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/categoria/$slug': typeof CategoriaSlugRoute
   '/cidades/$slug': typeof CidadesSlugRoute
+  '/empregos/$id': typeof EmpregosIdRoute
+  '/empregos/premium': typeof EmpregosPremiumRoute
   '/empresa/$slug': typeof EmpresaSlugRoute
   '/eventos/$slug': typeof EventosSlugRoute
   '/marketplace/$slug': typeof MarketplaceSlugRoute
@@ -575,12 +879,21 @@ export interface FileRoutesById {
   '/painel/mensagens': typeof PainelMensagensRoute
   '/painel/notificacoes': typeof PainelNotificacoesRouteWithChildren
   '/painel/perfil': typeof PainelPerfilRoute
+  '/painel/promocoes': typeof PainelPromocoesRoute
   '/painel/ranking': typeof PainelRankingRoute
+  '/painel/reivindicacoes': typeof PainelReivindicacoesRoute
+  '/representantes/$id': typeof RepresentantesIdRoute
+  '/representantes/feed': typeof RepresentantesFeedRoute
+  '/representantes/ranking': typeof RepresentantesRankingRoute
   '/transporte/$slug': typeof TransporteSlugRoute
+  '/transporte/linhas': typeof TransporteLinhasRoute
   '/admin/': typeof AdminIndexRoute
   '/blog/': typeof BlogIndexRoute
+  '/empregos/': typeof EmpregosIndexRoute
   '/eventos/': typeof EventosIndexRoute
   '/painel/': typeof PainelIndexRoute
+  '/representantes/': typeof RepresentantesIndexRoute
+  '/transporte/': typeof TransporteIndexRoute
   '/admin/push/$id': typeof AdminPushIdRoute
   '/admin/push/historico': typeof AdminPushHistoricoRoute
   '/admin/push/novo': typeof AdminPushNovoRoute
@@ -597,41 +910,67 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/agora'
+    | '/ao-vivo'
     | '/auth'
     | '/buscar'
+    | '/cadastre-sua-empresa'
     | '/contato'
     | '/emergencia'
     | '/empregos'
     | '/favoritos'
     | '/marketplace'
     | '/o-que-fazer'
+    | '/ofertas-shopee'
     | '/painel'
     | '/planos'
     | '/promocoes'
+    | '/representantes'
     | '/reputacao'
+    | '/reset-password'
+    | '/roteiro-turistico'
     | '/servicos-publicos'
     | '/sobre'
+    | '/transparencia'
     | '/transporte'
+    | '/vespasiano'
+    | '/admin/analytics-anuncios'
+    | '/admin/anuncios'
+    | '/admin/ao-vivo'
+    | '/admin/backup'
     | '/admin/blog'
+    | '/admin/blog-ai'
+    | '/admin/calendario-editorial'
     | '/admin/cidades'
     | '/admin/configuracoes'
     | '/admin/duplicados'
     | '/admin/emergencia'
+    | '/admin/empregos'
     | '/admin/empresas'
     | '/admin/eventos'
     | '/admin/imports'
+    | '/admin/integracoes'
     | '/admin/leads'
     | '/admin/menu'
     | '/admin/planos'
+    | '/admin/promocoes'
     | '/admin/push'
     | '/admin/qa'
     | '/admin/reivindicacoes'
+    | '/admin/scraper-camara-sjl'
+    | '/admin/scraper-sjl'
+    | '/admin/scraper-vespasiano'
     | '/admin/servicos-publicos'
+    | '/admin/shopee-feeds'
+    | '/admin/solicitacoes'
     | '/admin/textos'
     | '/admin/transporte'
+    | '/admin/turismo'
     | '/blog/$slug'
     | '/categoria/$slug'
     | '/cidades/$slug'
+    | '/empregos/$id'
+    | '/empregos/premium'
     | '/empresa/$slug'
     | '/eventos/$slug'
     | '/marketplace/$slug'
@@ -643,12 +982,21 @@ export interface FileRouteTypes {
     | '/painel/mensagens'
     | '/painel/notificacoes'
     | '/painel/perfil'
+    | '/painel/promocoes'
     | '/painel/ranking'
+    | '/painel/reivindicacoes'
+    | '/representantes/$id'
+    | '/representantes/feed'
+    | '/representantes/ranking'
     | '/transporte/$slug'
+    | '/transporte/linhas'
     | '/admin/'
     | '/blog/'
+    | '/empregos/'
     | '/eventos/'
     | '/painel/'
+    | '/representantes/'
+    | '/transporte/'
     | '/admin/push/$id'
     | '/admin/push/historico'
     | '/admin/push/novo'
@@ -662,39 +1010,62 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/agora'
+    | '/ao-vivo'
     | '/auth'
     | '/buscar'
+    | '/cadastre-sua-empresa'
     | '/contato'
     | '/emergencia'
-    | '/empregos'
     | '/favoritos'
     | '/marketplace'
     | '/o-que-fazer'
+    | '/ofertas-shopee'
     | '/planos'
     | '/promocoes'
     | '/reputacao'
+    | '/reset-password'
+    | '/roteiro-turistico'
     | '/servicos-publicos'
     | '/sobre'
-    | '/transporte'
+    | '/transparencia'
+    | '/vespasiano'
+    | '/admin/analytics-anuncios'
+    | '/admin/anuncios'
+    | '/admin/ao-vivo'
+    | '/admin/backup'
     | '/admin/blog'
+    | '/admin/blog-ai'
+    | '/admin/calendario-editorial'
     | '/admin/cidades'
     | '/admin/configuracoes'
     | '/admin/duplicados'
     | '/admin/emergencia'
+    | '/admin/empregos'
     | '/admin/empresas'
     | '/admin/eventos'
     | '/admin/imports'
+    | '/admin/integracoes'
     | '/admin/leads'
     | '/admin/menu'
     | '/admin/planos'
+    | '/admin/promocoes'
     | '/admin/qa'
     | '/admin/reivindicacoes'
+    | '/admin/scraper-camara-sjl'
+    | '/admin/scraper-sjl'
+    | '/admin/scraper-vespasiano'
     | '/admin/servicos-publicos'
+    | '/admin/shopee-feeds'
+    | '/admin/solicitacoes'
     | '/admin/textos'
     | '/admin/transporte'
+    | '/admin/turismo'
     | '/blog/$slug'
     | '/categoria/$slug'
     | '/cidades/$slug'
+    | '/empregos/$id'
+    | '/empregos/premium'
     | '/empresa/$slug'
     | '/eventos/$slug'
     | '/marketplace/$slug'
@@ -706,12 +1077,21 @@ export interface FileRouteTypes {
     | '/painel/mensagens'
     | '/painel/notificacoes'
     | '/painel/perfil'
+    | '/painel/promocoes'
     | '/painel/ranking'
+    | '/painel/reivindicacoes'
+    | '/representantes/$id'
+    | '/representantes/feed'
+    | '/representantes/ranking'
     | '/transporte/$slug'
+    | '/transporte/linhas'
     | '/admin'
     | '/blog'
+    | '/empregos'
     | '/eventos'
     | '/painel'
+    | '/representantes'
+    | '/transporte'
     | '/admin/push/$id'
     | '/admin/push/historico'
     | '/admin/push/novo'
@@ -726,41 +1106,67 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/admin'
+    | '/agora'
+    | '/ao-vivo'
     | '/auth'
     | '/buscar'
+    | '/cadastre-sua-empresa'
     | '/contato'
     | '/emergencia'
     | '/empregos'
     | '/favoritos'
     | '/marketplace'
     | '/o-que-fazer'
+    | '/ofertas-shopee'
     | '/painel'
     | '/planos'
     | '/promocoes'
+    | '/representantes'
     | '/reputacao'
+    | '/reset-password'
+    | '/roteiro-turistico'
     | '/servicos-publicos'
     | '/sobre'
+    | '/transparencia'
     | '/transporte'
+    | '/vespasiano'
+    | '/admin/analytics-anuncios'
+    | '/admin/anuncios'
+    | '/admin/ao-vivo'
+    | '/admin/backup'
     | '/admin/blog'
+    | '/admin/blog-ai'
+    | '/admin/calendario-editorial'
     | '/admin/cidades'
     | '/admin/configuracoes'
     | '/admin/duplicados'
     | '/admin/emergencia'
+    | '/admin/empregos'
     | '/admin/empresas'
     | '/admin/eventos'
     | '/admin/imports'
+    | '/admin/integracoes'
     | '/admin/leads'
     | '/admin/menu'
     | '/admin/planos'
+    | '/admin/promocoes'
     | '/admin/push'
     | '/admin/qa'
     | '/admin/reivindicacoes'
+    | '/admin/scraper-camara-sjl'
+    | '/admin/scraper-sjl'
+    | '/admin/scraper-vespasiano'
     | '/admin/servicos-publicos'
+    | '/admin/shopee-feeds'
+    | '/admin/solicitacoes'
     | '/admin/textos'
     | '/admin/transporte'
+    | '/admin/turismo'
     | '/blog/$slug'
     | '/categoria/$slug'
     | '/cidades/$slug'
+    | '/empregos/$id'
+    | '/empregos/premium'
     | '/empresa/$slug'
     | '/eventos/$slug'
     | '/marketplace/$slug'
@@ -772,12 +1178,21 @@ export interface FileRouteTypes {
     | '/painel/mensagens'
     | '/painel/notificacoes'
     | '/painel/perfil'
+    | '/painel/promocoes'
     | '/painel/ranking'
+    | '/painel/reivindicacoes'
+    | '/representantes/$id'
+    | '/representantes/feed'
+    | '/representantes/ranking'
     | '/transporte/$slug'
+    | '/transporte/linhas'
     | '/admin/'
     | '/blog/'
+    | '/empregos/'
     | '/eventos/'
     | '/painel/'
+    | '/representantes/'
+    | '/transporte/'
     | '/admin/push/$id'
     | '/admin/push/historico'
     | '/admin/push/novo'
@@ -793,21 +1208,30 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRouteWithChildren
+  AgoraRoute: typeof AgoraRoute
+  AoVivoRoute: typeof AoVivoRoute
   AuthRoute: typeof AuthRoute
   BuscarRoute: typeof BuscarRoute
+  CadastreSuaEmpresaRoute: typeof CadastreSuaEmpresaRoute
   ContatoRoute: typeof ContatoRoute
   EmergenciaRoute: typeof EmergenciaRoute
-  EmpregosRoute: typeof EmpregosRoute
+  EmpregosRoute: typeof EmpregosRouteWithChildren
   FavoritosRoute: typeof FavoritosRoute
   MarketplaceRoute: typeof MarketplaceRouteWithChildren
   OQueFazerRoute: typeof OQueFazerRoute
+  OfertasShopeeRoute: typeof OfertasShopeeRoute
   PainelRoute: typeof PainelRouteWithChildren
   PlanosRoute: typeof PlanosRoute
   PromocoesRoute: typeof PromocoesRoute
+  RepresentantesRoute: typeof RepresentantesRouteWithChildren
   ReputacaoRoute: typeof ReputacaoRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
+  RoteiroTuristicoRoute: typeof RoteiroTuristicoRoute
   ServicosPublicosRoute: typeof ServicosPublicosRoute
   SobreRoute: typeof SobreRoute
+  TransparenciaRoute: typeof TransparenciaRoute
   TransporteRoute: typeof TransporteRouteWithChildren
+  VespasianoRoute: typeof VespasianoRoute
   BlogSlugRoute: typeof BlogSlugRoute
   CategoriaSlugRoute: typeof CategoriaSlugRoute
   CidadesSlugRoute: typeof CidadesSlugRoute
@@ -819,11 +1243,25 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/vespasiano': {
+      id: '/vespasiano'
+      path: '/vespasiano'
+      fullPath: '/vespasiano'
+      preLoaderRoute: typeof VespasianoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/transporte': {
       id: '/transporte'
       path: '/transporte'
       fullPath: '/transporte'
       preLoaderRoute: typeof TransporteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/transparencia': {
+      id: '/transparencia'
+      path: '/transparencia'
+      fullPath: '/transparencia'
+      preLoaderRoute: typeof TransparenciaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sobre': {
@@ -840,11 +1278,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServicosPublicosRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/roteiro-turistico': {
+      id: '/roteiro-turistico'
+      path: '/roteiro-turistico'
+      fullPath: '/roteiro-turistico'
+      preLoaderRoute: typeof RoteiroTuristicoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/reputacao': {
       id: '/reputacao'
       path: '/reputacao'
       fullPath: '/reputacao'
       preLoaderRoute: typeof ReputacaoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/representantes': {
+      id: '/representantes'
+      path: '/representantes'
+      fullPath: '/representantes'
+      preLoaderRoute: typeof RepresentantesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/promocoes': {
@@ -866,6 +1325,13 @@ declare module '@tanstack/react-router' {
       path: '/painel'
       fullPath: '/painel'
       preLoaderRoute: typeof PainelRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ofertas-shopee': {
+      id: '/ofertas-shopee'
+      path: '/ofertas-shopee'
+      fullPath: '/ofertas-shopee'
+      preLoaderRoute: typeof OfertasShopeeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/o-que-fazer': {
@@ -910,6 +1376,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContatoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/cadastre-sua-empresa': {
+      id: '/cadastre-sua-empresa'
+      path: '/cadastre-sua-empresa'
+      fullPath: '/cadastre-sua-empresa'
+      preLoaderRoute: typeof CadastreSuaEmpresaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/buscar': {
       id: '/buscar'
       path: '/buscar'
@@ -922,6 +1395,20 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ao-vivo': {
+      id: '/ao-vivo'
+      path: '/ao-vivo'
+      fullPath: '/ao-vivo'
+      preLoaderRoute: typeof AoVivoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/agora': {
+      id: '/agora'
+      path: '/agora'
+      fullPath: '/agora'
+      preLoaderRoute: typeof AgoraRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -938,6 +1425,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/transporte/': {
+      id: '/transporte/'
+      path: '/'
+      fullPath: '/transporte/'
+      preLoaderRoute: typeof TransporteIndexRouteImport
+      parentRoute: typeof TransporteRoute
+    }
+    '/representantes/': {
+      id: '/representantes/'
+      path: '/'
+      fullPath: '/representantes/'
+      preLoaderRoute: typeof RepresentantesIndexRouteImport
+      parentRoute: typeof RepresentantesRoute
+    }
     '/painel/': {
       id: '/painel/'
       path: '/'
@@ -951,6 +1452,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/eventos/'
       preLoaderRoute: typeof EventosIndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/empregos/': {
+      id: '/empregos/'
+      path: '/'
+      fullPath: '/empregos/'
+      preLoaderRoute: typeof EmpregosIndexRouteImport
+      parentRoute: typeof EmpregosRoute
     }
     '/blog/': {
       id: '/blog/'
@@ -966,6 +1474,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/transporte/linhas': {
+      id: '/transporte/linhas'
+      path: '/linhas'
+      fullPath: '/transporte/linhas'
+      preLoaderRoute: typeof TransporteLinhasRouteImport
+      parentRoute: typeof TransporteRoute
+    }
     '/transporte/$slug': {
       id: '/transporte/$slug'
       path: '/$slug'
@@ -973,11 +1488,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TransporteSlugRouteImport
       parentRoute: typeof TransporteRoute
     }
+    '/representantes/ranking': {
+      id: '/representantes/ranking'
+      path: '/ranking'
+      fullPath: '/representantes/ranking'
+      preLoaderRoute: typeof RepresentantesRankingRouteImport
+      parentRoute: typeof RepresentantesRoute
+    }
+    '/representantes/feed': {
+      id: '/representantes/feed'
+      path: '/feed'
+      fullPath: '/representantes/feed'
+      preLoaderRoute: typeof RepresentantesFeedRouteImport
+      parentRoute: typeof RepresentantesRoute
+    }
+    '/representantes/$id': {
+      id: '/representantes/$id'
+      path: '/$id'
+      fullPath: '/representantes/$id'
+      preLoaderRoute: typeof RepresentantesIdRouteImport
+      parentRoute: typeof RepresentantesRoute
+    }
+    '/painel/reivindicacoes': {
+      id: '/painel/reivindicacoes'
+      path: '/reivindicacoes'
+      fullPath: '/painel/reivindicacoes'
+      preLoaderRoute: typeof PainelReivindicacoesRouteImport
+      parentRoute: typeof PainelRoute
+    }
     '/painel/ranking': {
       id: '/painel/ranking'
       path: '/ranking'
       fullPath: '/painel/ranking'
       preLoaderRoute: typeof PainelRankingRouteImport
+      parentRoute: typeof PainelRoute
+    }
+    '/painel/promocoes': {
+      id: '/painel/promocoes'
+      path: '/promocoes'
+      fullPath: '/painel/promocoes'
+      preLoaderRoute: typeof PainelPromocoesRouteImport
       parentRoute: typeof PainelRoute
     }
     '/painel/perfil': {
@@ -1057,6 +1607,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EmpresaSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/empregos/premium': {
+      id: '/empregos/premium'
+      path: '/premium'
+      fullPath: '/empregos/premium'
+      preLoaderRoute: typeof EmpregosPremiumRouteImport
+      parentRoute: typeof EmpregosRoute
+    }
+    '/empregos/$id': {
+      id: '/empregos/$id'
+      path: '/$id'
+      fullPath: '/empregos/$id'
+      preLoaderRoute: typeof EmpregosIdRouteImport
+      parentRoute: typeof EmpregosRoute
+    }
     '/cidades/$slug': {
       id: '/cidades/$slug'
       path: '/cidades/$slug'
@@ -1078,6 +1642,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/turismo': {
+      id: '/admin/turismo'
+      path: '/turismo'
+      fullPath: '/admin/turismo'
+      preLoaderRoute: typeof AdminTurismoRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/transporte': {
       id: '/admin/transporte'
       path: '/transporte'
@@ -1092,11 +1663,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminTextosRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/solicitacoes': {
+      id: '/admin/solicitacoes'
+      path: '/solicitacoes'
+      fullPath: '/admin/solicitacoes'
+      preLoaderRoute: typeof AdminSolicitacoesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/shopee-feeds': {
+      id: '/admin/shopee-feeds'
+      path: '/shopee-feeds'
+      fullPath: '/admin/shopee-feeds'
+      preLoaderRoute: typeof AdminShopeeFeedsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/servicos-publicos': {
       id: '/admin/servicos-publicos'
       path: '/servicos-publicos'
       fullPath: '/admin/servicos-publicos'
       preLoaderRoute: typeof AdminServicosPublicosRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/scraper-vespasiano': {
+      id: '/admin/scraper-vespasiano'
+      path: '/scraper-vespasiano'
+      fullPath: '/admin/scraper-vespasiano'
+      preLoaderRoute: typeof AdminScraperVespasianoRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/scraper-sjl': {
+      id: '/admin/scraper-sjl'
+      path: '/scraper-sjl'
+      fullPath: '/admin/scraper-sjl'
+      preLoaderRoute: typeof AdminScraperSjlRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/scraper-camara-sjl': {
+      id: '/admin/scraper-camara-sjl'
+      path: '/scraper-camara-sjl'
+      fullPath: '/admin/scraper-camara-sjl'
+      preLoaderRoute: typeof AdminScraperCamaraSjlRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/reivindicacoes': {
@@ -1120,6 +1726,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminPushRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/promocoes': {
+      id: '/admin/promocoes'
+      path: '/promocoes'
+      fullPath: '/admin/promocoes'
+      preLoaderRoute: typeof AdminPromocoesRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/planos': {
       id: '/admin/planos'
       path: '/planos'
@@ -1141,6 +1754,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminLeadsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/integracoes': {
+      id: '/admin/integracoes'
+      path: '/integracoes'
+      fullPath: '/admin/integracoes'
+      preLoaderRoute: typeof AdminIntegracoesRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/imports': {
       id: '/admin/imports'
       path: '/imports'
@@ -1160,6 +1780,13 @@ declare module '@tanstack/react-router' {
       path: '/empresas'
       fullPath: '/admin/empresas'
       preLoaderRoute: typeof AdminEmpresasRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/empregos': {
+      id: '/admin/empregos'
+      path: '/empregos'
+      fullPath: '/admin/empregos'
+      preLoaderRoute: typeof AdminEmpregosRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/emergencia': {
@@ -1190,11 +1817,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminCidadesRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/calendario-editorial': {
+      id: '/admin/calendario-editorial'
+      path: '/calendario-editorial'
+      fullPath: '/admin/calendario-editorial'
+      preLoaderRoute: typeof AdminCalendarioEditorialRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/blog-ai': {
+      id: '/admin/blog-ai'
+      path: '/blog-ai'
+      fullPath: '/admin/blog-ai'
+      preLoaderRoute: typeof AdminBlogAiRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/blog': {
       id: '/admin/blog'
       path: '/blog'
       fullPath: '/admin/blog'
       preLoaderRoute: typeof AdminBlogRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/backup': {
+      id: '/admin/backup'
+      path: '/backup'
+      fullPath: '/admin/backup'
+      preLoaderRoute: typeof AdminBackupRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/ao-vivo': {
+      id: '/admin/ao-vivo'
+      path: '/ao-vivo'
+      fullPath: '/admin/ao-vivo'
+      preLoaderRoute: typeof AdminAoVivoRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/anuncios': {
+      id: '/admin/anuncios'
+      path: '/anuncios'
+      fullPath: '/admin/anuncios'
+      preLoaderRoute: typeof AdminAnunciosRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/analytics-anuncios': {
+      id: '/admin/analytics-anuncios'
+      path: '/analytics-anuncios'
+      fullPath: '/admin/analytics-anuncios'
+      preLoaderRoute: typeof AdminAnalyticsAnunciosRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/push/': {
@@ -1291,48 +1960,94 @@ const AdminPushRouteWithChildren = AdminPushRoute._addFileChildren(
 )
 
 interface AdminRouteChildren {
+  AdminAnalyticsAnunciosRoute: typeof AdminAnalyticsAnunciosRoute
+  AdminAnunciosRoute: typeof AdminAnunciosRoute
+  AdminAoVivoRoute: typeof AdminAoVivoRoute
+  AdminBackupRoute: typeof AdminBackupRoute
   AdminBlogRoute: typeof AdminBlogRoute
+  AdminBlogAiRoute: typeof AdminBlogAiRoute
+  AdminCalendarioEditorialRoute: typeof AdminCalendarioEditorialRoute
   AdminCidadesRoute: typeof AdminCidadesRoute
   AdminConfiguracoesRoute: typeof AdminConfiguracoesRoute
   AdminDuplicadosRoute: typeof AdminDuplicadosRoute
   AdminEmergenciaRoute: typeof AdminEmergenciaRoute
+  AdminEmpregosRoute: typeof AdminEmpregosRoute
   AdminEmpresasRoute: typeof AdminEmpresasRoute
   AdminEventosRoute: typeof AdminEventosRoute
   AdminImportsRoute: typeof AdminImportsRoute
+  AdminIntegracoesRoute: typeof AdminIntegracoesRoute
   AdminLeadsRoute: typeof AdminLeadsRoute
   AdminMenuRoute: typeof AdminMenuRoute
   AdminPlanosRoute: typeof AdminPlanosRoute
+  AdminPromocoesRoute: typeof AdminPromocoesRoute
   AdminPushRoute: typeof AdminPushRouteWithChildren
   AdminQaRoute: typeof AdminQaRoute
   AdminReivindicacoesRoute: typeof AdminReivindicacoesRoute
+  AdminScraperCamaraSjlRoute: typeof AdminScraperCamaraSjlRoute
+  AdminScraperSjlRoute: typeof AdminScraperSjlRoute
+  AdminScraperVespasianoRoute: typeof AdminScraperVespasianoRoute
   AdminServicosPublicosRoute: typeof AdminServicosPublicosRoute
+  AdminShopeeFeedsRoute: typeof AdminShopeeFeedsRoute
+  AdminSolicitacoesRoute: typeof AdminSolicitacoesRoute
   AdminTextosRoute: typeof AdminTextosRoute
   AdminTransporteRoute: typeof AdminTransporteRoute
+  AdminTurismoRoute: typeof AdminTurismoRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminAnalyticsAnunciosRoute: AdminAnalyticsAnunciosRoute,
+  AdminAnunciosRoute: AdminAnunciosRoute,
+  AdminAoVivoRoute: AdminAoVivoRoute,
+  AdminBackupRoute: AdminBackupRoute,
   AdminBlogRoute: AdminBlogRoute,
+  AdminBlogAiRoute: AdminBlogAiRoute,
+  AdminCalendarioEditorialRoute: AdminCalendarioEditorialRoute,
   AdminCidadesRoute: AdminCidadesRoute,
   AdminConfiguracoesRoute: AdminConfiguracoesRoute,
   AdminDuplicadosRoute: AdminDuplicadosRoute,
   AdminEmergenciaRoute: AdminEmergenciaRoute,
+  AdminEmpregosRoute: AdminEmpregosRoute,
   AdminEmpresasRoute: AdminEmpresasRoute,
   AdminEventosRoute: AdminEventosRoute,
   AdminImportsRoute: AdminImportsRoute,
+  AdminIntegracoesRoute: AdminIntegracoesRoute,
   AdminLeadsRoute: AdminLeadsRoute,
   AdminMenuRoute: AdminMenuRoute,
   AdminPlanosRoute: AdminPlanosRoute,
+  AdminPromocoesRoute: AdminPromocoesRoute,
   AdminPushRoute: AdminPushRouteWithChildren,
   AdminQaRoute: AdminQaRoute,
   AdminReivindicacoesRoute: AdminReivindicacoesRoute,
+  AdminScraperCamaraSjlRoute: AdminScraperCamaraSjlRoute,
+  AdminScraperSjlRoute: AdminScraperSjlRoute,
+  AdminScraperVespasianoRoute: AdminScraperVespasianoRoute,
   AdminServicosPublicosRoute: AdminServicosPublicosRoute,
+  AdminShopeeFeedsRoute: AdminShopeeFeedsRoute,
+  AdminSolicitacoesRoute: AdminSolicitacoesRoute,
   AdminTextosRoute: AdminTextosRoute,
   AdminTransporteRoute: AdminTransporteRoute,
+  AdminTurismoRoute: AdminTurismoRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
+interface EmpregosRouteChildren {
+  EmpregosIdRoute: typeof EmpregosIdRoute
+  EmpregosPremiumRoute: typeof EmpregosPremiumRoute
+  EmpregosIndexRoute: typeof EmpregosIndexRoute
+}
+
+const EmpregosRouteChildren: EmpregosRouteChildren = {
+  EmpregosIdRoute: EmpregosIdRoute,
+  EmpregosPremiumRoute: EmpregosPremiumRoute,
+  EmpregosIndexRoute: EmpregosIndexRoute,
+}
+
+const EmpregosRouteWithChildren = EmpregosRoute._addFileChildren(
+  EmpregosRouteChildren,
+)
 
 interface MarketplaceRouteChildren {
   MarketplaceSlugRoute: typeof MarketplaceSlugRoute
@@ -1394,7 +2109,9 @@ interface PainelRouteChildren {
   PainelMensagensRoute: typeof PainelMensagensRoute
   PainelNotificacoesRoute: typeof PainelNotificacoesRouteWithChildren
   PainelPerfilRoute: typeof PainelPerfilRoute
+  PainelPromocoesRoute: typeof PainelPromocoesRoute
   PainelRankingRoute: typeof PainelRankingRoute
+  PainelReivindicacoesRoute: typeof PainelReivindicacoesRoute
   PainelIndexRoute: typeof PainelIndexRoute
 }
 
@@ -1407,19 +2124,43 @@ const PainelRouteChildren: PainelRouteChildren = {
   PainelMensagensRoute: PainelMensagensRoute,
   PainelNotificacoesRoute: PainelNotificacoesRouteWithChildren,
   PainelPerfilRoute: PainelPerfilRoute,
+  PainelPromocoesRoute: PainelPromocoesRoute,
   PainelRankingRoute: PainelRankingRoute,
+  PainelReivindicacoesRoute: PainelReivindicacoesRoute,
   PainelIndexRoute: PainelIndexRoute,
 }
 
 const PainelRouteWithChildren =
   PainelRoute._addFileChildren(PainelRouteChildren)
 
+interface RepresentantesRouteChildren {
+  RepresentantesIdRoute: typeof RepresentantesIdRoute
+  RepresentantesFeedRoute: typeof RepresentantesFeedRoute
+  RepresentantesRankingRoute: typeof RepresentantesRankingRoute
+  RepresentantesIndexRoute: typeof RepresentantesIndexRoute
+}
+
+const RepresentantesRouteChildren: RepresentantesRouteChildren = {
+  RepresentantesIdRoute: RepresentantesIdRoute,
+  RepresentantesFeedRoute: RepresentantesFeedRoute,
+  RepresentantesRankingRoute: RepresentantesRankingRoute,
+  RepresentantesIndexRoute: RepresentantesIndexRoute,
+}
+
+const RepresentantesRouteWithChildren = RepresentantesRoute._addFileChildren(
+  RepresentantesRouteChildren,
+)
+
 interface TransporteRouteChildren {
   TransporteSlugRoute: typeof TransporteSlugRoute
+  TransporteLinhasRoute: typeof TransporteLinhasRoute
+  TransporteIndexRoute: typeof TransporteIndexRoute
 }
 
 const TransporteRouteChildren: TransporteRouteChildren = {
   TransporteSlugRoute: TransporteSlugRoute,
+  TransporteLinhasRoute: TransporteLinhasRoute,
+  TransporteIndexRoute: TransporteIndexRoute,
 }
 
 const TransporteRouteWithChildren = TransporteRoute._addFileChildren(
@@ -1429,21 +2170,30 @@ const TransporteRouteWithChildren = TransporteRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
+  AgoraRoute: AgoraRoute,
+  AoVivoRoute: AoVivoRoute,
   AuthRoute: AuthRoute,
   BuscarRoute: BuscarRoute,
+  CadastreSuaEmpresaRoute: CadastreSuaEmpresaRoute,
   ContatoRoute: ContatoRoute,
   EmergenciaRoute: EmergenciaRoute,
-  EmpregosRoute: EmpregosRoute,
+  EmpregosRoute: EmpregosRouteWithChildren,
   FavoritosRoute: FavoritosRoute,
   MarketplaceRoute: MarketplaceRouteWithChildren,
   OQueFazerRoute: OQueFazerRoute,
+  OfertasShopeeRoute: OfertasShopeeRoute,
   PainelRoute: PainelRouteWithChildren,
   PlanosRoute: PlanosRoute,
   PromocoesRoute: PromocoesRoute,
+  RepresentantesRoute: RepresentantesRouteWithChildren,
   ReputacaoRoute: ReputacaoRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
+  RoteiroTuristicoRoute: RoteiroTuristicoRoute,
   ServicosPublicosRoute: ServicosPublicosRoute,
   SobreRoute: SobreRoute,
+  TransparenciaRoute: TransparenciaRoute,
   TransporteRoute: TransporteRouteWithChildren,
+  VespasianoRoute: VespasianoRoute,
   BlogSlugRoute: BlogSlugRoute,
   CategoriaSlugRoute: CategoriaSlugRoute,
   CidadesSlugRoute: CidadesSlugRoute,

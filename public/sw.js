@@ -1,5 +1,5 @@
 /* AgendaAqui Service Worker — PWA offline + push notifications */
-const VERSION = 'v1.2.0';
+const VERSION = 'v1.0.1';
 const STATIC_CACHE = `static-${VERSION}`;
 const RUNTIME_CACHE = `runtime-${VERSION}`;
 const IMAGE_CACHE = `images-${VERSION}`;
@@ -11,6 +11,9 @@ const PRECACHE_URLS = [
   '/manifest.webmanifest',
   '/icons/icon-192.png',
   '/icons/icon-512.png',
+  '/icons/icon-maskable-512.png',
+  '/icons/apple-touch-icon.png',
+  '/icons/badge-72.png',
 ];
 
 // ---------- Install ----------
@@ -90,12 +93,12 @@ self.addEventListener('fetch', (event) => {
 });
 
 // ---------- Push notifications ----------
-function track(deliveryId, event) {
+function track(deliveryId, event, token) {
   if (!deliveryId) return Promise.resolve();
   return fetch('/api/public/push/track', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ delivery_id: deliveryId, event }),
+    body: JSON.stringify({ delivery_id: deliveryId, event, token: token || undefined }),
     keepalive: true,
   }).catch(() => {});
 }
@@ -137,6 +140,7 @@ self.addEventListener('push', (event) => {
       url: data.url || '/',
       notification_id: data.notification_id,
       delivery_id: data.delivery_id,
+      token: data.token || data.delivery_token,
       buttons: Array.isArray(data.buttons) ? data.buttons : [],
       priority: isHigh ? 'high' : 'normal',
       sound: data.sound || (isHigh ? '/alert.mp3' : undefined),
@@ -149,7 +153,7 @@ self.addEventListener('push', (event) => {
 
   const tasks = [
     self.registration.showNotification(title, options),
-    track(data.delivery_id, 'delivered'),
+    track(data.delivery_id, 'delivered', data.token || data.delivery_token),
   ];
   if (isHigh && data.silent !== true) tasks.push(notifyClientsPlaySound(options.data.sound));
   event.waitUntil(Promise.all(tasks));
@@ -165,7 +169,7 @@ self.addEventListener('notificationclick', (event) => {
     if (b && b.url) target = b.url;
   }
   event.waitUntil((async () => {
-    await track(d.delivery_id, 'clicked');
+    await track(d.delivery_id, 'clicked', d.token);
     const clients = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
     for (const client of clients) {
       if ('focus' in client) {
@@ -182,10 +186,10 @@ self.addEventListener('pushsubscriptionchange', (event) => {
   event.waitUntil((async () => {
     try {
       const newSub = await self.registration.pushManager.subscribe(event.oldSubscription.options);
-      await fetch('/api/public/push/track', {
+      await fetch('/api/public/push/resubscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ event: 'resubscribe', old_endpoint: event.oldSubscription?.endpoint, new_subscription: newSub }),
+        body: JSON.stringify({ old_endpoint: event.oldSubscription?.endpoint, new_subscription: newSub }),
       });
     } catch {}
   })());

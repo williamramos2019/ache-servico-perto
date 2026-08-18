@@ -24,8 +24,9 @@ if (($file['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK) {
     app_error('invalid_file', 'Falha no envio do arquivo.', 422);
 }
 $size = (int) ($file['size'] ?? 0);
-if ($size < 1 || $size > 5 * 1024 * 1024) {
-    app_error('invalid_file', 'Imagem acima de 5 MB.', 422);
+$maxBytes = env_upload_max_bytes();
+if ($size < 1 || $size > $maxBytes) {
+    app_error('invalid_file', 'Imagem acima do limite permitido.', 422);
 }
 
 $tmp = (string) ($file['tmp_name'] ?? '');

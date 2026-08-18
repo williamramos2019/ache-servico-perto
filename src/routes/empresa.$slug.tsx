@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { SiteLayout } from "@/components/site/SiteLayout";
+import { InlineShopeeStrip } from "@/components/site/InlineShopeeStrip";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ReviewsSection } from "@/components/site/ReviewsSection";
@@ -130,6 +131,20 @@ function CompanyPage() {
   }, [company?.id]);
 
   if (q.isSuccess && !company) throw notFound();
+  if (q.isError) {
+    return (
+      <SiteLayout>
+        <div className="container mx-auto px-4 py-16 text-center">
+          <h1 className="font-display text-2xl font-bold">Não foi possível abrir esta empresa</h1>
+          <p className="mt-2 text-sm text-muted-foreground">Tente recarregar a página. Se o problema continuar, volte à busca.</p>
+          <div className="mt-6 flex justify-center gap-3">
+            <Button variant="outline" onClick={() => void q.refetch()}>Tentar de novo</Button>
+            <Link to="/buscar"><Button>Buscar empresas</Button></Link>
+          </div>
+        </div>
+      </SiteLayout>
+    );
+  }
   if (!company) {
     return (
       <SiteLayout>
@@ -816,6 +831,12 @@ function CompanyPage() {
             </section>
           </aside>
         </div>
+
+        <InlineShopeeStrip
+          hint={company.name?.split(" ")[0]}
+          title="Complemente sua escolha"
+          subtitle="Produtos relacionados a este segmento · links de parceiro"
+        />
 
         {/* Bottom CTA banner */}
         <div className="my-12 rounded-2xl bg-gradient-to-r from-primary to-primary-dark p-8 text-center text-primary-foreground">

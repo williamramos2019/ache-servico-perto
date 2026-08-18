@@ -6,7 +6,7 @@ import reactRefresh from "eslint-plugin-react-refresh";
 import tseslint from "typescript-eslint";
 
 export default tseslint.config(
-  { ignores: ["dist", ".output", ".vinxi", "src/legacy-server/**", "src/routeTree.gen.ts"] },
+  { ignores: ["dist", ".output", ".vinxi", "src/routeTree.gen.ts"] },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ["**/*.{ts,tsx}"],
@@ -26,8 +26,25 @@ export default tseslint.config(
           paths: [
             {
               name: "server-only",
-              message:
-                "TanStack Start does not use the Next.js `server-only` package. Rename the module to `*.server.ts` or mark it with `@tanstack/react-start/server-only`.",
+              message: "This SPA has no Node/Nitro runtime. Keep data access in the PHP API.",
+            },
+            {
+              name: "@supabase/supabase-js",
+              message: "Supabase is not the production backend. Use src/lib/php-api.ts.",
+            },
+            {
+              name: "@lovable.dev/cloud-auth-js",
+              message: "Lovable Cloud Auth is not used in production. Use src/lib/php-auth.ts.",
+            },
+            {
+              name: "web-push",
+              message: "web-push is Node-only and must not enter the SPA bundle.",
+            },
+          ],
+          patterns: [
+            {
+              group: ["**/integrations/supabase/**", "**/integrations/lovable/**", "**/legacy-server/**"],
+              message: "Legacy Node/Supabase paths were removed for HostGator PHP production.",
             },
           ],
         },

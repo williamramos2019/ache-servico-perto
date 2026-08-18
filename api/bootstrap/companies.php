@@ -53,6 +53,7 @@ const COMPANIES_ALLOWED_FIELDS = [
     'promotions',
     'financing_info',
     'differentials',
+    'services_offered',
     'category_ids',
 ];
 
@@ -95,6 +96,7 @@ const COMPANIES_JSON_STRING_ARRAY = [
     'coverage_cities',
     'badges',
     'differentials',
+    'services_offered',
 ];
 
 const COMPANIES_INT_FIELDS = [
@@ -298,6 +300,7 @@ function companies_public_row(PDO $pdo, array $row): array
         'promotions' => companies_decode_json($row['promotions'] ?? null),
         'financing_info' => companies_decode_json($row['financing_info'] ?? null),
         'differentials' => companies_decode_json($row['differentials'] ?? null),
+        'services_offered' => companies_decode_json($row['services_offered'] ?? null) ?? [],
         'category_ids' => companies_category_ids($pdo, (string) $row['id']),
         'created_at' => (string) $row['created_at'],
         'updated_at' => (string) $row['updated_at'],
@@ -629,8 +632,15 @@ function companies_validated_input(array $body, bool $creating): array
     }
     foreach (COMPANIES_JSON_STRING_ARRAY as $field) {
         if (array_key_exists($field, $body)) {
-            $fields[$field] = companies_validate_json_value($body[$field], 'invalid_' . $field, true);
+            $value = $body[$field];
+            if ($field === 'services_offered' && $value === null) {
+                $value = [];
+            }
+            $fields[$field] = companies_validate_json_value($value, 'invalid_' . $field, true);
         }
+    }
+    if ($creating && !array_key_exists('services_offered', $fields)) {
+        $fields['services_offered'] = [];
     }
 
     $categoryIds = null;

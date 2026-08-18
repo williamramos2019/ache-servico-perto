@@ -11,6 +11,8 @@ import { categoriesQueryOptions, featuredCompaniesQueryOptions, searchCompanies 
 import { PUBLIC_SERVICE_CATEGORIES } from "@/lib/publicServices";
 import { useSelectedCity, CITY_OPTIONS } from "@/hooks/useSelectedCity";
 import { fetchPublishedEvents } from "@/lib/events";
+import { ShopeeFeaturedWidget } from "@/components/site/ShopeeFeaturedWidget";
+import { LiveFeedWidget } from "@/features/live-feed";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -131,6 +133,10 @@ function Home() {
         </Link>
       </section>
 
+      <section className="container mx-auto px-4 py-10">
+        <LiveFeedWidget city={city} limit={5} />
+      </section>
+
       <section className="bg-surface py-14">
         <div className="container mx-auto px-4">
           <div className="mb-8 flex items-end justify-between gap-4">
@@ -247,6 +253,8 @@ function Home() {
         </section>
       ) : null}
 
+      <ShopeeFeaturedWidget />
+
       <section className="container mx-auto px-4 py-14">
         <div className="mb-6 flex items-end justify-between gap-4">
           <div>
@@ -272,7 +280,7 @@ function Home() {
               Cadastre gratuitamente sua empresa no AgendaAqui. Apareça para quem já procura seu serviço em {cityName}.
             </p>
             <Link
-              to="/auth"
+              to="/cadastre-sua-empresa"
               className="mt-5 inline-flex items-center gap-2 rounded-full bg-white px-6 py-3.5 font-semibold text-accent shadow-lg focus-ring"
             >
               Cadastrar empresa <ArrowRight className="h-4 w-4" />

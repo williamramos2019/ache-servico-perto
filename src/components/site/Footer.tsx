@@ -24,6 +24,7 @@ export function Footer() {
             <li><Link to="/buscar" className="hover:text-foreground">Buscar serviços</Link></li>
             <li><Link to="/eventos" className="hover:text-foreground">Eventos</Link></li>
             <li><Link to="/blog" className="hover:text-foreground">Blog</Link></li>
+            <li><Link to="/ofertas-shopee" className="hover:text-foreground">Ofertas Shopee</Link></li>
             <li><Link to="/favoritos" className="hover:text-foreground">Favoritos</Link></li>
             <li><Link to="/sobre" className="hover:text-foreground">Sobre</Link></li>
             <li><Link to="/reputacao" className="hover:text-foreground">Reputação e verificação</Link></li>
@@ -34,7 +35,7 @@ export function Footer() {
           <h4 className="text-sm font-semibold">{c.footer.biz_title}</h4>
           <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
             <li><Link to="/planos" className="hover:text-foreground">Planos e preços</Link></li>
-            <li><Link to="/auth" className="hover:text-foreground">Anunciar grátis</Link></li>
+            <li><Link to="/cadastre-sua-empresa" className="hover:text-foreground">Anunciar grátis</Link></li>
             <li><Link to="/auth" className="hover:text-foreground">Entrar</Link></li>
           </ul>
         </div>

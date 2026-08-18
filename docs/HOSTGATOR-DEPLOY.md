@@ -1,11 +1,15 @@
 # Deploy HostGator (pacote e procedimento)
 
-**Branch:** `migration-hostgator`  
-**HEAD de referência:** `fb59826`  
-**Fase:** 3.1
+**Versão do pacote:** ver `VERSION.txt` (atualmente 1.1.0)  
+**ZIP:** `AgendaAqui-hostgator-v1.1.0.zip` + `.sha256`  
+Gerar localmente: `npm run build` e `php tools/build-release.php`.
 
-Este documento define **o que enviar**, **para onde**, e **como**.  
-**Não** faz o deploy. **Não** liga ao MySQL de produção.
+O ZIP **não** contém senha de banco, senha de e-mail, `.env` nem `load-env.php`.  
+A chave VAPID **pública** entra no JS. A chave `service_role` e a VAPID privada **não** devem ir para o bundle.
+
+O Cursor **não** faz upload FTP e **não** prova o cPanel ao vivo. Health no host atual só vale depois do seu upload.
+
+Guias operacionais: `INSTALL-HOSTGATOR.md`, `UPDATE-HOSTGATOR.md`, `ROLLBACK-HOSTGATOR.md`, `DEPLOY-CHECKLIST.md`.
 
 Arquitetura:
 
@@ -14,12 +18,29 @@ Internet
   → Apache (HTTPS)
     → SPA estática (dist/)
     → /api/*.php
-      → PHP 8
+      → PHP 8.1+
         → PDO
-          → MySQL HostGator
+          → MySQL/MariaDB 10.2+ HostGator
 ```
 
-`tools/`, `database/migrations/` e `storage/rate-limit/` **não** devem ser servidos por HTTP.
+`tools/`, `database/migrations/` e `storage/` **não** devem ser servidos por HTTP (`.htaccess` bloqueia).
+
+---
+
+## O que este pacote NÃO é
+
+- Não é TanStack Start / Nitro / Node no servidor.
+- Não dispara scrapers municipais nem gerador de blog por IA.
+- Não envia Web Push com VAPID privado (histórico admin existe; send está desligado).
+- `deploy-banco/` no repositório é um instalador legado; o ZIP canónico é `php tools/build-release.php` com migrations **001–019**.
+
+---
+
+## Instalador HTTP (verdade operacional)
+
+`atualizar-banco.php` **entra** no `public_html/` do ZIP para primeira instalação.  
+É um formulário **público** até ser apagado. Preferível: CLI `php tools/migrate.php`.  
+Apague o instalador no sucesso. Não deixe no ar.
 
 ---
 
@@ -63,13 +84,10 @@ DEPLOY/
       companies/
       bootstrap/                        ← necessário ao PHP; bloqueado via HTTP
 
-  fora_public_html/                     ← /home/USUARIO/agendaqui/
+  fora_public_html/                     ← /home/USUARIO/agendaqui_secure/
     api/                                ← cópia canónica (o runner exige isto)
     database/migrations/
-      001_create_migrations.sql
-      002_auth.sql
-      003_companies.sql
-      … até 012_transport.sql (quando essa fase estiver autorizada)
+      001_create_migrations.sql … 019_reference_seeds.sql
     tools/migrate.php
     tools/import-companies.php          ← CLI only; nunca pela web
     storage/imports/                    ← JSON/CSV locais; Apache Deny from all
@@ -108,7 +126,7 @@ Inclui `api/bootstrap/*.php` (o Apache deve **executar** PHP e o `.htaccess` da 
 - `docs/` (opcional no checkout privado; não na web)
 - credenciais, `load-env.php`, senhas, dumps
 
-Não criar `/api/migrate.php`.
+Não criar `/api/migrate.php`. Não enviar `instalar.php`.
 
 ---
 
@@ -119,7 +137,7 @@ Não colocar `storage/` dentro de `public_html` se for possível evitá-lo.
 Definir:
 
 ```text
-RATE_LIMIT_DIR=/home/USUARIO/agendaqui/storage/rate-limit
+RATE_LIMIT_DIR=/home/USUARIO/agendaqui_secure/storage/rate-limit
 ```
 
 Sem esta variável, o PHP usa `{pai de api/}/storage/rate-limit`. Com `api/` só em `public_html`, isso vira `public_html/storage/rate-limit` (exposto a HTTP, a menos que se copiem os `.htaccess` deny-all).
@@ -158,16 +176,16 @@ Banco: `docs/HOSTGATOR-DATABASE-SETUP.md`.
 
 ## 7. Ordem de publicação (quando a Fase seguinte autorizar)
 
-1. Checkout em `/home/USUARIO/agendaqui/` (api, database, tools, storage).
+1. Checkout em `/home/USUARIO/agendaqui_secure/` (api, database, tools, storage).
 2. Criar `load-env.php` (0600) e MultiPHP `auto_prepend_file`.
 3. Criar MySQL vazio no cPanel (ainda sem apply até o operador mandar).
 4. `npm run build` local → enviar **conteúdo** de `dist/` para `public_html/`.
 5. Enviar `api/` para `public_html/api/` **e** manter `agendaqui/api/`.
 6. PHP 8.x + `pdo_mysql` no MultiPHP do domínio.
 7. Só então: health → status → dry-run → apply (ver setup de banco).
-8. Checklist: `docs/HOSTGATOR-POST-DEPLOY-CHECKLIST.md`.
+8. Checklist: `docs/DEPLOY-CHECKLIST.md`.
 
-Rollback: `docs/HOSTGATOR-ROLLBACK.md`.
+Rollback: `docs/ROLLBACK-HOSTGATOR.md`.
 
 ---
 
@@ -194,3 +212,30 @@ Não misturar `http://` na SPA com `https://` na API.
 Enviar à web: `dist/*` + `api/`.  
 Fora da web: `database/`, `tools/`, `storage/rate-limit/`, `load-env.php`.  
 Nunca: Node, `.env`, Git, dumps, migrate via HTTP.
+
+---
+
+## 11. PWA
+
+O pacote já inclui PWA estático (sem Node no servidor):
+
+- `manifest.webmanifest`
+- `sw.js` (cache estático + página `offline.html`; **não** cacheia `/api/`)
+- ícones em `icons/` (`icon-192`, `icon-512`, `icon-maskable-512`, `apple-touch-icon`, `badge-72`)
+- prompt de instalação no layout (`PWAInstallPrompt`)
+
+Requisitos no servidor:
+
+1. HTTPS (Chrome/Edge não instalam PWA em HTTP).
+2. `.htaccess` com MIME `application/manifest+json` para `.webmanifest`.
+3. `sw.js` sem cache agressivo (`Cache-Control: no-cache`).
+
+Teste manual após o upload:
+
+- `GET /manifest.webmanifest` → JSON
+- `GET /sw.js` → JavaScript
+- DevTools → Application → Manifest sem erro de ícone
+- “Adicionar à tela inicial”
+- Modo avião: `offline.html` em navegações novas
+
+Push com VAPID **privada** continua fora deste runtime PHP. A chave VAPID **pública** já está no frontend; o envio server-side não faz parte deste pacote HostGator.

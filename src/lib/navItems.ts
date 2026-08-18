@@ -12,6 +12,12 @@ export const DEFAULT_NAV_ITEMS: NavItem[] = [
   { to: "/transporte", label: "Transporte" },
   { to: "/empregos", label: "Empregos" },
   { to: "/promocoes", label: "Promoções" },
+  { to: "/ofertas-shopee", label: "Ofertas Shopee" },
+  { to: "/agora", label: "Agora" },
+  { to: "/representantes", label: "Representantes" },
+  { to: "/transparencia", label: "Transparência" },
+  { to: "/roteiro-turistico", label: "Turismo" },
+  { to: "/vespasiano", label: "Vespasiano" },
 ];
 
 export async function fetchNavItems(): Promise<NavItem[]> {

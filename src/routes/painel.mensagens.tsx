@@ -34,6 +34,7 @@ function Mensagens() {
     queryKey: ["mk", "msgs", userId],
     enabled: !!userId,
     queryFn: fetchListingMessages,
+    refetchInterval: 15_000,
   });
 
   const threads: Thread[] = useMemo(() => {
@@ -66,6 +67,7 @@ function Mensagens() {
       qc.invalidateQueries({ queryKey: ["mk", "msgs"] });
       return rows;
     },
+    refetchInterval: 15_000,
   });
 
   const listingQ = useQuery({

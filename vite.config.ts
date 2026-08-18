@@ -1,11 +1,25 @@
+import fs from "node:fs";
+import path from "node:path";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
 
-// Static SPA build for Apache / HostGator.
-// Replaces @lovable.dev/vite-tanstack-config (TanStack Start + Nitro SSR).
+function excludeOldInstaller() {
+  return {
+    name: "exclude-old-installer",
+    closeBundle() {
+      for (const name of ["instalar.php", "atualizar-banco.php", "instalar-banco.php"]) {
+        const file = path.resolve("dist", name);
+        if (fs.existsSync(file)) {
+          fs.unlinkSync(file);
+        }
+      }
+    },
+  };
+}
+
 export default defineConfig({
   plugins: [
     tanstackRouter({
@@ -15,6 +29,7 @@ export default defineConfig({
     react(),
     tailwindcss(),
     tsconfigPaths(),
+    excludeOldInstaller(),
   ],
   server: {
     proxy: {

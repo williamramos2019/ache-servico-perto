@@ -1,16 +1,43 @@
 Options -Indexes
 
+<IfModule mod_mime.c>
+  AddType application/manifest+json .webmanifest
+  AddType image/png .png
+</IfModule>
+
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  <FilesMatch "^(sw\.js)$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+  <FilesMatch "\.webmanifest$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+</IfModule>
+
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
 
-  # Private paths must never reach the browser (one-click extract lives in the web root).
-  RewriteRule ^(database|tools|storage)(/|$) - [F,L]
+  # HTTPS except local development.
+  RewriteCond %{HTTPS} !=on
+  RewriteCond %{HTTP_HOST} !^localhost [NC]
+  RewriteCond %{HTTP_HOST} !^127\.0\.0\.1$
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+  # Private paths must never reach the browser.
+  RewriteRule ^(database|tools|storage|agendaqui_secure|agendaqui)(/|$) - [F,L]
   RewriteRule ^load-env\.php$ - [F,L]
   RewriteRule ^load-env\.example\.php$ - [F,L]
   RewriteRule ^installed\.lock$ - [F,L]
+  RewriteRule ^instalar(-banco)?\.php$ - [F,L]
   RewriteRule ^README - [F,L]
   RewriteRule ^deploy-hostgator - [F,L]
+  RewriteRule \.(sql|env|zip|bak|log)$ - [F,L]
+
+  # After first install, lock the one-click installer.
+  RewriteCond %{DOCUMENT_ROOT}/installed.lock -f
+  RewriteRule ^atualizar(-banco)?\.php$ - [F,L]
 
   # Existing files and directories (assets, PWA, API PHP) are served as-is.
   RewriteCond %{REQUEST_FILENAME} -f [OR]
@@ -24,7 +51,7 @@ Options -Indexes
   RewriteRule ^ index.html [L]
 </IfModule>
 
-<FilesMatch "^(load-env\.php|load-env\.example\.php|installed\.lock)$">
+<FilesMatch "^(load-env\.php|load-env\.example\.php|installed\.lock|\.env)$">
   <IfModule mod_authz_core.c>
     Require all denied
   </IfModule>

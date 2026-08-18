@@ -289,19 +289,12 @@ if ($op === 'suggest') {
 }
 
 if ($op === 'company') {
-    $slug = isset($_GET['slug']) ? trim((string) $_GET['slug']) : '';
-    if ($slug === '' || preg_match('/^[a-z0-9]+(?:-[a-z0-9]+)*$/', $slug) !== 1) {
+    $slug = isset($_GET['slug']) ? strtolower(trim((string) $_GET['slug'])) : '';
+    if (!catalog_slug_is_safe($slug)) {
         app_error('invalid_slug', 'A valid slug is required.', 422);
     }
-    $stmt = $pdo->prepare(
-        'SELECT ' . catalog_company_select() . '
-         FROM companies c
-         LEFT JOIN cities ci ON ci.id = c.city_id
-         WHERE c.slug = :slug LIMIT 1'
-    );
-    $stmt->execute([':slug' => $slug]);
-    $row = $stmt->fetch();
-    if ($row === false || !companies_can_view($row, auth_user_id())) {
+    $row = catalog_find_company_row($pdo, $slug);
+    if ($row === null || !companies_can_view($row, auth_user_id())) {
         app_success(['company' => null]);
     }
     app_success(['company' => catalog_company_detail($pdo, $row)]);

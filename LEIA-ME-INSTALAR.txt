@@ -1,0 +1,24 @@
+INSTALACAO — AgendaAqui 1.1.0 (HostGator cPanel)
+
+Site de referencia: o dominio que aponta para este public_html.
+
+NAO apague o site inteiro sem backup. Uploads e load-env.php existentes devem ser preservados numa atualizacao.
+
+PACOTE CANONICO
+  AgendaAqui-hostgator-v1.1.0.zip
+  (gerado com npm run build && php tools/build-release.php)
+
+PASSO A PASSO
+
+1. Backup de public_html + dump MySQL
+2. Extraia o ZIP no computador
+3. Envie public_html/ -> document root
+4. Envie agendaqui_secure/ -> /home/USUARIO/agendaqui_secure
+5. MultiPHP 8.1 ou 8.2
+6. load-env.php fora da web, com CRON_SHARED_SECRET e PUSH_TRACK_SECRET
+7. php tools/migrate.php  (001-019)
+   OU, so na primeira vez: abra /atualizar-banco.php, preencha banco/usuario/senha, depois APAGUE o arquivo
+8. Teste /api/health.php e /empregos
+
+NAO use AGENDAQUI-INSTALAR.zip nem /install.php — fluxo antigo, incompleto (parava em migrations 001-010).
+NAO coloque este texto com senhas no Git.

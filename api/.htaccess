@@ -4,6 +4,8 @@ Options -Indexes
   RewriteEngine On
     RewriteRule ^bootstrap/ - [F,L]
     RewriteRule ^importer/ - [F,L]
+    RewriteRule ^public/push/track$ public/push/track.php [L]
+    RewriteRule ^public/push/resubscribe$ public/push/resubscribe.php [L]
 </IfModule>
 
 <FilesMatch "\.(sql|md|log|ini|env)$">
